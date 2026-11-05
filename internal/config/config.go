@@ -13,6 +13,11 @@ import (
 type Config struct {
 	Network, ChainID, GenesisRoot, BeaconURL, ExecutionURL, DatabaseURL, ListenAddr string
 	RequestTimeout                                                                  time.Duration
+	WatchEnabled, StreamEnabled                                                     bool
+	SourceID                                                                        string
+	PollInterval, LateAfter, MissingAfter                                           time.Duration
+	Lookback, MaxCatchup                                                            uint64
+	PTCQuorum, PTCSize                                                              int
 }
 
 func Load() (Config, error) {
@@ -58,6 +63,9 @@ func Load() (Config, error) {
 		return c, fmt.Errorf("invalid request timeout")
 	}
 	c.RequestTimeout = d
+	if err := loadWatch(&c); err != nil {
+		return c, err
+	}
 	return c, nil
 }
 

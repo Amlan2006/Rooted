@@ -12,6 +12,7 @@ import (
 
 	"rooted/internal/domain"
 	"rooted/internal/ingest"
+	"rooted/internal/payloadwatch"
 	"rooted/internal/storage"
 )
 
@@ -23,6 +24,8 @@ type Server struct {
 	Collector  Fetcher
 	Network    string
 	Logger     *slog.Logger
+	Watch      *payloadwatch.Engine
+	SourceID   string
 }
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
@@ -54,10 +57,23 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /health", s.health)
 	mux.HandleFunc("GET /api/v1/slots/{slot}", s.get)
 	mux.HandleFunc("POST /api/v1/slots/{slot}/ingest", s.ingest)
+	mux.HandleFunc("GET /api/v1/slots", s.watchSlots)
+	mux.HandleFunc("GET /api/v1/payloadwatch/slots/{slot}", s.watchSlots)
+	mux.HandleFunc("GET /api/v1/payloadwatch/slots/{slot}/timeline", s.timeline)
+	mux.HandleFunc("GET /api/v1/builders", s.builders)
+	mux.HandleFunc("GET /api/v1/builders/{builder}", s.builders)
+	mux.HandleFunc("GET /api/v1/alerts", s.alerts)
+	mux.HandleFunc("GET /api/v1/collector", s.collectorStatus)
+	mux.HandleFunc("GET /api/v1/live", s.live)
+	mux.HandleFunc("GET /metrics", s.metrics)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { failure(w, 404, "not_found", "route not found") })
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		ctx, cancel := context.WithTimeout(r.Context(), 90*time.Second)
+		ctx, cancel := context.WithCancel(r.Context())
+		if r.URL.Path != "/api/v1/live" {
+			cancel()
+			ctx, cancel = context.WithTimeout(r.Context(), 90*time.Second)
+		}
 		defer cancel()
 		mux.ServeHTTP(w, r.WithContext(ctx))
 		if s.Logger != nil {
@@ -141,6 +157,16 @@ func (s *Server) ingest(w http.ResponseWriter, r *http.Request) {
 	if err = s.Repository.Save(r.Context(), snapshot); err != nil {
 		failure(w, 500, "storage_error", "unable to persist observation")
 		return
+	}
+	if s.Watch != nil {
+		if err = payloadwatch.RecordSnapshot(r.Context(), s.Watch, snapshot.Observation, s.SourceID, "live"); err != nil {
+			failure(w, 500, "projection_error", "raw snapshot saved; retry to rebuild PayloadWatch projection")
+			return
+		}
+		if err = s.Watch.Reconcile(r.Context(), s.Network, "live", s.SourceID, slot, snapshot.Observation.BlockRoot, time.Now().UTC()); err != nil {
+			failure(w, 500, "projection_error", "unable to reconcile canonical roots")
+			return
+		}
 	}
 	write(w, 200, ObservationResponse{Data: snapshot.Observation})
 }

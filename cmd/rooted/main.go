@@ -11,12 +11,14 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"sync"
 	"syscall"
 	"time"
 
 	"rooted/internal/api"
 	"rooted/internal/config"
 	"rooted/internal/ingest"
+	"rooted/internal/payloadwatch"
 	"rooted/internal/remote"
 	"rooted/internal/storage"
 )
@@ -34,7 +36,7 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	if command == "help" {
-		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | help]")
+		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | help]")
 		return nil
 	}
 	c, err := config.Load()
@@ -56,10 +58,22 @@ func run(logger *slog.Logger) error {
 		return errors.New("database migration failed")
 	}
 	collector := &ingest.Collector{Beacon: remote.New(c.BeaconURL, c.RequestTimeout), Execution: remote.New(c.ExecutionURL, c.RequestTimeout), Network: c.Network, ChainID: c.ChainID, GenesisRoot: c.GenesisRoot}
+	watch := &payloadwatch.Engine{Pool: repo.Pool, Policy: payloadwatch.Policy{LateAfter: c.LateAfter, MissingAfter: c.MissingAfter, PTCQuorum: c.PTCQuorum, PTCSize: c.PTCSize}}
 	switch command {
 	case "migrate":
 		logger.Info("database migrations applied")
 		return nil
+	case "replay":
+		file, err := os.Open(os.Args[2])
+		if err != nil {
+			return errors.New("unable to open replay dataset")
+		}
+		defer file.Close()
+		result, err := payloadwatch.Replay(ctx, watch, file, c.Network)
+		if err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(result)
 	case "ingest":
 		fetchCtx, fetchCancel := context.WithTimeout(ctx, 90*time.Second)
 		defer fetchCancel()
@@ -70,9 +84,44 @@ func run(logger *slog.Logger) error {
 		if err = repo.Save(fetchCtx, snapshot); err != nil {
 			return errors.New("unable to persist observation")
 		}
+		if err = payloadwatch.RecordSnapshot(fetchCtx, watch, snapshot.Observation, c.SourceID, "live"); err != nil {
+			return err
+		}
+		if err = watch.Reconcile(fetchCtx, c.Network, "live", c.SourceID, slot, snapshot.Observation.BlockRoot, time.Now().UTC()); err != nil {
+			return err
+		}
 		return json.NewEncoder(os.Stdout).Encode(api.ObservationResponse{Data: snapshot.Observation})
 	case "serve":
-		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger}).Handler()
+		workerCtx, stopWorkers := context.WithCancel(ctx)
+		var workers sync.WaitGroup
+		defer func() { stopWorkers(); workers.Wait() }()
+		if c.WatchEnabled {
+			if err = watch.CloseOldSessions(ctx, c.Network, c.SourceID); err != nil {
+				return err
+			}
+			wake := make(chan uint64, 1)
+			poller := &payloadwatch.Poller{Engine: watch, Collector: collector, Repository: repo, Beacon: collector.Beacon, Network: c.Network, SourceID: c.SourceID, Interval: c.PollInterval, Lookback: c.Lookback, MaxCatchup: c.MaxCatchup, Wake: wake, Logger: logger}
+			workers.Add(1)
+			go func() { defer workers.Done(); poller.Run(workerCtx) }()
+			if c.StreamEnabled {
+				if err = watch.SetProgress(ctx, c.Network, c.SourceID, "stream", "waiting_for_network_verification", nil); err != nil {
+					return err
+				}
+				stream := &payloadwatch.Stream{VerifyNetwork: collector.VerifyNetwork, Engine: watch, URL: c.BeaconURL, Network: c.Network, SourceID: c.SourceID, Logger: logger, Wake: wake}
+				workers.Add(1)
+				go func() { defer workers.Done(); stream.Run(workerCtx) }()
+			} else if err = watch.SetProgress(ctx, c.Network, c.SourceID, "stream", "disabled", nil); err != nil {
+				return err
+			}
+		} else {
+			if err = watch.SetProgress(ctx, c.Network, c.SourceID, "stream", "disabled", nil); err != nil {
+				return err
+			}
+			if err = watch.SetProgress(ctx, c.Network, c.SourceID, "poll", "disabled", nil); err != nil {
+				return err
+			}
+		}
+		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID}).Handler()
 		server := &http.Server{Addr: c.ListenAddr, Handler: handler, BaseContext: func(net.Listener) context.Context { return ctx }, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 		finished := make(chan error, 1)
 		go func() {
@@ -95,7 +144,7 @@ func run(logger *slog.Logger) error {
 			return nil
 		}
 	default:
-		return fmt.Errorf("unknown command %q; use serve, ingest SLOT, or migrate", command)
+		return fmt.Errorf("unknown command %q; use serve, ingest SLOT, replay PATH.json, or migrate", command)
 	}
 }
 
@@ -113,6 +162,11 @@ func parseArguments(args []string) (string, uint64, error) {
 		if len(args) == 1 {
 			return args[0], 0, nil
 		}
+	case "replay":
+		if len(args) == 2 && args[1] != "" {
+			return "replay", 0, nil
+		}
+		return "", 0, errors.New("usage: rooted replay PATH.json")
 	case "ingest":
 		if len(args) != 2 {
 			return "", 0, errors.New("usage: rooted ingest SLOT")
@@ -123,5 +177,5 @@ func parseArguments(args []string) (string, uint64, error) {
 		}
 		return "ingest", slot, nil
 	}
-	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | help]")
+	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | help]")
 }
