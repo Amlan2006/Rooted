@@ -1,0 +1,12 @@
+{
+  "name": "rooted-phase1-cre-probe",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@chainlink/cre-sdk": "1.23.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.2.21",
+    "typescript": "5.9.3"
+  }
+}

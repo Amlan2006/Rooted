@@ -1,0 +1,14 @@
+staging-settings:
+  user-workflow:
+    workflow-name: rooted-phase1-smoke
+  workflow-artifacts:
+    workflow-path: ./main.ts
+    config-path: ./config.json
+    secrets-path: ""
+capability-settings:
+  user-workflow:
+    workflow-name: rooted-phase1-http-evm
+  workflow-artifacts:
+    workflow-path: ./capability.ts
+    config-path: ./capability.json
+    secrets-path: ""

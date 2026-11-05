@@ -1,0 +1,11 @@
+{
+  "name": "rooted-phase1-anon-rpc-probe",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-transform-types --test private-rpc.test.ts"
+  },
+  "dependencies": {
+    "@anon-rpc/browser-harness": "0.3.3"
+  }
+}

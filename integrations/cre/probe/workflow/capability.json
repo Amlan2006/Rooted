@@ -1,0 +1,7 @@
+{
+  "schedule": "*/30 * * * * *",
+  "apiUrl": "https://api.mathjs.org/v4/?expr=2%2B2",
+  "chainName": "ethereum-testnet-sepolia",
+  "factory": "0x0227628f3F023bb0B980b67D528571c95c6DaC1c",
+  "feeAmountTickSpacingCall": "0x22afcccb00000000000000000000000000000000000000000000000000000000000001f4"
+}

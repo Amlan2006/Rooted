@@ -1,0 +1,11 @@
+ROOTED_BUILD_PLAN.md
+ROOTED_MAP.md
+.tools/
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+integrations/cre/probe/workflow/.cre_build_tmp*
+integrations/anon-rpc/probe/dist/
