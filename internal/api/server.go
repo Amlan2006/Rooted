@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"rooted/internal/analysis"
 	"rooted/internal/domain"
 	"rooted/internal/framemempool"
 	"rooted/internal/ingest"
@@ -27,6 +28,8 @@ type Server struct {
 	Logger       *slog.Logger
 	Watch        *payloadwatch.Engine
 	SourceID     string
+	Analysis     *analysis.Store
+	Analyzer     *analysis.Collector
 	Frames       *framemempool.Store
 	FrameNetwork string
 }
@@ -69,6 +72,12 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/v1/collector", s.collectorStatus)
 	mux.HandleFunc("GET /api/v1/live", s.live)
 	mux.HandleFunc("GET /metrics", s.metrics)
+	mux.HandleFunc("GET /api/v1/analysis/runs", s.analysisList)
+	mux.HandleFunc("GET /api/v1/analysis/blocks/{hash}", s.analysisList)
+	mux.HandleFunc("POST /api/v1/analysis/blocks/{hash}/ingest", s.analysisIngest)
+	mux.HandleFunc("POST /api/v1/analysis/transactions/{tx}/ingest", s.analysisIngest)
+	mux.HandleFunc("GET /api/v1/analysis/runs/{id}", s.analysisRun)
+	mux.HandleFunc("GET /api/v1/analysis/runs/{id}/{view}", s.analysisRun)
 	mux.HandleFunc("GET /api/v1/frames/node", s.frameNode)
 	mux.HandleFunc("GET /api/v1/frames/transactions", s.frameTransactions)
 	mux.HandleFunc("GET /api/v1/frames/transactions/{hash}", s.frameTransactions)

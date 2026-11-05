@@ -13,10 +13,12 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
 
+	"rooted/internal/analysis"
 	"rooted/internal/api"
 	"rooted/internal/config"
 	"rooted/internal/framemempool"
@@ -39,7 +41,7 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	if command == "help" {
-		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | help]")
+		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | help]")
 		return nil
 	}
 	c, err := config.Load()
@@ -47,6 +49,10 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	fc, err := config.LoadFrame()
+	if err != nil {
+		return err
+	}
+	ac, err := config.LoadAnalysis()
 	if err != nil {
 		return err
 	}
@@ -66,6 +72,8 @@ func run(logger *slog.Logger) error {
 	}
 	collector := &ingest.Collector{Beacon: remote.New(c.BeaconURL, c.RequestTimeout), Execution: remote.New(c.ExecutionURL, c.RequestTimeout), Network: c.Network, ChainID: c.ChainID, GenesisRoot: c.GenesisRoot}
 	watch := &payloadwatch.Engine{Pool: repo.Pool, Policy: payloadwatch.Policy{LateAfter: c.LateAfter, MissingAfter: c.MissingAfter, PTCQuorum: c.PTCQuorum, PTCSize: c.PTCSize}}
+	analysisStore := &analysis.Store{Pool: repo.Pool}
+	analyzer := &analysis.Collector{Beacon: remote.New(c.BeaconURL, c.RequestTimeout), AnchorNumber: ac.AnchorNumber, AnchorHash: ac.AnchorHash, Execution: remote.New(c.ExecutionURL, c.RequestTimeout), Trace: remote.New(ac.TraceURL, c.RequestTimeout), Network: c.Network, Mode: "live", ChainID: c.ChainID, Native: true, OpcodeLimit: 20000}
 	frames := &framemempool.Store{Pool: repo.Pool, ObservationWindow: fc.ObservationWindow}
 	frameCollectors := map[string]*framemempool.Collector{}
 	for node, endpoint := range map[string]string{"gateway": fc.Gateway, "miner": fc.Miner} {
@@ -78,6 +86,25 @@ func run(logger *slog.Logger) error {
 		frameCollectors[node] = &framemempool.Collector{Scope: framemempool.Scope{Network: fc.Network, Mode: "live", Node: node}, Store: frames, Node: framemempool.NewClient(endpoint, c.RequestTimeout), Execution: framemempool.NewClient(fc.Execution, c.RequestTimeout), ChainID: fc.Chain, Genesis: fc.Genesis, WSURL: u.String(), Interval: fc.Poll, Logger: logger}
 	}
 	switch command {
+	case "analyze", "analyze-fork":
+		selected := []string{}
+		if len(os.Args) == 4 {
+			selected = strings.Split(os.Args[3], ",")
+		}
+		target := analyzer
+		if command == "analyze-fork" {
+			target = &analysis.Collector{AnchorNumber: ac.AnchorNumber, AnchorHash: ac.AnchorHash, Execution: remote.New(ac.ForkURL, c.RequestTimeout), Trace: remote.New(ac.ForkURL, c.RequestTimeout), Network: c.Network + "-fork", Mode: "fork", ChainID: "31337", Native: false, OpcodeLimit: 20000}
+		}
+		bounded, done := context.WithTimeout(ctx, 4*time.Minute)
+		defer done()
+		snapshot, err := target.Fetch(bounded, os.Args[2], selected)
+		if err != nil {
+			return err
+		}
+		if err = analysisStore.Save(bounded, snapshot); err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(map[string]any{"data": snapshot.Run})
 	case "frame-sync":
 		node := "gateway"
 		if len(os.Args) > 2 {
@@ -187,7 +214,7 @@ func run(logger *slog.Logger) error {
 				}
 			}
 		}
-		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Frames: frames, FrameNetwork: fc.Network}).Handler()
+		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network}).Handler()
 		server := &http.Server{Addr: c.ListenAddr, Handler: handler, BaseContext: func(net.Listener) context.Context { return ctx }, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 		finished := make(chan error, 1)
 		go func() {
@@ -210,7 +237,7 @@ func run(logger *slog.Logger) error {
 			return nil
 		}
 	default:
-		return fmt.Errorf("unknown command %q; use serve, migrate, ingest SLOT, replay PATH.json, frame-sync, or frame-submit", command)
+		return fmt.Errorf("unknown command %q; use serve, migrate, ingest SLOT, replay PATH.json, analyze, analyze-fork, frame-sync, or frame-submit", command)
 	}
 }
 
@@ -252,6 +279,25 @@ func parseArguments(args []string) (string, uint64, error) {
 			return "", 0, errors.New("frame node must be gateway or miner")
 		}
 		return "frame-submit", 0, nil
+	case "analyze", "analyze-fork":
+		if len(args) < 2 || len(args) > 3 || !ingest.ValidRoot(args[1]) {
+			return "", 0, errors.New("usage: rooted analyze[-fork] BLOCK_HASH [TX_HASH,TX_HASH,...]")
+		}
+		if len(args) == 3 {
+			parts := strings.Split(args[2], ",")
+			if len(parts) == 0 || len(parts) > 4 {
+				return "", 0, errors.New("at most four selected transaction hashes are allowed")
+			}
+			seen := map[string]bool{}
+			for _, value := range parts {
+				value = strings.ToLower(value)
+				if !ingest.ValidRoot(value) || seen[value] {
+					return "", 0, errors.New("selected transaction hashes must be unique 32-byte values")
+				}
+				seen[value] = true
+			}
+		}
+		return args[0], 0, nil
 	case "ingest":
 		if len(args) != 2 {
 			return "", 0, errors.New("usage: rooted ingest SLOT")
@@ -262,5 +308,5 @@ func parseArguments(args []string) (string, uint64, error) {
 		}
 		return "ingest", slot, nil
 	}
-	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | frame-sync | frame-submit | help]")
+	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync | frame-submit | help]")
 }
