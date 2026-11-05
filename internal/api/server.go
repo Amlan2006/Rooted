@@ -1,0 +1,146 @@
+package api
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"log/slog"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
+	"rooted/internal/domain"
+	"rooted/internal/ingest"
+	"rooted/internal/storage"
+)
+
+type Fetcher interface {
+	Fetch(context.Context, uint64) (domain.Snapshot, error)
+}
+type Server struct {
+	Repository storage.Repository
+	Collector  Fetcher
+	Network    string
+	Logger     *slog.Logger
+}
+type ErrorResponse struct {
+	Error ErrorDetail `json:"error"`
+}
+type ErrorDetail struct {
+	Code       string   `json:"code"`
+	Message    string   `json:"message"`
+	BlockRoots []string `json:"block_roots,omitempty"`
+}
+type ObservationResponse struct {
+	Data domain.Observation `json:"data"`
+}
+type HealthResponse struct {
+	Status  string `json:"status"`
+	Network string `json:"network"`
+}
+
+func write(w http.ResponseWriter, status int, value any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(value)
+}
+func failure(w http.ResponseWriter, status int, code, message string) {
+	write(w, status, ErrorResponse{Error: ErrorDetail{Code: code, Message: message}})
+}
+
+func (s *Server) Handler() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", s.health)
+	mux.HandleFunc("GET /api/v1/slots/{slot}", s.get)
+	mux.HandleFunc("POST /api/v1/slots/{slot}/ingest", s.ingest)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { failure(w, 404, "not_found", "route not found") })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		ctx, cancel := context.WithTimeout(r.Context(), 90*time.Second)
+		defer cancel()
+		mux.ServeHTTP(w, r.WithContext(ctx))
+		if s.Logger != nil {
+			s.Logger.InfoContext(ctx, "request completed", "method", r.Method, "path", r.URL.Path, "duration_ms", time.Since(start).Milliseconds())
+		}
+	})
+}
+func (s *Server) health(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+	if s.Repository.Ping(ctx) != nil {
+		write(w, 503, HealthResponse{Status: "unavailable", Network: s.Network})
+		return
+	}
+	write(w, 200, HealthResponse{Status: "ok", Network: s.Network})
+}
+func (s *Server) parameters(w http.ResponseWriter, r *http.Request) (uint64, bool) {
+	if r.URL.Query().Get("network") != s.Network {
+		failure(w, 400, "invalid_network", "network must explicitly match the configured network")
+		return 0, false
+	}
+	slot, err := strconv.ParseUint(r.PathValue("slot"), 10, 64)
+	if err != nil {
+		failure(w, 400, "invalid_slot", "slot must be an unsigned decimal integer")
+		return 0, false
+	}
+	return slot, true
+}
+func (s *Server) get(w http.ResponseWriter, r *http.Request) {
+	slot, ok := s.parameters(w, r)
+	if !ok {
+		return
+	}
+	root := r.URL.Query().Get("block_root")
+	if root != "" && !ingest.ValidRoot(root) {
+		failure(w, 400, "invalid_root", "block_root must be a 32-byte hex root")
+		return
+	}
+	items, err := s.Repository.List(r.Context(), s.Network, slot, strings.ToLower(root))
+	if err != nil {
+		failure(w, 500, "storage_error", "unable to read stored observation")
+		return
+	}
+	if len(items) == 0 {
+		failure(w, 404, "not_ingested", "no matching stored observation; ingest the slot first")
+		return
+	}
+	if len(items) > 1 {
+		roots := []string{}
+		for _, o := range items {
+			roots = append(roots, o.BlockRoot)
+		}
+		write(w, 409, ErrorResponse{Error: ErrorDetail{Code: "ambiguous_slot", Message: "multiple stored roots; select block_root explicitly", BlockRoots: roots}})
+		return
+	}
+	write(w, 200, ObservationResponse{Data: items[0]})
+}
+func (s *Server) ingest(w http.ResponseWriter, r *http.Request) {
+	slot, ok := s.parameters(w, r)
+	if !ok {
+		return
+	}
+	snapshot, err := s.Collector.Fetch(r.Context(), slot)
+	if err != nil {
+		switch {
+		case errors.Is(err, ingest.ErrUnavailable):
+			failure(w, 404, "slot_unavailable", ingest.ErrUnavailable.Error())
+		case errors.Is(err, ingest.ErrUnsupported):
+			failure(w, 422, "unsupported_block", ingest.ErrUnsupported.Error())
+		case errors.Is(err, ingest.ErrMismatch):
+			failure(w, 422, "identifier_mismatch", "upstream identifiers or network do not match")
+		case errors.Is(err, context.DeadlineExceeded):
+			failure(w, 504, "upstream_timeout", "slot ingestion timed out")
+		case errors.Is(err, context.Canceled):
+			return
+		default:
+			failure(w, 502, "upstream_error", "unable to fetch complete source data; retry later")
+		}
+		return
+	}
+	if err = s.Repository.Save(r.Context(), snapshot); err != nil {
+		failure(w, 500, "storage_error", "unable to persist observation")
+		return
+	}
+	write(w, 200, ObservationResponse{Data: snapshot.Observation})
+}
