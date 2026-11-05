@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"strconv"
@@ -17,6 +19,7 @@ import (
 
 	"rooted/internal/api"
 	"rooted/internal/config"
+	"rooted/internal/framemempool"
 	"rooted/internal/ingest"
 	"rooted/internal/payloadwatch"
 	"rooted/internal/remote"
@@ -36,10 +39,14 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	if command == "help" {
-		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | help]")
+		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | help]")
 		return nil
 	}
 	c, err := config.Load()
+	if err != nil {
+		return err
+	}
+	fc, err := config.LoadFrame()
 	if err != nil {
 		return err
 	}
@@ -59,7 +66,56 @@ func run(logger *slog.Logger) error {
 	}
 	collector := &ingest.Collector{Beacon: remote.New(c.BeaconURL, c.RequestTimeout), Execution: remote.New(c.ExecutionURL, c.RequestTimeout), Network: c.Network, ChainID: c.ChainID, GenesisRoot: c.GenesisRoot}
 	watch := &payloadwatch.Engine{Pool: repo.Pool, Policy: payloadwatch.Policy{LateAfter: c.LateAfter, MissingAfter: c.MissingAfter, PTCQuorum: c.PTCQuorum, PTCSize: c.PTCSize}}
+	frames := &framemempool.Store{Pool: repo.Pool, ObservationWindow: fc.ObservationWindow}
+	frameCollectors := map[string]*framemempool.Collector{}
+	for node, endpoint := range map[string]string{"gateway": fc.Gateway, "miner": fc.Miner} {
+		u, _ := url.Parse(endpoint)
+		if u.Scheme == "https" {
+			u.Scheme = "wss"
+		} else {
+			u.Scheme = "ws"
+		}
+		frameCollectors[node] = &framemempool.Collector{Scope: framemempool.Scope{Network: fc.Network, Mode: "live", Node: node}, Store: frames, Node: framemempool.NewClient(endpoint, c.RequestTimeout), Execution: framemempool.NewClient(fc.Execution, c.RequestTimeout), ChainID: fc.Chain, Genesis: fc.Genesis, WSURL: u.String(), Interval: fc.Poll, Logger: logger}
+	}
 	switch command {
+	case "frame-sync":
+		node := "gateway"
+		if len(os.Args) > 2 {
+			node = os.Args[2]
+		}
+		adapter := frameCollectors[node]
+		if len(os.Args) == 4 {
+			err = adapter.SyncHash(ctx, os.Args[3])
+		} else {
+			err = adapter.Poll(ctx)
+		}
+		if err != nil {
+			return err
+		}
+		states, err := frames.States(ctx, adapter.Scope, "", 100)
+		if err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(map[string]any{"scope": adapter.Scope, "data": states})
+	case "frame-submit":
+		node := "gateway"
+		if len(os.Args) == 5 {
+			node = os.Args[4]
+		}
+		file, err := os.Open(os.Args[2])
+		if err != nil {
+			return errors.New("unable to open signed transaction file")
+		}
+		defer file.Close()
+		body, err := io.ReadAll(io.LimitReader(file, (2<<20)+1))
+		if err != nil || len(body) > 2<<20 {
+			return errors.New("signed transaction file exceeds limit or cannot be read")
+		}
+		result, err := frameCollectors[node].Submit(ctx, body, os.Args[3])
+		if err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(result)
 	case "migrate":
 		logger.Info("database migrations applied")
 		return nil
@@ -121,7 +177,17 @@ func run(logger *slog.Logger) error {
 				return err
 			}
 		}
-		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID}).Handler()
+		if fc.Enabled {
+			for _, adapter := range frameCollectors {
+				workers.Add(1)
+				go func(a *framemempool.Collector) { defer workers.Done(); a.Run(workerCtx) }(adapter)
+				if fc.Stream {
+					workers.Add(1)
+					go func(a *framemempool.Collector) { defer workers.Done(); a.Stream(workerCtx) }(adapter)
+				}
+			}
+		}
+		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Frames: frames, FrameNetwork: fc.Network}).Handler()
 		server := &http.Server{Addr: c.ListenAddr, Handler: handler, BaseContext: func(net.Listener) context.Context { return ctx }, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 		finished := make(chan error, 1)
 		go func() {
@@ -144,7 +210,7 @@ func run(logger *slog.Logger) error {
 			return nil
 		}
 	default:
-		return fmt.Errorf("unknown command %q; use serve, ingest SLOT, replay PATH.json, or migrate", command)
+		return fmt.Errorf("unknown command %q; use serve, migrate, ingest SLOT, replay PATH.json, frame-sync, or frame-submit", command)
 	}
 }
 
@@ -167,6 +233,25 @@ func parseArguments(args []string) (string, uint64, error) {
 			return "replay", 0, nil
 		}
 		return "", 0, errors.New("usage: rooted replay PATH.json")
+	case "frame-sync":
+		if len(args) > 3 {
+			return "", 0, errors.New("usage: rooted frame-sync [gateway|miner] [HASH]")
+		}
+		if len(args) > 1 && args[1] != "gateway" && args[1] != "miner" {
+			return "", 0, errors.New("frame node must be gateway or miner")
+		}
+		if len(args) == 3 && !ingest.ValidRoot(args[2]) {
+			return "", 0, errors.New("frame transaction hash must be 32 bytes")
+		}
+		return "frame-sync", 0, nil
+	case "frame-submit":
+		if (len(args) != 3 && len(args) != 4) || args[1] == "" || !ingest.ValidRoot(args[2]) {
+			return "", 0, errors.New("usage: rooted frame-submit SIGNED.json EXPECTED_HASH [gateway|miner]")
+		}
+		if len(args) == 4 && args[3] != "gateway" && args[3] != "miner" {
+			return "", 0, errors.New("frame node must be gateway or miner")
+		}
+		return "frame-submit", 0, nil
 	case "ingest":
 		if len(args) != 2 {
 			return "", 0, errors.New("usage: rooted ingest SLOT")
@@ -177,5 +262,5 @@ func parseArguments(args []string) (string, uint64, error) {
 		}
 		return "ingest", slot, nil
 	}
-	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | help]")
+	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | frame-sync | frame-submit | help]")
 }

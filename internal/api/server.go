@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"rooted/internal/domain"
+	"rooted/internal/framemempool"
 	"rooted/internal/ingest"
 	"rooted/internal/payloadwatch"
 	"rooted/internal/storage"
@@ -20,12 +21,14 @@ type Fetcher interface {
 	Fetch(context.Context, uint64) (domain.Snapshot, error)
 }
 type Server struct {
-	Repository storage.Repository
-	Collector  Fetcher
-	Network    string
-	Logger     *slog.Logger
-	Watch      *payloadwatch.Engine
-	SourceID   string
+	Repository   storage.Repository
+	Collector    Fetcher
+	Network      string
+	Logger       *slog.Logger
+	Watch        *payloadwatch.Engine
+	SourceID     string
+	Frames       *framemempool.Store
+	FrameNetwork string
 }
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
@@ -66,6 +69,12 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/v1/collector", s.collectorStatus)
 	mux.HandleFunc("GET /api/v1/live", s.live)
 	mux.HandleFunc("GET /metrics", s.metrics)
+	mux.HandleFunc("GET /api/v1/frames/node", s.frameNode)
+	mux.HandleFunc("GET /api/v1/frames/transactions", s.frameTransactions)
+	mux.HandleFunc("GET /api/v1/frames/transactions/{hash}", s.frameTransactions)
+	mux.HandleFunc("GET /api/v1/frames/transactions/{hash}/evidence", s.frameEvidence)
+	mux.HandleFunc("GET /api/v1/frames/incidents", s.frameIncidents)
+	mux.HandleFunc("GET /api/v1/frames/submissions", s.frameSubmissions)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { failure(w, 404, "not_found", "route not found") })
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
