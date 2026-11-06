@@ -1,6 +1,8 @@
 // Glamsterdam X-ray (schema rooted-xray-v1, spec §1). Gas is a gas count, time is ns, null = unavailable.
+// gas_used is receipt gas (execution + EIP-8037 state gas); execution_gas is the dimension that prices compute.
+// Optional (?) fields are absent from reports computed before per-tx gas dimensions and control timings existed.
 export type Ceiling = { model: string; weight: "gas" | "ns"; value: number | null; total: number | null; bottleneck: number | null; capping_tx_index: number | null; critical_path?: number[] };
-export type XrayTx = { index: number; hash: string; from: string; to: string | null; is_create: boolean; status: number; gas_used: number; apply_ns_median: number | null; reads: number; writes: number; depends_on: number[] };
+export type XrayTx = { index: number; hash: string; from: string; to: string | null; is_create: boolean; status: number; gas_used: number; execution_gas?: number | null; state_gas?: number | null; apply_ns_median: number | null; reads: number; writes: number; depends_on: number[] };
 export type HotLocation = { address: string; field: string; key: string; writers: number; readers: number; edges: number; on_critical_path: boolean; label: { protocol: string; name: string; pool: string; verified: boolean } | null };
 export type EPBS = { slot: number; beacon_block_root: string; builder_index: string; source: string; self_build: boolean | null; status: string | null; delivery: string | null; reveal_latency_ms: number | null; ptc_payload_yes: number | null; ptc_payload_no: number | null; ptc_timely: boolean | null; canonical: boolean | null };
 export type Report = {
@@ -11,27 +13,27 @@ export type Report = {
   transactions: XrayTx[];
   edges: { RAW: number; WAR: number; WAW: number; total: number; dependent_pairs: number; truncated: boolean };
   independent_transactions: number;
-  ceilings: { gas_weighted: Ceiling; validator_bal_time: Ceiling; builder_dag_time: Ceiling };
+  ceilings: { gas_weighted: Ceiling; execution_gas_weighted?: Ceiling; validator_bal_time: Ceiling; builder_dag_time: Ceiling };
   schedules: { cores: number[]; validator_bal_time: number[] | null; builder_dag_time: number[] | null };
   hot_locations: HotLocation[];
   uniswap: { v3_swap_transactions: number; v4_swap_transactions: number; labeled_edges: number };
   epbs: EPBS | null;
-  replay: { runner: string; geth_library: string; cpu_model: string; logical_cpus: number; samples: number; median_apply_ns: number } | null;
+  replay: { runner: string; geth_library: string; cpu_model: string; logical_cpus: number; samples: number; median_apply_ns: number; timing?: "uninstrumented_control" | "instrumented" } | null;
   excluded_addresses: string[];
   coverage: string[];
 };
 export type Brief = {
   block_hash: string; block_number: number; slot: number | null; computed_at: string; source: string; transaction_count: number;
   header_gas_used: number; receipts_gas_sum: number; commitment_verified: boolean;
-  gas_weighted: number | null; validator_bal_time: number | null; builder_dag_time: number | null;
+  gas_weighted: number | null; execution_gas_weighted?: number | null; validator_bal_time: number | null; builder_dag_time: number | null;
   gas_capping_tx_index: number | null; validator_capping_tx_index: number | null; builder_critical_path_length: number | null;
   speedup_8_validator: number | null; speedup_8_builder: number | null; builder_index: string | null;
 };
 type Spread = { p10: number; median: number; p90: number } | null;
 export type Summary = {
   blocks: number; from_block: number | null; to_block: number | null;
-  ceilings: { gas_weighted: Spread; validator_bal_time: Spread; builder_dag_time: Spread };
-  single_tx_bound_share: number | null; gas_misidentifies_bottleneck_share: number | null; commitment_verified_share: number | null;
+  ceilings: { gas_weighted: Spread; execution_gas_weighted?: Spread; validator_bal_time: Spread; builder_dag_time: Spread };
+  single_tx_bound_share: number | null; gas_misidentifies_bottleneck_share: number | null; execution_gas_misidentifies_bottleneck_share?: number | null; commitment_verified_share: number | null;
   speedup_8: { validator_median: number | null; builder_median: number | null };
 };
 const isHash = (v: unknown) => typeof v === "string" && /^0x[0-9a-f]{64}$/.test(v);
@@ -43,7 +45,7 @@ export function parseReport(v: unknown): Report {
   if (!Array.isArray(r.transactions) || r.transactions.length !== r.block.transaction_count || r.transactions.some((t, i) => t.index !== i || !Array.isArray(t.depends_on)))
     throw Error("X-ray transaction rows do not match the block transaction count.");
   const c = r.ceilings;
-  if (!c || [c.gas_weighted, c.validator_bal_time, c.builder_dag_time].some(x => !x || (x.value != null && !(x.value >= 1))))
+  if (!c || [c.gas_weighted, c.validator_bal_time, c.builder_dag_time].some(x => !x || (x.value != null && !(x.value >= 1))) || (c.execution_gas_weighted?.value != null && !(c.execution_gas_weighted.value >= 1)))
     throw Error("X-ray ceilings must be at least 1.");
   const s = r.schedules;
   if (s?.cores?.length !== 5 || [s.validator_bal_time, s.builder_dag_time].some(x => x != null && x.length !== 5))
@@ -62,11 +64,13 @@ export function parseSummary(v: unknown): Summary {
 }
 export function laneRows(r: Report) {
   const maxNs = Math.max(0, ...r.transactions.map(t => t.apply_ns_median ?? 0)), maxGas = Math.max(0, ...r.transactions.map(t => t.gas_used));
+  const maxExec = Math.max(0, ...r.transactions.map(t => t.execution_gas ?? 0));
   const path = new Set(r.ceilings.builder_dag_time.critical_path ?? []);
   return r.transactions.map(t => ({
     index: t.index, hash: t.hash, gas: t.gas_used, ns: t.apply_ns_median,
     widthNs: t.apply_ns_median == null || !maxNs ? null : t.apply_ns_median / maxNs,
     widthGas: maxGas ? t.gas_used / maxGas : 0,
+    exec: t.execution_gas ?? null, widthExec: t.execution_gas == null || !maxExec ? null : t.execution_gas / maxExec,
     validatorCap: t.index === r.ceilings.validator_bal_time.capping_tx_index,
     gasCap: t.index === r.ceilings.gas_weighted.capping_tx_index,
     onCriticalPath: path.has(t.index),

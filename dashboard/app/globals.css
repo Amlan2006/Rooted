@@ -1892,7 +1892,7 @@ td {
 .provider-check-panel td, .provider-check-panel code { white-space: normal; overflow-wrap: anywhere; }
 .provider-check-panel .badge { white-space: normal; line-height: 1.5; }
 /* Glamsterdam X-ray */
-.xray-hero { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xray-hero { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .xray-hero .stat > span { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .xray-gas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .xray-gas meter { width: 100%; }

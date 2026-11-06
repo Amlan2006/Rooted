@@ -1,0 +1,156 @@
+{
+ "note": "Labelled EIP-7928 BAL conflicts of Sepolia block 12,073,969 (BAL from the Nimbus payload envelope, commitment-checked; labels from receipt logs; v3 pool verified against the official factory). Writes only, because the block is outside the node's ~128-block state window, so no prestate reads. internal/uniswap/live_test.go TestLiveBALContention re-derives the same [29 35 83] writers and 12 labelled edges.",
+ "block_number": 12073969,
+ "block_hash": "0x0c332d1740bfa88eb14fd00108a383ed9fe1a90cee48aa1646651cefec48aba4",
+ "slot": 11516904,
+ "transaction_count": 114,
+ "bal_commitment": "0x50a88ab450411d31122d02b1efbccaca588f0c67930800ca86fb4d0266dbbd06",
+ "commitment_verified": true,
+ "labeled_edges": 12,
+ "locations": [
+  {
+   "address": "0x6a8bcbc98ff2485582049e67299fb16ad900728b",
+   "field": "storage",
+   "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+   "writers": 3,
+   "readers": 0,
+   "edges": 3,
+   "label": {
+    "protocol": "uniswap_v3",
+    "name": "pool_slot0",
+    "pool": "0x6a8bcbc98ff2485582049e67299fb16ad900728b",
+    "verified": true
+   },
+   "transactions": [
+    29,
+    35,
+    83
+   ],
+   "pairs": [
+    [
+     29,
+     35,
+     "WAW"
+    ],
+    [
+     29,
+     83,
+     "WAW"
+    ],
+    [
+     35,
+     83,
+     "WAW"
+    ]
+   ]
+  },
+  {
+   "address": "0x6a8bcbc98ff2485582049e67299fb16ad900728b",
+   "field": "storage",
+   "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+   "writers": 3,
+   "readers": 0,
+   "edges": 3,
+   "label": {
+    "protocol": "uniswap_v3",
+    "name": "fee_growth_global1",
+    "pool": "0x6a8bcbc98ff2485582049e67299fb16ad900728b",
+    "verified": true
+   },
+   "transactions": [
+    29,
+    35,
+    83
+   ],
+   "pairs": [
+    [
+     29,
+     35,
+     "WAW"
+    ],
+    [
+     29,
+     83,
+     "WAW"
+    ],
+    [
+     35,
+     83,
+     "WAW"
+    ]
+   ]
+  },
+  {
+   "address": "0x1967a5a5f12cbd95f12847067c2c00f044d3ef11",
+   "field": "storage",
+   "key": "0x2c19e4ecb9bb2056591260bb4862f4fa99bed7d826d9fcc17689305893b946fd",
+   "writers": 3,
+   "readers": 0,
+   "edges": 3,
+   "label": {
+    "protocol": "uniswap_v3",
+    "name": "token_balance_of_pool",
+    "pool": "0x6a8bcbc98ff2485582049e67299fb16ad900728b",
+    "verified": false
+   },
+   "transactions": [
+    29,
+    35,
+    83
+   ],
+   "pairs": [
+    [
+     29,
+     35,
+     "WAW"
+    ],
+    [
+     29,
+     83,
+     "WAW"
+    ],
+    [
+     35,
+     83,
+     "WAW"
+    ]
+   ]
+  },
+  {
+   "address": "0xfd840838f598d7abb153a8bc93f4a2ff38d2d5b8",
+   "field": "storage",
+   "key": "0x2c19e4ecb9bb2056591260bb4862f4fa99bed7d826d9fcc17689305893b946fd",
+   "writers": 3,
+   "readers": 0,
+   "edges": 3,
+   "label": {
+    "protocol": "uniswap_v3",
+    "name": "token_balance_of_pool",
+    "pool": "0x6a8bcbc98ff2485582049e67299fb16ad900728b",
+    "verified": false
+   },
+   "transactions": [
+    29,
+    35,
+    83
+   ],
+   "pairs": [
+    [
+     29,
+     35,
+     "WAW"
+    ],
+    [
+     29,
+     83,
+     "WAW"
+    ],
+    [
+     35,
+     83,
+     "WAW"
+    ]
+   ]
+  }
+ ]
+}

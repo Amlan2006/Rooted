@@ -6,6 +6,7 @@ import { age, ms, short, verdict } from "@/lib/data";
 import { milliseconds } from "@/lib/profiler";
 import { formatPrice, formatX, laneRows, parseBriefs, parseReport, parseSummary, paymentTerms, speedupSeries, type Brief, type PaymentTerms, type Report, type Summary } from "@/lib/xray";
 import { Badge, Coverage, Evidence, Notice, Panel, Stat } from "./ui";
+import uniswapExample from "@/lib/uniswap-contention-example.json";
 
 const repo = "https://github.com/Amlan2006/Rooted/blob/main";
 const percent = (n: number | null | undefined) => (n == null ? "Unknown" : (n * 100).toFixed(0) + "%");
@@ -29,6 +30,8 @@ export default function Xray() {
   const stats = useMemo(() => { try { return summary.data ? parseSummary(summary.data.data) : null; } catch { return null; } }, [summary.data]);
   const offline = !!blocks.error && !blocks.data;
   const target = selected ?? briefs[0]?.block_hash ?? null;
+  // Pin the first block shown; newer blocks only appear as chips, so the numbers never change mid-sentence.
+  useEffect(() => { if (!selected && briefs[0]) setSelected(briefs[0].block_hash); }, [briefs, selected]);
   useEffect(() => {
     let stopped = false;
     const signal = AbortSignal.timeout(25000);
@@ -118,7 +121,8 @@ const cap = (i: number | null) => (i == null ? "capping tx unknown" : `capping t
 
 function BriefHero({ brief: b }: { brief: Brief }) {
   return <Hero cells={[
-    ["Gas-weighted", "what the gas limit assumes", b.gas_weighted, `${cap(b.gas_capping_tx_index)} · weight: gas`],
+    ["Receipt gas", "execution + EIP-8037 state gas", b.gas_weighted, `${cap(b.gas_capping_tx_index)} · weight: receipt gasUsed`],
+    ["Execution gas", "the EIP-8037 dimension that prices compute", b.execution_gas_weighted ?? null, "weight: execution gas"],
     ["Validator with BAL", "Amdahl on measured time", b.validator_bal_time, `${cap(b.validator_capping_tx_index)} · weight: ns`],
     ["Builder / no BAL", "conflict-DAG critical path", b.builder_dag_time, `critical path ${b.builder_critical_path_length ?? "unknown"} txs · weight: ns`],
   ]} />;
@@ -127,7 +131,7 @@ function BriefHero({ brief: b }: { brief: Brief }) {
 function ReportView({ report: r, stored }: { report: Report; stored: boolean }) {
   const c = r.ceilings;
   const timed = c.validator_bal_time.value != null;
-  const [weight, setWeight] = useState<"ns" | "gas">(timed ? "ns" : "gas");
+  const [weight, setWeight] = useState<"ns" | "exec" | "gas">(timed ? "ns" : "gas");
   const [picked, setPicked] = useState<number | null>(null);
   const rows = useMemo(() => laneRows(r), [r]);
   const tx = picked == null ? null : r.transactions[picked];
@@ -147,7 +151,8 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
       </div>
     </div>
     <Hero cells={[
-      ["Gas-weighted", "what the gas limit assumes", c.gas_weighted.value, `${cap(c.gas_weighted.capping_tx_index)} · weight: gas · Σgas / max gas`],
+      ["Receipt gas", "execution + EIP-8037 state gas", c.gas_weighted.value, `${cap(c.gas_weighted.capping_tx_index)} · Σ receipt gas / max`],
+      ["Execution gas", "the EIP-8037 dimension that prices compute", c.execution_gas_weighted?.value ?? null, c.execution_gas_weighted ? `${cap(c.execution_gas_weighted.capping_tx_index)} · Σ execution gas / max` : "not in this report (older replay runner)"],
       ["Validator with BAL", "Amdahl on measured time", c.validator_bal_time.value, `${cap(c.validator_bal_time.capping_tx_index)} · weight: ns · Σt / max t`],
       ["Builder / no BAL", "conflict-DAG critical path", c.builder_dag_time.value, `${cap(c.builder_dag_time.capping_tx_index)} · path of ${c.builder_dag_time.critical_path?.length ?? "unknown"} txs · weight: ns`],
     ]} />
@@ -156,26 +161,28 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
         <div><span>Header gasUsed</span><strong>{r.gas.header_gas_used.toLocaleString()}</strong><meter min={0} max={gasMax} value={r.gas.header_gas_used} aria-label="Header gasUsed" /></div>
         <div><span>Receipt gasUsed sum</span><strong>{r.gas.receipts_gas_sum.toLocaleString()}</strong><meter min={0} max={gasMax} value={r.gas.receipts_gas_sum} aria-label="Receipt gas sum" /></div>
       </div>
-      <p className="footnote">{r.gas.differs ? "These differ: under EIP-8037 the header and receipts count gas differently." : "Header and receipt sum agree for this block."} The gas-weighted ceiling uses receipt gasUsed per transaction. Gas limit {r.block.gas_limit.toLocaleString()}.</p>
+      <p className="footnote">{r.gas.differs ? "These differ: under EIP-8037 the header counts max(Σ execution gas, Σ state gas), while receipts count execution + state gas." : "Header and receipt sum agree for this block."} The receipt-gas ceiling therefore mixes in state gas (contract creations are heavy in it); the execution-gas ceiling uses only the dimension that prices compute. Gas limit {r.block.gas_limit.toLocaleString()}, applied to each dimension separately.</p>
     </Panel>
-    <Panel title="Transaction lanes" subtitle={`One bar per transaction · width ∝ ${weight === "ns" ? "median native ApplyMessage time (7 samples)" : "receipt gasUsed"}`}
-      action={<div className="segmented">{(["ns", "gas"] as const).map(w => <button key={w} className={weight === w ? "active" : ""} aria-pressed={weight === w} onClick={() => setWeight(w)}>{w === "ns" ? "Time" : "Gas"}</button>)}</div>}>
+    <Panel title="Transaction lanes" subtitle={`One bar per transaction · width ∝ ${weight === "ns" ? "median native ApplyMessage time (7 samples)" : weight === "exec" ? "EIP-8037 execution gas" : "receipt gasUsed (execution + state gas)"}`}
+      action={<div className="segmented">{(["ns", "exec", "gas"] as const).map(w => <button key={w} className={weight === w ? "active" : ""} aria-pressed={weight === w} onClick={() => setWeight(w)}>{{ ns: "Time", exec: "Exec gas", gas: "Receipt gas" }[w]}</button>)}</div>}>
       {!timed && weight === "ns" && <div className="notice">No replay metrics for this block, so time lanes are unknown. Switch to gas.</div>}
+      {weight === "exec" && rows[0]?.exec == null && <div className="notice">This report predates per-transaction execution gas. Switch to receipt gas.</div>}
       <div className="activity-legend"><span><i className="legend lane-cap" />Validator capping tx</span><span><i className="legend lane-critical" />Builder critical path</span><span><i className="legend lane-gas" />Gas capping tx (outlined)</span></div>
       <div className="lane-list">{rows.map(row => {
-        const width = weight === "ns" ? row.widthNs : row.widthGas;
+        const width = weight === "ns" ? row.widthNs : weight === "exec" ? row.widthExec : row.widthGas;
         return <button key={row.index} className={"lane-row" + (row.validatorCap ? " cap" : row.onCriticalPath ? " critical" : "") + (row.gasCap ? " gas-cap" : "") + (picked === row.index ? " picked" : "")}
           aria-pressed={picked === row.index} onClick={() => setPicked(row.index)}
           aria-label={`Transaction ${row.index}: ${milliseconds(row.ns)}, ${row.gas.toLocaleString()} gas${row.validatorCap ? ", validator capping" : ""}${row.onCriticalPath ? ", on builder critical path" : ""}`}>
           <span className="mono">#{row.index}</span>
           <span className="lane-track"><i style={{ width: width == null ? 0 : `${Math.max(width * 100, 0.4)}%` }} /></span>
-          <small className="mono">{weight === "ns" ? milliseconds(row.ns) : row.gas.toLocaleString()}</small>
+          <small className="mono">{weight === "ns" ? milliseconds(row.ns) : weight === "exec" ? row.exec?.toLocaleString() ?? "Unknown" : row.gas.toLocaleString()}</small>
         </button>;
       })}</div>
       {tx && <div className="fact-grid">
         <div><span>Transaction #{tx.index}</span><strong><code title={tx.hash}>{short(tx.hash)}</code></strong></div>
         <div><span>From → to</span><strong><code>{short(tx.from)}</code> → {tx.is_create ? "contract creation" : <code>{short(tx.to)}</code>}</strong></div>
-        <div><span>Status · gas</span><strong>{tx.status === 1 ? "success" : "reverted"} · {tx.gas_used.toLocaleString()}</strong></div>
+        <div><span>Status · receipt gas</span><strong>{tx.status === 1 ? "success" : "reverted"} · {tx.gas_used.toLocaleString()}</strong></div>
+        <div><span>Execution · state gas</span><strong>{tx.execution_gas == null ? "Unknown" : `${tx.execution_gas.toLocaleString()} · ${tx.state_gas?.toLocaleString() ?? "?"}`}</strong></div>
         <div><span>ApplyMessage median</span><strong>{milliseconds(tx.apply_ns_median)}</strong></div>
         <div><span>Modelled reads / writes</span><strong>{tx.reads} / {tx.writes}</strong></div>
         <div><span>Builder critical path</span><strong>{rows[tx.index].onCriticalPath ? "On the path" : "Not on the path"}</strong></div>
@@ -197,6 +204,7 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
         </tr>)}
       </tbody></table></div> : <div className="notice">No conflict edges in this block.</div>}
       <p className="footnote">Uniswap: {r.uniswap.v3_swap_transactions} v3 swap transactions · {r.uniswap.v4_swap_transactions} v4 swap transactions · {r.uniswap.labeled_edges} labelled edges. Token balance labels assume a storage layout and stay unverified.</p>
+      {r.uniswap.labeled_edges === 0 && <UniswapExample />}
     </Panel>
     <Panel title="ePBS delivery" subtitle={r.epbs ? `Slot ${r.epbs.slot} · source ${r.epbs.source}` : "Payload envelope and PayloadWatch state"}>
       {r.epbs ? <div className="fact-grid">
@@ -209,10 +217,25 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
       </div> : <div className="notice">ePBS state unavailable for this block.</div>}
     </Panel>
     <Panel title="Measurement scope" subtitle="What these upper bounds do and do not include">
-      <p className="footnote">{r.replay ? `Replay ${r.replay.runner} · Geth library ${r.replay.geth_library} · ${r.replay.cpu_model} · ${r.replay.logical_cpus} logical CPUs · ${r.replay.samples} samples · block median ${milliseconds(r.replay.median_apply_ns)}.` : "No replay metrics: time ceilings are unknown."} BAL {r.bal.accounts} accounts from {r.bal.source}. {r.excluded_addresses.length} addresses excluded (fee recipient, system contracts, precompiles).</p>
+      <p className="footnote">{r.replay ? `Replay ${r.replay.runner} · Geth library ${r.replay.geth_library} · ${r.replay.cpu_model} · ${r.replay.logical_cpus} logical CPUs · ${r.replay.samples} ${r.replay.timing === "uninstrumented_control" ? "uninstrumented" : "instrumented (state-call timers on, which inflates state-heavy txs unevenly)"} samples · block median ${milliseconds(r.replay.median_apply_ns)}. Time ceilings vary by up to about 25% between replays of the same block, so read them to two significant figures.` : "No replay metrics: time ceilings are unknown."} BAL {r.bal.accounts} accounts from {r.bal.source}. {r.excluded_addresses.length} addresses excluded (fee recipient, system contracts, precompiles).</p>
       <Coverage items={r.coverage} />
     </Panel>
   </>;
+}
+
+// Shown when the current block has no labelled Uniswap contention (most Sepolia blocks): a real labelled case.
+function UniswapExample() {
+  const e = uniswapExample;
+  return <details className="coverage"><summary>Labelled Uniswap contention example <span>Sepolia block {e.block_number.toLocaleString()} · {e.labeled_edges} labelled BAL edges</span></summary>
+    <p className="footnote">Txs {e.locations[0].transactions.join(", ")} swap the same factory-verified v3 pool, so a builder must order them. BAL writes only (the block is outside the node&apos;s state window); commitment {e.commitment_verified ? "verified" : "unverified"}. Re-derived by <code>TestLiveBALContention</code>.</p>
+    <div className="table-scroll"><table><thead><tr><th>Location</th><th>Label</th><th>Writer txs</th><th>Edges</th></tr></thead><tbody>
+      {e.locations.map(h => <tr key={h.address + h.key}>
+        <td><code title={h.address}>{short(h.address)}</code><br /><code title={h.key}>{h.field} · {short(h.key)}</code></td>
+        <td><Badge tone="blue">{h.label.protocol.replace("_", " ")} · {h.label.name.replaceAll("_", " ")}</Badge> <Badge tone={h.label.verified ? "green" : "amber"}>{h.label.verified ? "verified" : "unverified"}</Badge><br /><code title={h.label.pool}>{short(h.label.pool)}</code></td>
+        <td>{h.transactions.map(i => `#${i}`).join(" → ")}</td><td>{h.edges} {h.pairs[0]?.[2]}</td>
+      </tr>)}
+    </tbody></table></div>
+  </details>;
 }
 
 const palette = { validator: "#008aa3", builder: "#c26d22", reference: "#b5bec5" };
@@ -256,15 +279,16 @@ function RecentBlocks({ briefs, target, stats, onSelect }: { briefs: Brief[]; ta
     <div className="xray-chips">{briefs.map(b =>
       <button key={b.block_hash} aria-pressed={b.block_hash === target} onClick={() => onSelect(b.block_hash)} title={`${b.block_hash} · ${b.transaction_count} txs · ${b.source}`}>
         <strong>#{b.block_number}</strong>
-        <small>gas {formatX(b.gas_weighted)}</small>
+        <small>rcpt {formatX(b.gas_weighted)}</small>
+        <small>exec {formatX(b.execution_gas_weighted)}</small>
         <small>BAL {formatX(b.validator_bal_time)}</small>
         <small>DAG {formatX(b.builder_dag_time)}</small>
       </button>)}</div>
     {stats && stats.blocks > 0 && <div className="stats xray-summary">
-      <Stat label="Median gas-weighted ceiling" value={formatX(stats.ceilings.gas_weighted?.median)} detail={`${stats.blocks} blocks · ${stats.from_block}–${stats.to_block}`} />
+      <Stat label="Median execution-gas ceiling" value={formatX(stats.ceilings.execution_gas_weighted?.median)} detail={`Receipt gas (incl. state gas) ${formatX(stats.ceilings.gas_weighted?.median)} · ${stats.blocks} blocks · ${stats.from_block}–${stats.to_block}`} />
       <Stat label="Median validator-with-BAL ceiling" value={formatX(stats.ceilings.validator_bal_time?.median)} detail={`P10 ${formatX(stats.ceilings.validator_bal_time?.p10)} · P90 ${formatX(stats.ceilings.validator_bal_time?.p90)} · 8 cores ${formatX(stats.speedup_8.validator_median)}`} />
       <Stat label="Median builder / no-BAL ceiling" value={formatX(stats.ceilings.builder_dag_time?.median)} detail={`Single-tx bound in ${percent(stats.single_tx_bound_share)} of blocks · 8 cores ${formatX(stats.speedup_8.builder_median)}`} />
-      <Stat label="Gas picks the wrong bottleneck" value={percent(stats.gas_misidentifies_bottleneck_share)} detail={`Gas capping tx ≠ measured-time capping tx · BAL verified in ${percent(stats.commitment_verified_share)}`} />
+      <Stat label="Execution gas picks a different bottleneck" value={percent(stats.execution_gas_misidentifies_bottleneck_share)} detail={`Time-capping tx uses less execution gas than the gas-capping tx (ties excluded) · receipt gas: ${percent(stats.gas_misidentifies_bottleneck_share)} · BAL verified in ${percent(stats.commitment_verified_share)}`} />
     </div>}
   </Panel>;
 }

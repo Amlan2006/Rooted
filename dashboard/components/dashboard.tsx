@@ -85,7 +85,7 @@ const navigation = [
   { id: "privacy", name: "Private RPC", icon: ShieldCheck },
 ] as const;
 const titles: Record<View, [string, string]> = {
-  xray: ["Glamsterdam X-ray", "Three parallelism ceilings per Sepolia block: gas-weighted, validator with BAL, builder without."],
+  xray: ["Glamsterdam X-ray", "Parallelism ceilings per Sepolia block: receipt gas, execution gas, validator with BAL, builder without."],
   profiler: ["Execution profiler", "Measure native replay processing with explicit timing boundaries."],
   providers: ["RPC provider checks", "Compare immutable evidence and API availability across providers."],
   compare: ["Workload comparison", "Compare shared-state patterns across controlled experiments."],
@@ -383,7 +383,7 @@ export default function Dashboard() {
             Traffic & privacy
             <ArrowRight size={14} />
           </a>
-          <span className="version">ROOTED / PHASE 06</span>
+          <span className="version">ROOTED / GLAMSTERDAM X-RAY</span>
         </div>
       </aside>
       <div className="workspace">

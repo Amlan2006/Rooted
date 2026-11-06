@@ -59,7 +59,7 @@ export default function FrameConformance({ scope }: { scope: string }) {
             </td>; })}
             <td><Badge tone={tone(c.observed)}>{c.observed}</Badge>{c.observed_rule && <span className="subtext">rule: {c.observed_rule}</span>}{c.admission?.failed_checks[0]?.detail && <span className="subtext" title={c.admission.failed_checks.map(f => `${f.rule}: ${f.detail}`).join("\n")}>{c.admission.failed_checks[0].detail}</span>}</td>
             <td>{divergent(c) ? <Badge tone="amber">divergence</Badge> : <Badge tone="green">consistent</Badge>}</td>
-            <td>{c.tx_hash ? <><a className="text-button" href={explorerTx(c.tx_hash)} target="_blank" rel="noreferrer">Explorer</a><br /></> : null}
+            <td>{c.tx_hash && (c.rpc?.acknowledged || c.admission) ? <><a className="text-button" href={explorerTx(c.tx_hash)} target="_blank" rel="noreferrer">Explorer</a><br /></> : null}
               {c.archive_status && <><Badge tone="blue">archive: {c.archive_status.replaceAll("_", " ")}</Badge><br /></>}
               <Evidence value={c} label="Case record" /></td>
           </tr>)}
