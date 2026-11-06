@@ -132,8 +132,8 @@ export default function RpcInspector() {
           title="RPC investigation"
           subtitle="Destination: Sepolia · chain 11155111"
           action={
-            <Badge tone={state.status === "ready" ? "green" : "amber"}>
-              {state.status}
+            <Badge tone={state.status === "ready" ? "green" : state.status === "idle" ? "neutral" : "amber"}>
+              {state.status.charAt(0).toUpperCase() + state.status.slice(1)}
             </Badge>
           }
         >

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useReducer, useRef, useState } from "react";
-import { Brain, ExternalLink, LoaderCircle, Send, X } from "lucide-react";
+import { ExternalLink, LoaderCircle, Send, X } from "lucide-react";
 import { age, ms } from "@/lib/data";
 import type { AnalystEvent, Brief, Evidence } from "@/lib/analyst/types";
 import { citations, evidenceList, firstLines, httpFailure, idle, parseSSE, reduce, safeLink, type Step } from "@/lib/analyst/ui-state";
@@ -87,12 +87,12 @@ export default function Analyst() {
         {state.steps.length > 0 && <ol className="analyst-trace" aria-label="Tool calls">
           {state.steps.map(step => <TraceRow key={step.id} step={step} running={running} onOpen={open} />)}
         </ol>}
-        {state.thinking && <p className="analyst-thinking"><Brain size={13} aria-hidden /><span>{state.thinking.trim().split(/\n+/).at(-1)}</span></p>}
+        {state.thinking && <p className="analyst-thinking"><LoaderCircle size={13} className="analyst-spin" aria-hidden /><span>{state.thinking.trim().split(/\n+/).at(-1)}</span></p>}
         {(running || state.answer) && <section className="analyst-answer" aria-label="Answer" aria-live="polite" aria-busy={running}>
           {state.answer ? <Cited text={state.answer} evidence={state.evidence} onOpen={open} /> : <span className="muted">Investigating<span className="dots">…</span></span>}
         </section>}
         {state.error && <div className={"notice " + (tone === "amber" ? "warning" : tone === "red" ? "error" : "")} role="alert">
-          <Badge tone={tone}>{state.error.code.replace("_", " ")}</Badge>
+          <Badge tone={tone}>{(c => c.charAt(0).toUpperCase() + c.slice(1))(state.error.code.replace("_", " "))}</Badge>
           <span>{state.error.message || hint}</span>
         </div>}
         {(u || evidence.length > 0) && <div className="panel-footer analyst-usage">

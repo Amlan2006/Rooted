@@ -193,7 +193,7 @@ export default function DeployPolicy() {
             One immutable contract on Sepolia. Signing stays inside your wallet.
           </p>
         </div>
-        <Badge tone="blue">Sepolia · 11155111</Badge>
+        <Badge tone="blue">Sepolia · <span className="mono">11155111</span></Badge>
       </div>
       <Panel
         title="Deployment review"

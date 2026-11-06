@@ -27,6 +27,7 @@
   background: var(--bg);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 * {
   box-sizing: border-box;
@@ -179,6 +180,12 @@ small {
 .small {
   font-size: 12px;
 }
+svg.lucide {
+  stroke-width: 1.5;
+}
+html:has(.menu-open) {
+  overflow: hidden;
+}
 .skip-link {
   position: absolute;
   left: 8px;
@@ -292,9 +299,10 @@ small {
   border-radius: 6px;
   text-align: left;
 }
-.nav-item svg {
-  width: 15px;
-  height: 15px;
+.nav-item svg,
+.sidebar-network svg {
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   fill: none;
   stroke: currentColor;
@@ -339,7 +347,6 @@ small {
   color: var(--fg-3);
   margin-top: 2px;
 }
-.sidebar-network i,
 .live-status i,
 .freshness i {
   width: 6px;
@@ -348,8 +355,9 @@ small {
   background: var(--acc);
   border-radius: 50%;
 }
-.sidebar-network i {
-  background: var(--fg-3);
+.sidebar-network svg {
+  color: var(--fg-3);
+  opacity: 1;
 }
 .sidebar-bottom a {
   display: flex;
@@ -417,7 +425,7 @@ small {
   font-style: normal;
 }
 .breadcrumb span {
-  color: var(--fg-4);
+  color: var(--fg-3);
 }
 .breadcrumb strong {
   font-weight: 400;
@@ -788,6 +796,11 @@ main {
 .overview-grid .panel {
   min-height: 252px;
   margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.overview-grid .panel > .coverage {
+  margin-top: auto;
 }
 .two-columns {
   display: grid;
@@ -1143,7 +1156,12 @@ tbody tr.conformance-divergent:hover td {
   gap: 7px;
   color: var(--fg-2);
 }
-.page-footer > span:first-child > span {
+.page-footer .brand-mark,
+.page-footer .brand-mark svg {
+  width: 14px;
+  height: 14px;
+}
+.page-footer > span:first-child > span:last-child {
   border-left: 1px solid var(--line-strong);
   margin-left: 5px;
   padding-left: 12px;
@@ -1191,8 +1209,38 @@ tbody tr.conformance-divergent:hover td {
   align-items: center;
   font-variant-numeric: tabular-nums;
 }
+.timeline details {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--fg-3);
+}
+.timeline summary {
+  width: fit-content;
+  cursor: pointer;
+}
+.timeline summary:hover {
+  color: var(--fg);
+}
+.timeline ol {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 2px 20px;
+  max-height: 220px;
+  overflow: auto;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.timeline li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
 .timeline > div > .mono {
   margin-left: auto;
+  white-space: nowrap;
   font-size: 12px;
   color: var(--fg-3);
 }
@@ -2054,6 +2102,12 @@ meter::-moz-meter-bar {
 .xray-hero {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+.xray-summary .stat > small,
+.xray-hero .stat > small {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 11.5px;
+}
 .xray-hero .stat > span {
   display: flex;
   flex-wrap: wrap;
@@ -2614,9 +2668,16 @@ span.analyst-cite {
     row-gap: 4px;
   }
   .breadcrumb > span,
-  .breadcrumb > em,
-  .live-label {
+  .breadcrumb > em {
     display: none;
+  }
+  .live-status .live-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
   .topbar-right {
     gap: 10px;
@@ -2652,7 +2713,7 @@ span.analyst-cite {
   .coverage-banner > .badge {
     margin-left: 30px;
   }
-  .stats {
+  .stats:not(.xray-summary) {
     gap: 8px;
   }
   .stat {

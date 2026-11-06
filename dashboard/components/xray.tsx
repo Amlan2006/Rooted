@@ -144,9 +144,9 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
   return <>
     <div className="analysis-identity">
       <div>
-        <Badge tone={stored ? "amber" : "blue"}>{stored ? "Stored" : r.source}</Badge>{" "}
+        <Badge tone={stored ? "amber" : "blue"}>{stored ? "Stored" : r.source.charAt(0).toUpperCase() + r.source.slice(1)}</Badge>{" "}
         <Badge tone={r.bal.commitment_verified ? "green" : "amber"}>{r.bal.commitment_verified ? "BAL commitment verified" : "BAL commitment unverified"}</Badge>
-        <h2>Sepolia block {r.block.number.toLocaleString()}</h2>
+        <h2>Sepolia block <span className="mono">{r.block.number.toLocaleString("en-US")}</span></h2>
         <code title={r.block.hash}>{r.block.hash}</code>
       </div>
       <div className="identity-note">
@@ -283,7 +283,7 @@ function RecentBlocks({ briefs, target, stats, onSelect }: { briefs: Brief[]; ta
   return <Panel title="Recent X-rays" subtitle="Latest 30 stored blocks, newest first · select one to inspect">
     <div className="xray-chips">{briefs.map(b =>
       <button key={b.block_hash} aria-pressed={b.block_hash === target} onClick={() => onSelect(b.block_hash)} title={`${b.block_hash} · ${b.transaction_count} txs · ${b.source}`}>
-        <strong>#{b.block_number}</strong>
+        <strong>#{b.block_number.toLocaleString("en-US")}</strong>
         <small>rcpt {formatX(b.gas_weighted)}</small>
         <small>exec {formatX(b.execution_gas_weighted)}</small>
         <small>BAL {formatX(b.validator_bal_time)}</small>

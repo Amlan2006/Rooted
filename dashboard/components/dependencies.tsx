@@ -54,7 +54,7 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
               ? "Local fork · trace demo"
               : "Live · native BAL"}
           </Badge>
-          <h2>Block {parseInt(run.block.number, 16).toLocaleString()}</h2>
+          <h2>Block <span className="mono">{parseInt(run.block.number, 16).toLocaleString("en-US")}</span></h2>
           <code title={run.block.hash}>{run.block.hash}</code>
         </div>
         <div className="identity-note">

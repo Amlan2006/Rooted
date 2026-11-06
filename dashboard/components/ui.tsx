@@ -21,7 +21,7 @@ export function Panel({
   id,
 }: {
   id?: string;
-  title: string;
+  title: React.ReactNode;
   subtitle?: string;
   action?: React.ReactNode;
   children: React.ReactNode;
@@ -94,9 +94,13 @@ function EvidenceDialog({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    const dialog = ref.current;
+    const dialog = ref.current,
+      opener = document.activeElement as HTMLElement | null;
     dialog?.showModal();
-    return () => dialog?.close();
+    return () => {
+      dialog?.close();
+      opener?.focus();
+    };
   }, []);
   return (
     <dialog

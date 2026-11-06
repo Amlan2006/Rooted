@@ -83,20 +83,20 @@ const navigation = [
   { id: "privacy", name: "Private RPC", group: "Network" },
 ] as const;
 const groups = ["Monitor", "Investigate", "Network"] as const;
-// 16px line glyphs, stroked by .nav-item svg
+// 16px line glyphs on the site's half-pixel grid (site/components/app-window/icons.tsx), stroked by .nav-item svg
 const glyphs: Record<View, React.ReactNode> = {
-  xray: <><rect x="2" y="2" width="12" height="12" rx="2" /><path d="M5 11V8M8 11V5M11 11V7" /></>,
+  xray: <><rect x="2.25" y="2.25" width="11.5" height="11.5" rx="2.25" /><path d="M5.25 11V9M8 11V5M10.75 11V7.5" /></>,
   overview: <><rect x="2" y="2" width="5" height="5" rx="1" /><rect x="9" y="2" width="5" height="5" rx="1" /><rect x="2" y="9" width="5" height="5" rx="1" /><rect x="9" y="9" width="5" height="5" rx="1" /></>,
-  payloadwatch: <path d="M1 8h3l2-5 4 10 2-5h3" />,
-  builders: <path d="M8 2l6 3-6 3-6-3zM2 8l6 3 6-3M2 11l6 3 6-3" />,
-  frames: <><rect x="2" y="3" width="12" height="4" rx="1" /><rect x="2" y="9" width="12" height="4" rx="1" /></>,
+  payloadwatch: <path d="M1.75 8.25h2.5l1.5-4.5 3 8.5 1.75-5.5.9 1.5h2.85" />,
+  builders: <path d="M8 1.75 13.5 4.9v6.2L8 14.25 2.5 11.1V4.9L8 1.75ZM2.75 5 8 8l5.25-3M8 8v6" />,
+  frames: <><rect x="2.25" y="2.75" width="11.5" height="4" rx="1.25" /><rect x="2.25" y="9.25" width="11.5" height="4" rx="1.25" /></>,
   incidents: <path d="M4 11V7a4 4 0 0 1 8 0v4l1.5 1.5h-11zM6.5 14h3" />,
-  analyst: <path d="M2.5 3h11v7.5h-6l-3 2.5v-2.5h-2zM5 6h6M5 8h4" />,
+  analyst: <path d="M3.75 2.25h8.5a1.5 1.5 0 0 1 1.5 1.5v6.5a1.5 1.5 0 0 1-1.5 1.5H8l-3 2.5v-2.5H3.75a1.5 1.5 0 0 1-1.5-1.5v-6.5a1.5 1.5 0 0 1 1.5-1.5ZM5.25 5.75h5.5M5.25 8.25h3.5" />,
   investigate: <><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5L14 14" /></>,
-  bal: <path d="M3 4h10M3 8h10M3 12h6" />,
+  bal: <><path d="M6.25 4.25h7.5M6.25 8h7.5M6.25 11.75h4.5" /><path d="M2.5 4.25h.5M2.5 8h.5M2.5 11.75h.5" strokeWidth="2" /></>,
   compare: <path d="M2 5h12M11 2l3 3-3 3M14 11H2M5 8l-3 3 3 3" />,
-  profiler: <><circle cx="8" cy="8" r="6" /><path d="M8 4v4l3 2" /></>,
-  providers: <path d="M2 5h5M9 5h5M2 11h5M9 11h5" />,
+  profiler: <><circle cx="8" cy="9" r="5.25" /><path d="M8 6.5V9l1.75 1.25M6.5 1.75h3" /></>,
+  providers: <path d="M5 2.25v11.5M11 2.25v11.5M2.75 5.5H5M2.75 10.5H5M11 8h2.25" />,
   privacy: <path d="M8 1.75l5 1.75v4c0 3.2-2.2 5.6-5 6.75-2.8-1.15-5-3.55-5-6.75v-4z" />,
 };
 const titles: Record<View, [string, string]> = {
@@ -125,6 +125,11 @@ const tone = (status: string) =>
       : ["warning", "late", "reorged"].includes(status)
         ? "amber"
         : "neutral";
+const scrollBehavior = (): ScrollBehavior =>
+  matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+const slotNumber = (n?: string) => (n ? Number(n).toLocaleString("en-US") : "Unknown");
+const timeOf = (t: string) =>
+  new Date(t).toLocaleTimeString("en-US", { hourCycle: "h23", hour: "2-digit", minute: "2-digit", second: "2-digit", fractionalSecondDigits: 3 });
 const percent = (n: number | null) =>
   n == null ? "Unknown" : (n * 100).toFixed(1) + "%";
 export default function Dashboard() {
@@ -167,13 +172,13 @@ export default function Dashboard() {
     if (picked)
       document
         .getElementById("slot-detail")
-        ?.scrollIntoView({ block: "start", behavior: "smooth" });
+        ?.scrollIntoView({ block: "start", behavior: scrollBehavior() });
   }, [picked?.slot, picked?.block_root]);
   useEffect(() => {
     if (pickedFrame)
       document
         .getElementById("frame-detail")
-        ?.scrollIntoView({ block: "start", behavior: "smooth" });
+        ?.scrollIntoView({ block: "start", behavior: scrollBehavior() });
   }, [pickedFrame?.tx_hash]);
   const navigate = (next: View) => {
     setView(next);
@@ -321,7 +326,7 @@ export default function Dashboard() {
                           }
                         }}
                       >
-                        {s.slot}
+                        {slotNumber(s.slot)}
                       </button>
                       <code className="subtext" title={s.block_root}>
                         {short(s.block_root)}
@@ -370,8 +375,12 @@ export default function Dashboard() {
   }
   return (
     <div className={"app-shell" + (menuOpen ? " menu-open" : "")}>
-      <a className="skip-link" href="#main">Skip to content</a>
-      <aside className="sidebar" id="sidebar">
+      <a className="skip-link" href="#main" hidden={menuOpen}>Skip to content</a>
+      <aside
+        className="sidebar"
+        id="sidebar"
+        {...(menuOpen && { role: "dialog", "aria-modal": true, "aria-label": "Navigation" })}
+      >
         <div className="sidebar-head">
           <a className="brand" aria-label={"Rooted home · " + (liveSource || "Sepolia")} href="/">
             <span className="brand-mark">
@@ -393,7 +402,6 @@ export default function Dashboard() {
               {navigation.filter((item) => item.group === group).map((item) => (
                 <button
                   key={item.id}
-                  aria-label={item.name}
                   aria-current={view === item.id ? "page" : undefined}
                   className={view === item.id ? "nav-item active" : "nav-item"}
                   onClick={() => navigate(item.id)}
@@ -410,7 +418,11 @@ export default function Dashboard() {
         </nav>
         <div className="sidebar-bottom">
           <div className="sidebar-network">
-            <i />
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="2.25" y="2.75" width="11.5" height="4.5" rx="1.25" />
+              <rect x="2.25" y="8.75" width="11.5" height="4.5" rx="1.25" />
+              <path d="M5 5h.01M5 11h.01" strokeWidth="2" />
+            </svg>
             <span>
               Sepolia testnet<small>Execution + consensus</small>
             </span>
@@ -461,7 +473,7 @@ export default function Dashboard() {
                 title="Node offline · showing stored data"
               >
                 <i />
-                <span className="live-label">Node offline · showing stored data</span>
+                <span>Node offline<span className="live-label"> · showing stored data</span></span>
               </span>
             )}
             <span
@@ -473,7 +485,10 @@ export default function Dashboard() {
               <i />
               {stream === "connected" && latest?.last_slot ? (
                 <>
-                  <span className="live-label">head slot</span>
+                  <span>
+                    {sourceStale && "Stale · "}
+                    <span className="live-label">head slot</span>
+                  </span>
                   <span className="mono">{Number(latest.last_slot).toLocaleString("en-US")}</span>
                 </>
               ) : (
@@ -595,7 +610,7 @@ export default function Dashboard() {
               <div className="stats">
                 <Stat
                   label="Latest collected slot"
-                  value={data[0]?.slot || latest?.last_slot || "Unknown"}
+                  value={slotNumber(data[0]?.slot || latest?.last_slot)}
                   detail={"Collector success: " + age(latest?.last_success)}
                 />
                 <Stat
@@ -790,7 +805,7 @@ export default function Dashboard() {
               {selected && (
                 <Panel
                   id="slot-detail"
-                  title={"Slot " + selected.slot}
+                  title={<>Slot <span className="mono">{slotNumber(selected.slot)}</span></>}
                   subtitle={selected.block_root}
                   action={
                     <button
@@ -820,27 +835,55 @@ export default function Dashboard() {
                   <div className="timeline">
                     {timeline.data?.data
                       .filter((e) => e.event.block_root === selected.block_root)
-                      .map((entry) => (
-                        <div key={entry.sequence}>
-                          <i />
-                          <div>
-                            <strong>
-                              {entry.event.kind.replaceAll("_", " ")}
-                            </strong>
-                            <p>
-                              {new Date(
-                                entry.event.observed_at,
-                              ).toLocaleString()}{" "}
-                              <Badge>
-                                {entry.event.timed
-                                  ? "Comparable timing"
-                                  : "Snapshot / untimed"}
-                              </Badge>
-                            </p>
+                      // one row per run of consecutive same-kind events (PTC sends dozens)
+                      .reduce<NonNullable<typeof timeline.data>["data"][]>((runs, e) => {
+                        const last = runs.at(-1)?.[0].event;
+                        if (last?.kind === e.event.kind && last.timed === e.event.timed) runs.at(-1)!.push(e);
+                        else runs.push([e]);
+                        return runs;
+                      }, [])
+                      .map((run) => {
+                        const [first, end] = [run[0], run[run.length - 1]];
+                        return (
+                          <div key={first.sequence}>
+                            <i />
+                            <div>
+                              <strong>
+                                {first.event.kind.replaceAll("_", " ")}
+                                {run.length > 1 && <span className="mono"> × {run.length}</span>}
+                              </strong>
+                              <p>
+                                <span className="mono">
+                                  {timeOf(first.event.observed_at)}
+                                  {run.length > 1 && " – " + timeOf(end.event.observed_at)}
+                                </span>{" "}
+                                <Badge>
+                                  {first.event.timed
+                                    ? "Comparable timing"
+                                    : "Snapshot / untimed"}
+                                </Badge>
+                              </p>
+                              {run.length > 1 && (
+                                <details>
+                                  <summary>Show {run.length} events</summary>
+                                  <ol>
+                                    {run.map((entry) => (
+                                      <li key={entry.sequence}>
+                                        <span>{timeOf(entry.event.observed_at)}</span>
+                                        <span>#{entry.sequence}</span>
+                                      </li>
+                                    ))}
+                                  </ol>
+                                </details>
+                              )}
+                            </div>
+                            <span className="mono">
+                              #{first.sequence}
+                              {run.length > 1 && "–" + end.sequence}
+                            </span>
                           </div>
-                          <span className="mono">#{entry.sequence}</span>
-                        </div>
-                      ))}
+                        );
+                      })}
                   </div>
                   <Coverage items={selected.coverage} />
                   <div className="panel-footer">
@@ -1203,7 +1246,12 @@ export default function Dashboard() {
           {view === "privacy" && <RpcInspector />}
           <footer className="page-footer">
             <span>
-              <Waves size={14} />
+              <span className="brand-mark">
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <rect x="1" y="1" width="18" height="18" rx="5.25" />
+                  <path d="M10 5.25v4.5m0 0-3.25 4M10 9.75l3.25 4M10 9.75v5" />
+                </svg>
+              </span>
               Rooted<span>Ethereum, with evidence.</span>
             </span>
             <span>Sepolia / frame-devnet / explicitly labeled fork data</span>
