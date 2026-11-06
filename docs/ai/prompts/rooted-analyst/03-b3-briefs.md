@@ -1,0 +1,23 @@
+# B3-briefs (Build phase)
+
+Task prompt given to one Claude Code agent by the `rooted-analyst` workflow script on 2026-11-06T13:24:50.729Z (UTC), verbatim.
+
+---
+
+You are working in the git worktree /home/ubuntu/Rooted-picks (branch "analyst") of Rooted: a Go + Postgres + Next.js observability stack for Ethereum Sepolia Glamsterdam (ePBS, EIP-7928 BALs, frame-tx alt mempool, native replay "X-ray", x402 payments on Hedera). Read the contract first: /home/ubuntu/Rooted-picks/docs/superpowers/specs/2026-11-06-rooted-analyst-design.md. It is authoritative; if you must deviate, say so in contract_deviations.
+
+Environment facts:
+- Go is at ~/sdk/go/bin/go (not on PATH): export PATH=$PATH:$HOME/sdk/go/bin:$HOME/.foundry/bin. Node 24, psql, headless chromium in ~/.cache/ms-playwright.
+- Postgres for Rooted is 127.0.0.1:54330 (user rooted / pw rooted-local-only). NEVER use port 54329 (another project's DB). Create your own databases on 54330 when you need one.
+- The Sepolia node is reachable through SSH tunnels: Geth http://127.0.0.1:18545, Nimbus http://127.0.0.1:15052 (state window ~128 blocks).
+- ANTHROPIC_API_KEY is in the gitignored files /home/ubuntu/Rooted-picks/.env and dashboard/.env.local. Never print, log, echo or commit it or any other key (also never commit integrations/x402-agent/.env). Load with: set -a; . ./.env; set +a.
+- Do NOT touch /home/ubuntu/Rooted (main checkout) or /home/ubuntu/Rooted-site. Do not push anything.
+- Claude API reference (official, current): read /tmp/claude-1000/bundled-skills/2.1.310/07ea3d3533816d5037b2a5e731934787/claude-api/typescript/claude-api/README.md, /tmp/claude-1000/bundled-skills/2.1.310/07ea3d3533816d5037b2a5e731934787/claude-api/typescript/claude-api/tool-use.md, /tmp/claude-1000/bundled-skills/2.1.310/07ea3d3533816d5037b2a5e731934787/claude-api/typescript/claude-api/streaming.md and /tmp/claude-1000/bundled-skills/2.1.310/07ea3d3533816d5037b2a5e731934787/claude-api/shared/tool-use-concepts.md before writing any Anthropic SDK code. Model claude-opus-5-5, adaptive thinking display summarized, explicit output_config.effort, no budget_tokens, no forced tool_choice, server-side fallbacks ("server-side-fallback-2026-07-01" beta + fallbacks: "default"), check stop_reason (refusal -> stop_details), append full response.content each turn, all parallel tool_results in one user message. Never guess SDK names: if a binding is not in those docs, check node_modules/@anthropic-ai/sdk typings.
+- Match the surrounding code style and comment density. Smallest complete change; no speculative abstraction. New non-trivial logic gets a focused test.
+- Commit style (only agents told to commit may commit): one-line conventional message like "feat: analyst agent core", no body, no Co-Authored-By or any trailer. Commits are SSH-signed automatically by git config.
+
+You are B3 (auto-briefs + backend). Do NOT git commit (other agents work in the same worktree concurrently; the integrator commits). Only edit files you own per the build plan table; if you need a change in a file someone else owns, list it under open_issues.
+Own: dashboard/lib/analyst/rules.ts + dashboard/tests/analyst-rules.test.ts, dashboard/scripts/briefs.ts (+ "briefs" script in dashboard/package.json: coordinate by editing only the scripts entry; B1 edits dependencies), dashboard/app/api/analyst/briefs/route.ts, the proxy allowlist in dashboard/lib/proxy.ts (add api/v1/analyst/briefs), migrations/009_analyst_briefs.sql, internal/analyst/{store.go,store_test.go}, internal/api/analyst.go (+ internal/api/analyst_test.go) and the route registration lines in internal/api/server.go, docs/API.md entries, and internal/storage/postgres_test.go migration count 7 -> 8.
+Follow the existing Go patterns exactly (look at internal/xray/store.go, internal/api/xray.go and their tests, migrations/008_xray.sql, how the Store is constructed in cmd/rooted/main.go and passed to the API server). POST validates network, 0x+64-hex hash, triggers from the fixed vocabulary, brief non-empty <= 8000 chars, body <= 64 KB (413), upsert on (network, block_hash). GET newest first with limit 1..100.
+scripts/briefs.ts imports runAnalyst and types from dashboard/lib/analyst (B1 writes them per the contract; write against the contract signature) and implements the loop, per-hour cap, shared budget ledger, skip already-briefed hashes, optional HCS append (reuse the HCS approach in integrations/x402-agent if its env is present; otherwise skip cleanly).
+Verify: go vet ./... && go test ./... and TEST_DATABASE_URL against a fresh database you create on 54330 (e.g. rooted_b3test) for internal/storage internal/analyst internal/api; cd dashboard && npx tsc --noEmit -p . && npm test (your rules tests).

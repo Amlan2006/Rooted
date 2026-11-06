@@ -25,7 +25,7 @@ Partner prizes judged at booths / from submission. Teams appear to pick up to 3 
 - Tokenize RWF $4,000.
 - Scale: Payments Nobody Notices $3,000 (2k/1k): payer has no gas/seed/chain awareness: permit or EIP-3009 + own relayer, embedded wallets, or x402 with own facilitator; explain gas funding + drain protection.
 
-## Arc (Circle) — $15,000, five tracks x $3,000. Arc Studio must be starting point + shareable Studio URL; frontend+backend; architecture diagram; video.
+## Arc (Circle) — $15,000, five tracks x $3,000. Build in Arc Studio + shareable Studio URL; frontend+backend; architecture diagram; video.
 - DeFi/Onchain Finance (USDC/EURC); Mobile Web Consumer Agent using Marketplace Discovery API + Nanopayments in USDC on Arc (spend limits, approvals, history); Advanced Stablecoin Smart Contracts; Bridge Kit non-USDC.
 
 ## Arkiv — $15,000 (testnet chain 7794095; one track prize per team + Swarm bonus; does not use one of your 3 picks)

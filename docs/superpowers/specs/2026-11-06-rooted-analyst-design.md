@@ -209,4 +209,3 @@ Use the dashboard's existing look and `ui.tsx` primitives. No new UI libraries.
 **Rules for every agent:**
 - Commits are one-line conventional messages (`feat: …`), no body, no co-author.
 - Never print or commit keys.
-- No mention of tracks or any earlier project.
