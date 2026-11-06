@@ -98,13 +98,27 @@ cd dashboard && npm run briefs      # with the backend running and a key in .env
 ```
 
 Every 12 s the loop reads the newest stored X-rays and the stored briefs. It then picks the newest block that trips
-a rule and has no brief yet. `gas_misleads` fires on most Sepolia blocks (165 of the 200 newest stored), so a block
-that trips any other rule goes first:
+a rule and has no brief yet. `gas_misleads` is the most common rule, so a block that trips any other rule goes first:
 
 - `builder_gap`: multi-version builder < 0.8 × validator with BAL, or static builder < 0.7 × validator;
-- `gas_misleads`: receipt-gas ceiling / validator ceiling > 2 or < 0.5, or gas names the wrong bottleneck;
+- `gas_misleads`: receipt-gas ceiling / validator ceiling > 4 or < 0.25;
 - `big_block`: 250 transactions or more;
 - `commitment`: the BAL commitment check failed.
+
+Trigger rates on the 428 stored X-rays of 2026-11-06 (blocks 12,019,547 to 12,077,495), measured by running
+`triggers()` over the stored briefs:
+
+| Rule | Newest 200 | All 428 |
+|---|---|---|
+| `builder_gap` | 9 (4.5%) | 19 (4.4%) |
+| `gas_misleads` | 25 (12.5%) | 82 (19.2%) |
+| `big_block` | 1 (0.5%) | 1 (0.2%) |
+| `commitment` | 0 | 0 |
+| any rule | 31 (15.5%) | 96 (22.4%) |
+
+`gas_misleads` used to fire at 2× or on "gas names the wrong bottleneck". That flag alone was true on 131 of the newest
+200 blocks, and the rule fired on 137 of 200 (68.5%) and 316 of 428 (73.8%), so the briefs feed was mostly the same
+card. The flag still reaches Claude in every `recent_blocks` row.
 
 Brief mode is read-only: 6 steps, no actions. The result is stored with `POST /api/v1/analyst/briefs`
 ([API](API.md#analyst-briefs)) and appears in the Briefs column, which refreshes every 15 s. When the x402

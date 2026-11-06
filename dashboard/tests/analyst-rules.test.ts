@@ -25,19 +25,19 @@ test("builder_gap fires below 0.8x multi-version or 0.7x static DAG of the valid
   assert.deepEqual(triggers(quiet({ builder_dag_time: 1, validator_bal_time: null })), [], "no validator ceiling, no comparison");
 });
 
-test("gas_misleads fires outside 0.5x..2x of the validator ceiling or on the strict misidentification flag", () => {
-  assert.deepEqual(triggers(quiet({ gas_weighted: 8.01 })), ["gas_misleads"]);
-  assert.deepEqual(triggers(quiet({ gas_weighted: 8 })), []);
-  assert.deepEqual(triggers(quiet({ gas_weighted: 1.99 })), ["gas_misleads"]);
-  assert.deepEqual(triggers(quiet({ gas_weighted: 2 })), []);
-  assert.deepEqual(triggers(quiet({ gas_misidentifies_bottleneck: true })), ["gas_misleads"]);
+test("gas_misleads fires only when the gas ceiling is off by more than 4x either way", () => {
+  assert.deepEqual(triggers(quiet({ gas_weighted: 16.01 })), ["gas_misleads"]);
+  assert.deepEqual(triggers(quiet({ gas_weighted: 16 })), []);
+  assert.deepEqual(triggers(quiet({ gas_weighted: 0.99 })), ["gas_misleads"]);
+  assert.deepEqual(triggers(quiet({ gas_weighted: 1 })), []);
+  assert.deepEqual(triggers(quiet({ gas_weighted: 1.5, gas_misidentifies_bottleneck: true })), [], "the misidentification flag alone fires on most blocks, so it no longer counts");
 });
 
 test("big_block and commitment, and several rules together in vocabulary order", () => {
   assert.deepEqual(triggers(quiet({ transaction_count: 249 })), []);
   assert.deepEqual(triggers(quiet({ transaction_count: 250 })), ["big_block"]);
   assert.deepEqual(triggers(quiet({ commitment_verified: false })), ["commitment"]);
-  assert.deepEqual(triggers(quiet({ commitment_verified: false, transaction_count: 300, gas_weighted: 1, builder_dag_time: 1 })), ["builder_gap", "gas_misleads", "big_block", "commitment"]);
+  assert.deepEqual(triggers(quiet({ commitment_verified: false, transaction_count: 300, gas_weighted: 0.9, builder_dag_time: 1 })), ["builder_gap", "gas_misleads", "big_block", "commitment"]);
 });
 
 test("nextBlock takes the newest unbriefed anomaly and stops at the hourly cap", () => {
@@ -49,7 +49,7 @@ test("nextBlock takes the newest unbriefed anomaly and stops at the hourly cap",
   const full = new Map([[h("a"), now - hour + 1], [h("b"), now - 10]]);
   assert.equal(nextBlock(blocks, full, now, 2), null, "two briefs within the hour use up a cap of two");
   assert.equal(nextBlock(blocks, new Map([[h("a"), now - hour], [h("b"), now - 10]]), now, 2)?.block, blocks[1], "a brief exactly an hour old no longer counts");
-  const gas = quiet({ block_hash: h("4"), block_number: 6, gas_misidentifies_bottleneck: true });
+  const gas = quiet({ block_hash: h("4"), block_number: 6, gas_weighted: 0.5 });
   assert.equal(nextBlock([gas, ...blocks], new Map(), now, 6)?.block, blocks[1], "a rarer rule beats a newer gas_misleads block");
   assert.equal(nextBlock([gas, blocks[0]], new Map(), now, 6)?.block, gas, "gas_misleads alone still gets a brief");
 });
