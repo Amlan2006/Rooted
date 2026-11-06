@@ -2,10 +2,11 @@
 
 The analyst is a Claude agent inside Rooted (`?view=analyst`). Ask it a question about Sepolia and it investigates
 with Rooted's own tools: stored X-rays, PayloadWatch's ePBS slots, builder stats, frame-mempool evidence and
-read-only calls to the node. It does not answer protocol data questions from memory. Every figure in the answer
-cites the tool result it came from as `[E3]`, and each piece of evidence carries a sha256 of the raw result bytes.
-It can also run a few actions (replay a block, compare providers, buy a report over x402) within hard caps. Next to
-it, `npm run briefs` writes short briefs for anomalous blocks on its own.
+read-only calls to the node. It does not answer protocol data questions from memory. The system prompt requires
+every figure in the answer to cite the tool result it came from as `[E3]`; nothing enforces that, so check the chips.
+Each piece of evidence carries a sha256 of the raw result bytes. It can also run a few actions (replay a block,
+compare providers, buy a report over x402) within hard caps. Next to it, `npm run briefs` writes short briefs on its
+own for blocks that trip its rules.
 
 The analyst runs `claude-opus-5-5` through the official `@anthropic-ai/sdk`. It uses adaptive thinking with
 summarized display, `output_config.effort` (default `medium`) and server-side fallbacks
@@ -43,6 +44,8 @@ the session id.
 `node_read` takes block numbers as decimal digits and converts them itself: in a live run Claude converted
 12,076,467 to the wrong hex number and read a different block. `recent_blocks` is returned as columns plus rows,
 so all 50 blocks fit. As keyed objects only 15 survived the trim, and Claude missed the block it was asked about.
+Each row also carries the gas misidentification flag and a precomputed gas / validator ratio, because Claude ranked
+blocks wrongly when it did that arithmetic itself.
 
 ## Guardrails
 
@@ -54,8 +57,9 @@ so all 50 blocks fit. As keyed objects only 15 survived the trim, and Claude mis
   `agent.mjs` runs unchanged, so its per-request cap, daily budget, trusted `payTo` and one-purchase lock still
   decide.
 - **Budget:** each model call is charged to `.tools/analyst/usage.jsonl` at Opus 5.5 list prices (input $4,
-  output $20, cache read $0.20, cache write $5 per million tokens). The daily cap `ROOTED_ANALYST_DAILY_USD`
-  (default 20) is checked before every call. The ledger survives restarts and is shared with `npm run briefs`.
+  output $20, cache read $0.20, cache write $5 per million tokens). An aborted call is charged for the usage the
+  stream reported before the abort. The daily cap `ROOTED_ANALYST_DAILY_USD` (default 20) is checked before
+  every call. The ledger survives restarts and is shared with `npm run briefs`.
 - **One at a time:** one investigation per server process. A second request gets 429.
 - **Requests:** same-origin `application/json` only, at most 8 KiB, and the question is 1–2000 characters.
 - **Refusals:** `stop_reason` is checked every turn. A refusal reaches the view as `error/refusal` with the
@@ -93,7 +97,8 @@ cd dashboard && npm run briefs      # with the backend running and a key in .env
 ```
 
 Every 12 s the loop reads the newest stored X-rays and the stored briefs. It then picks the newest block that trips
-a rule and has no brief yet:
+a rule and has no brief yet. `gas_misleads` fires on most Sepolia blocks (165 of the 200 newest stored), so a block
+that trips any other rule goes first:
 
 - `builder_gap`: multi-version builder < 0.8 × validator with BAL, or static builder < 0.7 × validator;
 - `gas_misleads`: receipt-gas ceiling / validator ceiling > 2 or < 0.5, or gas names the wrong bottleneck;
@@ -115,7 +120,7 @@ effort `medium`. Total Claude spend for everything below, retries and the screen
 | Why does the builder lose parallelism in block 12,076,467? | 2 | 15 s | $0.075 | A chain of 12 dependent txs (64 … 125) takes 16.1 ms against 10.2 ms for the slowest single tx: static builder 13.3×, validator with BAL 21.0× |
 | Is ePBS delivering payloads on time over the last 20 slots? | 6 | 18 s | $0.101 | Mostly yes: one late payload, slot 11,519,966 (builder 2, 2,428 ms after the commitment), still delivered and valid |
 | Find Uniswap contention in recent blocks and explain it. | 4 | 16 s | $0.087 | None in blocks 12,076,555 and 12,076,971: Uniswap swaps appear, but no conflict edge is labelled Uniswap; contention comes from repeat senders |
-| Buy the full report for the newest block with a builder gap and summarise it. | 4 | 28 s | $0.080 | Bought block 12,076,555 (static builder 18.09× vs 19.28×) and summarised it |
+| Buy the full report for the newest block with a builder gap and summarise it. | 4 | 28 s | $0.080 | Bought block 12,076,555 (static builder 18.09× vs 19.28×) and summarised it. That is below the validator ceiling but outside the `builder_gap` rule; the prompt now defines a builder gap |
 
 The purchase settled on Hedera testnet: [`0.0.9185802@1793973360.446037453`](https://hashscan.io/testnet/transaction/0.0.9185802@1793973360.446037453),
 1,000,000 tinybars from agent `0.0.11338137` to `0.0.11337330`, mirror node result `SUCCESS`.

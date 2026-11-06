@@ -60,10 +60,10 @@ envelopes). One block: `rooted xray 0xBLOCKHASH`. Offline: `rooted xray --captur
 ## The analyst
 
 `?view=analyst` puts a Claude agent (`claude-opus-5-5`) on Rooted's own evidence. It reads stored X-rays, ePBS slots
-and frame data and calls the node, and every figure in its answer cites the tool result it came from. It can replay
+and frame data and calls the node, and it is told to cite the tool result behind every figure. It can replay
 a block or buy a report over x402, within caps. Asked why the builder loses parallelism in block 12,076,467, it
 found the 12-transaction chain (16.1 ms) that holds the static builder to 13.3× against 21.0× with the BAL, in 15 s
-for $0.08. `npm run briefs` writes briefs for unusual blocks with nobody asking. It is off without
+for $0.08. `npm run briefs` writes briefs for blocks that trip its rules, with nobody asking. It is off without
 `ANTHROPIC_API_KEY` and has a daily spend cap. Details: [docs/ANALYST.md](docs/ANALYST.md).
 
 ## Partner prizes
@@ -113,7 +113,7 @@ approval, under a per-request cap, a daily budget, a trusted `payTo` list and on
 - [`0.0.9185802@1793963177.452527184`](https://hashscan.io/testnet/transaction/0.0.9185802@1793963177.452527184) via `e2e.sh`
 - [`0.0.9185802@1793963925.399944560`](https://hashscan.io/testnet/transaction/0.0.9185802@1793963925.399944560) via the MCP tool `buy_xray_report`
 - Claude pays too: [`0.0.9185802@1793973360.446037453`](https://hashscan.io/testnet/transaction/0.0.9185802@1793973360.446037453),
-  bought by the [analyst](docs/ANALYST.md) when asked for the newest block with a builder gap
+  bought by the [analyst](docs/ANALYST.md) for the newest block whose static builder ceiling fell below the validator's
 
 Every paid call is logged to HCS topic [`0.0.11338138`](https://hashscan.io/testnet/topic/0.0.11338138).
 The code is in [`integrations/x402-agent`](integrations/x402-agent) (agent, spend policy, MCP server) and

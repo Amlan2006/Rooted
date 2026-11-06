@@ -6,7 +6,7 @@ Approved direction 2026-11-06: "Analyst + auto-briefs". Built on branch `analyst
 
 - **What:** a Claude agent inside Rooted that investigates questions against Rooted's own evidence and the live node.
   It does not answer from memory. Every figure in an answer cites the tool result it came from.
-- **Who:** demo judges (EF, Uniswap, Hedera, finalists), protocol researchers, and operators running Rooted.
+- **Who:** protocol researchers, demo viewers and operators running Rooted.
 - **Not a chatbot:**
   - It runs tools: reads stored X-rays, ePBS slots and frame evidence; replays blocks; compares providers.
   - It can pay for a hosted report over x402 on Hedera, within spend caps.
