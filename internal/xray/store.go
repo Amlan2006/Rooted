@@ -69,11 +69,12 @@ func (s *Store) List(ctx context.Context, limit int) ([]Brief, error) {
 	return out, rows.Err()
 }
 
-// Uniswap scans every stored report and returns the newest limit blocks with Uniswap-labelled edges.
+// Uniswap counts every stored report and returns the newest limit blocks with Uniswap-labelled edges.
 func (s *Store) Uniswap(ctx context.Context, limit int) (UniswapScan, error) {
 	out := UniswapScan{Blocks: []UniswapBlock{}}
 	const labelled = `(report->'uniswap'->>'labeled_edges')::int>0`
-	if err := s.Pool.QueryRow(ctx, `SELECT count(*),count(*) FILTER (WHERE `+labelled+`) FROM xray_reports WHERE network='sepolia'`).Scan(&out.Reports, &out.Matches); err != nil {
+	// Separate subqueries so the labelled count uses the partial index xray_reports_uniswap (migration 010).
+	if err := s.Pool.QueryRow(ctx, `SELECT (SELECT count(*) FROM xray_reports WHERE network='sepolia'),(SELECT count(*) FROM xray_reports WHERE network='sepolia' AND `+labelled+`)`).Scan(&out.Reports, &out.Matches); err != nil {
 		return out, err
 	}
 	rows, err := s.Pool.Query(ctx, `SELECT report-'transactions' FROM xray_reports WHERE network='sepolia' AND `+labelled+` ORDER BY block_number DESC,block_hash LIMIT $1`, limit)
