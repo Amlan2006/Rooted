@@ -1,26 +1,44 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { cx } from "@/lib/cx";
+import { ArrowRight, ArrowUpRight } from "./icons";
 
-type Style = { variant?: "ink" | "outline"; size?: "sm" | "md"; className?: string; children: ReactNode };
+type Style = {
+  /** primary: white with black text (one per view). ghost: 1px line-strong border, faint white fill. */
+  variant?: "primary" | "ghost";
+  size?: "sm" | "md" | "lg";
+  /** Trailing arrow: "right" nudges right on hover, "external" (↗) nudges up-right. */
+  arrow?: "right" | "external";
+  className?: string;
+  children: ReactNode;
+};
 type AsLink = Style & AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 type AsButton = Style & ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined };
 
-// The signal ring is under 3:1 on paper (WCAG 1.4.11), so focus also gets an ink cue: an underline, a full ink border.
 const variants = {
-  ink: "bg-ink text-paper hover:bg-ink/85 focus-visible:bg-ink/85 focus-visible:underline focus-visible:underline-offset-4",
-  outline: "border border-ink/15 text-ink hover:border-ink/35 hover:bg-paper-2 focus-visible:border-ink focus-visible:bg-paper-2",
+  primary: "bg-fg text-bg hover:bg-fg/90 focus-visible:bg-fg/90",
+  ghost: "border border-line-strong bg-fg/[0.025] text-fg hover:border-fg/20 hover:bg-fg/[0.06] focus-visible:bg-fg/[0.06]",
 };
-const sizes = { sm: "h-8 px-3 text-sm", md: "h-10 px-4 text-sm" };
+const sizes = { sm: "h-8 gap-1.5 px-3 text-[13px]", md: "h-9 gap-2 px-3.5 text-sm", lg: "h-11 gap-2 px-[18px] text-[15px]" };
+const arrows = {
+  right: <ArrowRight className="-mr-0.5 opacity-55 transition-transform duration-150 ease-out group-hover/btn:translate-x-0.5" />,
+  external: <ArrowUpRight className="-mr-0.5 opacity-55 transition-transform duration-150 ease-out group-hover/btn:-translate-y-px group-hover/btn:translate-x-px" />,
+};
 
-/** Renders <a> when given `href`, else <button type="button">. 150 ms colour transitions, 1px press. */
-export function Button({ variant = "ink", size = "md", className, children, ...rest }: AsLink | AsButton) {
+/** Renders <a> when given `href`, else <button type="button">. 150 ms colour transitions, slight press. */
+export function Button({ variant = "primary", size = "md", arrow, className, children, ...rest }: AsLink | AsButton) {
   const classes = cx(
-    "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-button font-medium",
-    "transition-[background-color,border-color,color,transform] duration-150 ease-out active:translate-y-px",
+    "group/btn inline-flex select-none items-center justify-center whitespace-nowrap rounded-control font-medium tracking-[-0.01em]",
+    "transition-[background-color,border-color,color,scale] duration-150 ease-out active:scale-[0.98]",
     variants[variant],
     sizes[size],
     className,
   );
-  if (rest.href !== undefined) return <a className={classes} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>;
-  return <button type="button" className={classes} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>{children}</button>;
+  const body = (
+    <>
+      {children}
+      {arrow && arrows[arrow]}
+    </>
+  );
+  if (rest.href !== undefined) return <a className={classes} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>{body}</a>;
+  return <button type="button" className={classes} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>{body}</button>;
 }

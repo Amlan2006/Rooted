@@ -8,6 +8,9 @@ export const num = (n: number) => int.format(n);
 /** 55719446 → "55.72M" */
 export const gasM = (gas: number) => `${two.format(gas / 1e6)}M`;
 
+/** Long integers inside site-authored labels: "X-ray of block 12077198" → "X-ray of block 12,077,198". Hex is left alone. */
+export const nums = (text: string) => text.replace(/\b\d{5,}\b/g, (d) => int.format(Number(d)));
+
 /** "0x1234…abcd" (0x + first 4, last 4) */
 export const shortHash = (hash: string) => (hash.length > 12 ? `${hash.slice(0, 6)}…${hash.slice(-4)}` : hash);
 

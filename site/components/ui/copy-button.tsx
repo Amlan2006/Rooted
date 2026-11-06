@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { cx } from "@/lib/cx";
 
-/** Icon button that copies `value`; the glyph swaps to a check for 1.6 s and a live region announces it. Inherits text colour. */
+/** Icon button that copies `value`; the glyph swaps to a check for 1.6 s and a live region announces it. fg-3, fg on hover. */
 export function CopyButton({ value, label = "Copy to clipboard", className }: { value: string; label?: string; className?: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   useEffect(() => {
@@ -29,8 +29,8 @@ export function CopyButton({ value, label = "Copy to clipboard", className }: { 
         onClick={copy}
         aria-label={label}
         className={cx(
-          "relative inline-grid size-8 place-items-center rounded-button text-current opacity-70 transition-[opacity,background-color] duration-150",
-          "hover:bg-current/10 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-ink active:translate-y-px",
+          "relative inline-grid size-8 shrink-0 place-items-center rounded-control text-fg-3 transition-[color,background-color,scale] duration-150 ease-out",
+          "hover:bg-fg/[0.06] hover:text-fg focus-visible:text-fg active:scale-95",
           className,
         )}
       >
@@ -50,7 +50,7 @@ export function CopyButton({ value, label = "Copy to clipboard", className }: { 
             transition={{ duration: 0.15 }}
           >
             {state === "copied" ? (
-              <path d="M3 8.5l3 3 7-7" strokeLinecap="square" />
+              <path d="M3 8.5l3 3 7-7" stroke="var(--acc)" strokeLinecap="round" strokeLinejoin="round" />
             ) : (
               <>
                 <rect x="5.25" y="5.25" width="8" height="8" rx="1.5" />

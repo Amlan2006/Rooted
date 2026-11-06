@@ -1,54 +1,80 @@
 @import "tailwindcss";
 
-/* Only the spec's tokens exist: Tailwind's default palette and fonts are removed so off-system colours cannot creep in. */
+/* Dark precision (docs/superpowers/specs/2026-11-06-site-design.md). Tailwind's palette and fonts are reset so off-system colours cannot creep in. */
 @theme {
   --color-*: initial;
-  --color-paper: #fafaf7;
-  --color-paper-2: #f3f2ee;
-  --color-ink: #0f0f0e;
-  --color-muted: #6b6b66;
-  --color-line: #e7e6e1;
-  --color-signal: #ff5a1f;
+  --color-bg: #08090a;
+  --color-surface-1: #0d0e10;
+  --color-surface-2: #121316;
+  --color-line: rgb(255 255 255 / 0.07);
+  --color-line-strong: rgb(255 255 255 / 0.11);
+  --color-fg: #f4f5f6;
+  --color-fg-2: #9ba1a9;
+  /* Small muted labels: AA on bg. */
+  --color-fg-3: #7d838c;
+  /* Large text only: the dimmed second line of two-tone headlines. */
+  --color-fg-4: #5b6068;
+  /* The only accent: verified / live / selected. Never a fill or a button. */
+  --color-acc: #4be38f;
+  --color-warn: #f5b54a;
+  --color-bad: #f87171;
 
   --font-*: initial;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Display 56/64 → 88/92 between 640 and 1280 px. */
-  --text-display: clamp(3.5rem, 1.5rem + 5vw, 5.5rem);
-  --text-display--line-height: clamp(4rem, 2.25rem + 4.375vw, 5.75rem);
-  --text-display--letter-spacing: -0.02em;
-  /* h2 40 → 56. */
-  --text-h2: clamp(2.5rem, 1.5rem + 2.5vw, 3.5rem);
-  --text-h2--line-height: 1.08;
-  --text-h2--letter-spacing: -0.015em;
-  /* h3 28 → 32: promise rows, how-it-works steps, FAQ lead-in. */
-  --text-h3: clamp(1.75rem, 1.5rem + 0.625vw, 2rem);
-  --text-h3--line-height: 1.1;
-  --text-h3--letter-spacing: -0.01em;
-  --text-lead: 1.125rem;
-  --text-lead--line-height: 1.6;
-  /* Mono labels: 12 px uppercase, 0.08em. */
-  --text-label: 0.75rem;
-  --text-label--line-height: 1rem;
-  --text-label--letter-spacing: 0.08em;
+  /* Display 44 → 88. */
+  --text-display: clamp(2.75rem, 1.2rem + 5.4vw, 5.5rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.05em;
+  --text-display--font-weight: 600;
+  /* h2 36 → 52. */
+  --text-h2: clamp(2.25rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-h2--line-height: 1.04;
+  --text-h2--letter-spacing: -0.04em;
+  --text-h2--font-weight: 600;
+  /* Section heads that are not chapters (one tone): 30 → 40 and 26 → 32. */
+  --text-h3: clamp(1.875rem, 1.45rem + 1.3vw, 2.5rem);
+  --text-h3--line-height: 1.08;
+  --text-h3--letter-spacing: -0.035em;
+  --text-h3--font-weight: 600;
+  --text-h4: clamp(1.625rem, 1.35rem + 0.8vw, 2rem);
+  --text-h4--line-height: 1.12;
+  --text-h4--letter-spacing: -0.03em;
+  --text-h4--font-weight: 600;
+  /* Lead 17 → 19. */
+  --text-lead: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.01em;
 
-  --radius-button: 6px;
-  --radius-panel: 8px;
-  /* The one shadow: the nav after scroll. */
-  --shadow-nav: 0 1px 0 var(--color-line);
+  /* Buttons and inputs 8, cards 10, windows and bento grids 14. */
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-window: 14px;
+
+  /* Raised panels get the inset top highlight; only the hero app window gets the deep shadow. */
+  --shadow-raised: inset 0 1px 0 rgb(255 255 255 / 0.05);
+  --shadow-window: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 50px 120px -20px rgb(0 0 0 / 0.8);
+
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Spec token names, for SVG and inline styles: fill="var(--signal)". */
+/* Spec token names for SVG and inline styles: stroke="var(--acc)". */
 :root {
-  --paper: var(--color-paper);
-  --paper-2: var(--color-paper-2);
-  --ink: var(--color-ink);
-  --muted: var(--color-muted);
+  --bg: var(--color-bg);
+  --surface-1: var(--color-surface-1);
+  --surface-2: var(--color-surface-2);
   --line: var(--color-line);
-  --signal: var(--color-signal);
+  --line-strong: var(--color-line-strong);
+  --fg: var(--color-fg);
+  --fg-2: var(--color-fg-2);
+  --fg-3: var(--color-fg-3);
+  --fg-4: var(--color-fg-4);
+  --acc: var(--color-acc);
+  --warn: var(--color-warn);
+  --bad: var(--color-bad);
 }
 
 @layer base {
@@ -60,39 +86,49 @@
   }
 
   html {
-    background: var(--color-paper);
-    color: var(--color-ink);
-    color-scheme: light;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    color-scheme: dark;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    /* Kerning and ligatures like optimizeLegibility, plus unhinted, subpixel-positioned glyphs: hinted Linux and
+       Windows Chrome otherwise round each advance to a whole pixel and a space can vanish ("Slot11,519,854"). */
+    text-rendering: geometricPrecision;
     -webkit-text-size-adjust: 100%;
-    /* Anchored sections land just under the 56 px sticky nav. */
-    scroll-padding-top: 3.5rem;
+    /* Anchored sections land just under the 64 px sticky nav. */
+    scroll-padding-top: 4rem;
+  }
+
+  /* Smooth in-page jumps once the page has landed (RenderAhead sets data-smooth): a deep link's first jump stays instant. */
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-smooth] {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
     font-family: var(--font-sans);
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.5;
     font-optical-sizing: auto;
   }
 
   h1,
   h2,
   h3 {
-    font-weight: 400;
+    font-weight: 600;
     text-wrap: balance;
-  }
-
-  /* An italic word after roman text: its overhang eats the word space ("twopromises") without a hair of room. */
-  h1 em,
-  h2 em {
-    margin-left: 0.04em;
   }
 
   p {
     text-wrap: pretty;
+  }
+
+  /* Key terms inside muted body copy. */
+  b,
+  strong {
+    font-weight: 500;
+    color: var(--color-fg);
   }
 
   code,
@@ -105,23 +141,41 @@
   }
 
   ::selection {
-    background: var(--color-ink);
-    color: var(--color-paper);
+    background: rgb(75 227 143 / 0.24);
+    color: var(--color-fg);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 2px solid var(--color-acc);
     outline-offset: 2px;
   }
 }
 
-/* Reveal/Stagger items: final state without motion, and before JS (see layout <noscript>). */
-@media (prefers-reduced-motion: reduce) {
+/* Scroll reveals (components/reveal.tsx). Hidden only once the inline script has run (html[data-js]) and only when
+   motion is allowed; the script sets data-shown as each target enters view and --d for stagger offsets. */
+@media (prefers-reduced-motion: no-preference) {
   [data-reveal] {
-    opacity: 1 !important;
-    transform: none !important;
+    transition:
+      opacity 0.5s var(--ease-out) var(--d, 0s),
+      translate 0.5s var(--ease-out) var(--d, 0s);
   }
 
+  html[data-js] [data-reveal]:not([data-shown]) {
+    opacity: 0;
+    translate: 0 8px;
+  }
+
+  [data-grow] {
+    transform-origin: left;
+    transition: scale 1.2s var(--ease-out);
+  }
+
+  html[data-js] [data-grow]:not([data-shown]) {
+    scale: 0 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   *,
   ::before,
   ::after {
@@ -138,23 +192,32 @@
   }
 }
 
+/* The hero atmosphere: an 80 px line grid, radially masked so it fades out. A grid line runs down the page centre, so the 1120 px column edges sit on lines too. */
+@utility bg-grid {
+  background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: calc(50% + 40px) -1px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+
 /* A standalone 1px rule: <div className="hairline" />. Borders cover the rest. */
 @utility hairline {
   height: 1px;
   background: var(--color-line);
 }
 
-/* Inline text link: ink with a quiet underline that darkens on hover and on keyboard focus (focus is never the ring alone). */
+/* Inline text link: fg with a quiet underline that brightens on hover and on keyboard focus (focus is never the ring alone). */
 @utility link {
-  color: var(--color-ink);
+  color: var(--color-fg);
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: color-mix(in oklab, var(--color-ink) 25%, transparent);
+  text-decoration-color: rgb(255 255 255 / 0.24);
   text-underline-offset: 4px;
   transition: text-decoration-color 150ms var(--ease-out);
   &:hover,
   &:focus-visible {
-    text-decoration-color: var(--color-ink);
+    text-decoration-color: var(--color-fg);
   }
 }
 
