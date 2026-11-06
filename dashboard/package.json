@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "briefs": "node --env-file-if-exists=.env.local --import tsx scripts/briefs.ts"
   },
   "dependencies": {
     "@anon-rpc/browser-harness": "0.3.3",
