@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* Only the spec's tokens exist: Tailwind's default palette and fonts are removed so off-system colours cannot creep in. */
+@theme {
+  --color-*: initial;
+  --color-paper: #fafaf7;
+  --color-paper-2: #f3f2ee;
+  --color-ink: #0f0f0e;
+  --color-muted: #6b6b66;
+  --color-line: #e7e6e1;
+  --color-signal: #ff5a1f;
+
+  --font-*: initial;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Display 56/64 → 88/92 between 640 and 1280 px. */
+  --text-display: clamp(3.5rem, 1.5rem + 5vw, 5.5rem);
+  --text-display--line-height: clamp(4rem, 2.25rem + 4.375vw, 5.75rem);
+  --text-display--letter-spacing: -0.02em;
+  /* h2 40 → 56. */
+  --text-h2: clamp(2.5rem, 1.5rem + 2.5vw, 3.5rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.015em;
+  /* h3 28 → 32: promise rows, how-it-works steps, FAQ lead-in. */
+  --text-h3: clamp(1.75rem, 1.5rem + 0.625vw, 2rem);
+  --text-h3--line-height: 1.1;
+  --text-h3--letter-spacing: -0.01em;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.6;
+  /* Mono labels: 12 px uppercase, 0.08em. */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-label--letter-spacing: 0.08em;
+
+  --radius-button: 6px;
+  --radius-panel: 8px;
+  /* The one shadow: the nav after scroll. */
+  --shadow-nav: 0 1px 0 var(--color-line);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Spec token names, for SVG and inline styles: fill="var(--signal)". */
+:root {
+  --paper: var(--color-paper);
+  --paper-2: var(--color-paper-2);
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --signal: var(--color-signal);
+}
+
+@layer base {
+  /* Any border is a hairline unless told otherwise: border, border-t, divide-y. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-line);
+  }
+
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+    /* Anchored sections land just under the 56 px sticky nav. */
+    scroll-padding-top: 3.5rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-optical-sizing: auto;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  /* An italic word after roman text: its overhang eats the word space ("twopromises") without a hair of room. */
+  h1 em,
+  h2 em {
+    margin-left: 0.04em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+}
+
+/* Reveal/Stagger items: final state without motion, and before JS (see layout <noscript>). */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print every section, not just the ones content-visibility has rendered (see components/ui/section.tsx). */
+@media print {
+  section {
+    content-visibility: visible !important;
+  }
+}
+
+/* A standalone 1px rule: <div className="hairline" />. Borders cover the rest. */
+@utility hairline {
+  height: 1px;
+  background: var(--color-line);
+}
+
+/* Inline text link: ink with a quiet underline that darkens on hover and on keyboard focus (focus is never the ring alone). */
+@utility link {
+  color: var(--color-ink);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklab, var(--color-ink) 25%, transparent);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 150ms var(--ease-out);
+  &:hover,
+  &:focus-visible {
+    text-decoration-color: var(--color-ink);
+  }
+}
+
+/* Mono figure: Geist Mono, tabular. */
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
