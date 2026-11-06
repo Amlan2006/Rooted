@@ -1,6 +1,7 @@
 <div align="center">
 
 # Rooted
+[![CI](https://github.com/Amlan2006/Rooted/actions/workflows/ci.yml/badge.svg)](https://github.com/Amlan2006/Rooted/actions/workflows/ci.yml)
 
 **How parallel can a Glamsterdam block really run?**
 
