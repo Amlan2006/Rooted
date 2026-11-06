@@ -5,6 +5,7 @@ import {
   ArrowDownUp,
   ArrowRight,
   Bell,
+  Bot,
   Boxes,
   Check,
   CircleHelp,
@@ -55,10 +56,12 @@ import AnalysisForm from "./analysis-form";
 import RpcInspector from "./rpc-inspector";
 import CREReports from "./cre-reports";
 import Xray from "./xray";
+import Analyst from "./analyst";
 import FrameConformance from "./frame-conformance";
 import { observationScope } from "@/lib/observation-scope";
 type View =
   | "xray"
+  | "analyst"
   | "overview"
   | "investigate"
   | "compare"
@@ -72,6 +75,7 @@ type View =
   | "privacy";
 const navigation = [
   { id: "xray", name: "Glamsterdam X-ray", icon: ScanLine },
+  { id: "analyst", name: "Analyst", icon: Bot },
   { id: "overview", name: "Overview", icon: LayoutDashboard },
   { id: "investigate", name: "Investigate", icon: Search },
   { id: "payloadwatch", name: "PayloadWatch", icon: Waves },
@@ -86,6 +90,7 @@ const navigation = [
 ] as const;
 const titles: Record<View, [string, string]> = {
   xray: ["Glamsterdam X-ray", "Parallelism ceilings per Sepolia block: receipt gas, execution gas, validator with BAL, builder without."],
+  analyst: ["Analyst", "Claude investigates Sepolia with Rooted's own evidence and the live node, and briefs unusual blocks on its own."],
   profiler: ["Execution profiler", "Measure native replay processing with explicit timing boundaries."],
   providers: ["RPC provider checks", "Compare immutable evidence and API availability across providers."],
   compare: ["Workload comparison", "Compare shared-state patterns across controlled experiments."],
@@ -480,7 +485,7 @@ export default function Dashboard() {
                 </select>
               </div>
             ) : (
-              <Badge tone="blue">{view === "investigate" ? "SCOPED INVESTIGATION" : "READ-ONLY INVESTIGATION"}</Badge>
+              <Badge tone="blue">{view === "investigate" ? "SCOPED INVESTIGATION" : view === "analyst" ? "CITED EVIDENCE" : "READ-ONLY INVESTIGATION"}</Badge>
             )}
           </div>
           {!demo && ["overview", "payloadwatch", "builders", "incidents"].includes(view) && !watchScope && (
@@ -1041,6 +1046,7 @@ export default function Dashboard() {
           )}
           {view === "frames" && <FrameConformance scope={frameScope} />}
           {view === "xray" && <Xray />}
+          {view === "analyst" && <Analyst />}
           {view === "investigate" && <GuidedInvestigation onScope={setGuideScope} />}
           {view === "compare" && <WorkloadComparison />}
           {view === "providers" && <ProviderComparison />}
