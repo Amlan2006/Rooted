@@ -5,7 +5,8 @@
   "scripts": {
     "setup": "node setup.mjs",
     "agent": "node agent.mjs",
-    "test": "node --test spend.test.mjs"
+    "test": "node --test spend.test.mjs mcp.test.mjs",
+    "mcp": "node mcp.mjs"
   },
   "dependencies": {
     "@hiero-ledger/sdk": "2.90.1",

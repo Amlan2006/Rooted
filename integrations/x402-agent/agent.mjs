@@ -7,7 +7,7 @@ import { decodePaymentResponseHeader, wrapFetchWithPayment, x402Client, x402HTTP
 import { ExactHederaScheme } from "@x402/hedera/exact/client";
 import { createClientHederaSigner } from "@x402/hedera";
 import { Client, PrivateKey, TopicMessageSubmitTransaction } from "@hiero-ledger/sdk";
-import { decide, limitsFrom, sessionSpent } from "./spend.mjs";
+import { decide, limitsFrom, policy, sessionSpent } from "./spend.mjs";
 
 const envFile = new URL(".env", import.meta.url);
 if (existsSync(envFile)) process.loadEnvFile(envFile); // shell variables win, so MAX_PER_REQUEST=1 forces a refusal
@@ -19,8 +19,9 @@ let limits, key;
 try {
   limits = limitsFrom(env);
   if (!/^0\.0\.[1-9]\d*$/.test(env.AGENT_ID ?? "")) throw Error("AGENT_ID is missing; run node setup.mjs first");
-  key = PrivateKey.fromStringECDSA(env.AGENT_KEY ?? "");
 } catch (e) { die(2, `config: ${e.message}`); }
+// The SDK's parse error echoes the whole key, so it is never printed.
+try { key = PrivateKey.fromStringECDSA(env.AGENT_KEY ?? ""); } catch { die(2, "config: AGENT_KEY is not a hex ECDSA private key"); }
 const base = new URL(env.ROOTED_PUBLIC_URL || "http://127.0.0.1:3000");
 const session = env.ROOTED_AGENT_SESSION || new Date().toISOString().slice(0, 10); // default: a daily budget
 const state = { spent: sessionSpent(existsSync(runsFile) ? readFileSync(runsFile, "utf8") : "", session, limits.asset) };
@@ -33,12 +34,13 @@ if (!hash) { // newest stored report from the free list route
 if (!/^0x[0-9a-f]{64}$/.test(hash ?? "")) die(2, "usage: node agent.mjs 0x<lowercase 32-byte block hash> (no stored report found to default to)");
 
 // Spend controls: the decision runs on the full 402 offer before any payload is signed, so every refusal is
-// explained; the library allowlist/cap and the payTo policy re-check the same limits as a backstop.
+// explained. The same decide() is the library policy, so the offer that gets signed is always one it approved;
+// the library allowlist/cap is a second backstop.
 let refusal, signed;
 const client = new x402Client()
   .register("hedera:testnet", new ExactHederaScheme(createClientHederaSigner(env.AGENT_ID, key, { network: "hedera:testnet" })))
   .setSpendControls({ allowedAssets: [{ network: limits.network, asset: limits.asset, maxAmountPerPayment: limits.maxPerRequest }] })
-  .registerPolicy((_version, offers) => offers.filter((r) => r.payTo === limits.payTo))
+  .registerPolicy(policy(state, limits))
   .onAfterPaymentCreation(async ({ paymentPayload }) => { signed = paymentPayload.accepted; });
 const http = new x402HTTPClient(client).onPaymentRequired(async ({ paymentRequired }) => {
   const decisions = (paymentRequired.accepts ?? []).map((r) => decide(r, state, limits));
@@ -82,7 +84,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 const c = report.ceilings ?? {}, x = (v) => (typeof v === "number" ? `${v.toFixed(2)}x` : "unknown");
-console.log(`finding: gas-weighted ${x(c.gas_weighted?.value)} (capped by tx ${c.gas_weighted?.capping_tx_index}), validator with BAL ${x(c.validator_bal_time?.value)} (tx ${c.validator_bal_time?.capping_tx_index ?? "?"}), builder/no-BAL ${x(c.builder_dag_time?.value)} (critical path ${c.builder_dag_time?.critical_path?.length ?? "?"} txs); all upper bounds`);
+console.log(`finding: receipt gas ${x(c.gas_weighted?.value)} (capped by tx ${c.gas_weighted?.capping_tx_index}), execution gas ${x(c.execution_gas_weighted?.value)}, validator with BAL ${x(c.validator_bal_time?.value)} (tx ${c.validator_bal_time?.capping_tx_index ?? "?"}), builder/no-BAL ${x(c.builder_dag_time?.value)} (critical path ${c.builder_dag_time?.critical_path?.length ?? "?"} txs); all upper bounds`);
 
 if (env.ROOTED_AGENT_HCS_TOPIC) { // optional audit log; the payment already happened, so a failure here only warns
   const hedera = Client.forTestnet().setOperator(env.AGENT_ID, key);

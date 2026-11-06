@@ -13,6 +13,9 @@ export function decide(req, state, limits) {
   return { refused: false, amount: req.amount, budget_left: String(left - amount) };
 }
 
+// x402 client policy: the library signs only an offer decide() approved, even when a 402 lists several assets.
+export const policy = (state, limits) => (_version, offers) => offers.filter((r) => !decide(r, state, limits).refused);
+
 // Session spend = settled payments already logged for this session and asset. A corrupt log fails closed.
 export function sessionSpent(jsonl, session, asset) {
   let spent = 0n;

@@ -12,13 +12,15 @@ node setup.mjs --hcs          # 1st run: writes a fresh operator key to .env, pr
 node setup.mjs --hcs          # creates the agent account (20 HBAR) and an HCS audit topic, writes ids to .env
 node agent.mjs [0xBLOCKHASH]  # pays, prints the settled tx id, the HashScan link and a one-line finding
 MAX_PER_REQUEST=1 node agent.mjs 0xBLOCKHASH   # refusal demo: prints {"refused":true,...} and exits 3
-npm test                      # spend policy unit tests
+npm test                      # spend policy and MCP server tests
+claude mcp add rooted-x402 -- node integrations/x402-agent/mcp.mjs   # let an LLM agent browse briefs and buy reports
 ```
 
 | File | Role |
 |---|---|
 | `agent.mjs` | `wrapFetchWithPayment` + `ExactHederaScheme(createClientHederaSigner(...))`. It verifies the report schema and hash, decodes `PAYMENT-RESPONSE`, cross-checks the tx on the public mirror node and appends `.tools/x402-agent/runs.jsonl`. With `ROOTED_AGENT_HCS_TOPIC` set, it also writes an HCS audit message. |
-| `spend.mjs` | Pure `decide(offer, state, limits)`: allowed network and asset, trusted `payTo`, per-request cap, session budget. |
+| `spend.mjs` | Pure `decide(offer, state, limits)`: allowed network and asset, trusted `payTo`, per-request cap, session budget. `policy()` registers the same check as the x402 library's payment policy. |
+| `mcp.mjs` | MCP server (stdio, no SDK) for LLM agents: `recent_xray_blocks` (free) and `buy_xray_report(block_hash)`, which runs `agent.mjs` with its spend controls and returns the settled tx id and HashScan link. |
 | `setup.mjs` | One-time and idempotent. Prints ids and HashScan links, never keys. |
 
 The spend controls run in an `onPaymentRequired` hook, before anything is signed:
@@ -31,6 +33,6 @@ The spend controls run in an `onPaymentRequired` hook, before anything is signed
 | `asset_not_allowed` | the offer is not on `hedera:testnet`, or uses a different asset |
 | `invalid_amount` | the server sent a non-integer amount |
 
-The x402 library's `spendControls.allowedAssets` cap and a `payTo` policy enforce the same limits again as a backstop.
+`decide()` is also the x402 library's payment policy, so a multi-offer 402 can only be paid with an approved offer. The library's `spendControls.allowedAssets` cap is a second backstop.
 
 Exit codes: 0 paid, 1 error, 2 configuration or setup, 3 refused.

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # One-command hosted x402 e2e: backend + paid dashboard + agent refusal + agent paid call, then stops everything.
 # Prereq: the operator EVM address printed by `node setup.mjs` was funded once at portal.hedera.com/faucet.
-# Usage: integrations/x402-agent/e2e.sh [BLOCK_HASH]
+# Usage: integrations/x402-agent/e2e.sh [BLOCK_HASH]   (default: the newest stored report, which is not public anywhere else)
+# ROOTED_X402_ENABLED=true also puts the dashboard in hosted mode, so the free proxy answers 402 for full reports.
 #   env: E2E_DATABASE_URL (default .env DATABASE_URL), E2E_BACKEND (127.0.0.1:8095), E2E_DASHBOARD_PORT (3005), ROOTED_BINARY (.tools/rooted)
 set -euo pipefail
 cd "$(dirname "$0")/../.."
@@ -26,7 +27,7 @@ if [ -z "$hash" ]; then # no stored report yet: X-ray head-3 (still inside the n
   "$bin" xray "$hash" > "$logs/xray.json"
 fi
 
-[ -f dashboard/.next/BUILD_ID ] || (cd dashboard && npm run build)
+(cd dashboard && npm run build) > "$logs/build.log" 2>&1 # always rebuild: a stale .next would serve old paywall code
 (cd dashboard && ROOTED_X402_ENABLED=true ROOTED_X402_PAY_TO=$pay_to ROOTED_BACKEND_URL=http://$backend \
   exec node node_modules/next/dist/bin/next start --hostname 127.0.0.1 -p "$port") > "$logs/next.log" 2>&1 &
 wait_for "http://127.0.0.1:$port/"

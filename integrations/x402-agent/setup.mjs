@@ -17,8 +17,10 @@ function upsert(file, key, value) {
 if (existsSync(agentEnv)) process.loadEnvFile(agentEnv);
 const env = process.env;
 
+// The SDK's parse error echoes the whole key, so a malformed key gets a fixed message instead.
+const parseKey = (name) => { try { return PrivateKey.fromStringECDSA(env[name]); } catch { console.error(`${name} in integrations/x402-agent/.env is not a hex ECDSA private key`); process.exit(2); } };
 if (!env.HEDERA_OPERATOR_KEY) upsert(agentEnv, "HEDERA_OPERATOR_KEY", PrivateKey.generateECDSA().toStringRaw());
-const operatorKey = PrivateKey.fromStringECDSA(env.HEDERA_OPERATOR_KEY);
+const operatorKey = parseKey("HEDERA_OPERATOR_KEY");
 if (!env.HEDERA_OPERATOR_ID) {
   // A faucet drip to the key's EVM address auto-creates the account (HIP-583); the mirror node maps it to 0.0.x.
   const evm = "0x" + operatorKey.publicKey.toEvmAddress();
@@ -37,7 +39,7 @@ upsert(agentEnv, "ROOTED_EXPECTED_PAY_TO", operator);
 upsert(dashboardEnv, "ROOTED_X402_PAY_TO", operator);
 
 if (!env.AGENT_KEY) upsert(agentEnv, "AGENT_KEY", PrivateKey.generateECDSA().toStringRaw()); // saved before the account exists
-const agentKey = PrivateKey.fromStringECDSA(env.AGENT_KEY);
+const agentKey = parseKey("AGENT_KEY");
 if (!env.AGENT_ID) {
   const tx = await new AccountCreateTransaction().setKeyWithoutAlias(agentKey.publicKey).setInitialBalance(new Hbar(20)).execute(hedera);
   upsert(agentEnv, "AGENT_ID", (await tx.getReceipt(hedera)).accountId.toString());

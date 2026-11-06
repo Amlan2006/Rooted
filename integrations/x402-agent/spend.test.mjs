@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { decide, limitsFrom, sessionSpent } from "./spend.mjs";
+import { decide, limitsFrom, policy, sessionSpent } from "./spend.mjs";
 
 const limits = limitsFrom({ ROOTED_EXPECTED_PAY_TO: "0.0.7001", MAX_PER_REQUEST: "1000000", SESSION_BUDGET: "2500000" });
 const offer = (o = {}) => ({ scheme: "exact", network: "hedera:testnet", asset: "0.0.0", payTo: "0.0.7001", amount: "1000000", ...o });
@@ -40,4 +40,10 @@ test("limits require a trusted payTo and atomic caps", () => {
   assert.deepEqual(limitsFrom({ ROOTED_EXPECTED_PAY_TO: "0.0.7001" }), { network: "hedera:testnet", asset: "0.0.0", payTo: "0.0.7001", maxPerRequest: "1000000", sessionBudget: "5000000" });
   for (const env of [{}, { ROOTED_EXPECTED_PAY_TO: "0.0.0" }, { ROOTED_EXPECTED_PAY_TO: "0.0.7001", MAX_PER_REQUEST: "0.01" }, { ROOTED_EXPECTED_PAY_TO: "0.0.7001", SESSION_BUDGET: "$1" }])
     assert.throws(() => limitsFrom(env));
+});
+
+test("the library policy keeps only offers decide() approves, so a mixed offer cannot pay in another asset", () => {
+  const offers = [offer({ asset: "0.0.429274", amount: "900000" }), offer(), offer({ payTo: "0.0.666" }), offer({ amount: "1000001" })];
+  assert.deepEqual(policy({ spent: "0" }, limits)(2, offers), [offers[1]]);
+  assert.deepEqual(policy({ spent: "2000000" }, limits)(2, offers), [], "over budget: nothing is signable");
 });
