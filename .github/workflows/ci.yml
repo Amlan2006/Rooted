@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: rooted
+          POSTGRES_USER: rooted
+          POSTGRES_PASSWORD: rooted-local-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U rooted -d rooted"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://rooted:rooted-local-only@localhost:5432/rooted?sslmode=disable
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: |
+            go.sum
+            workloads/profiler/go.sum
+      - run: go vet ./...
+      - run: go test ./...
+      - name: workloads/profiler
+        working-directory: workloads/profiler
+        run: go vet ./... && go test ./...
+
+  dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npx tsc --noEmit
+      - run: npm run build
+
+  integrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: integrations/x402-agent/package-lock.json
+      - name: x402-agent tests
+        working-directory: integrations/x402-agent
+        run: npm ci && npm test
+      - name: anon-rpc probe tests
+        working-directory: integrations/anon-rpc/probe
+        run: npm test
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # the frame tx builder signs offline with Foundry's cast
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          cache: false
+      - run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
