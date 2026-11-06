@@ -1,0 +1,37 @@
+{
+  "source": "Nimbus /eth/v1/events (block, execution_payload, execution_payload_available, payload_attestation_message) on Rooted’s Sepolia node; included tally from /eth/v2/beacon/blocks/11519855; deadlines from /eth/v1/config/spec",
+  "captured_at": "2026-11-06T13:31:00.209Z",
+  "network": "sepolia",
+  "label": "Received at our node: local receipt time in ms after slot start (genesis_time + slot × 12 s), by our system clock. Not network-wide propagation.",
+  "slot": 11519854,
+  "slot_start": "2026-11-06T13:30:48.000Z",
+  "genesis_time": 1655733600,
+  "beacon_root": "0x1a9d887c4d773ffff78e9b774986783fcbcaf3d3308a350db2ddae41640ec3e3",
+  "block_hash": "0x6ff9e7e268c5e7c20b97ca8368df5e0d71dbf5f80eb70a195b49640e4c4a1289",
+  "block_number": 12076865,
+  "tx_count": 135,
+  "builder_index": null,
+  "self_build": true,
+  "offsets_ms": {
+    "block": 114,
+    "execution_payload": 383,
+    "execution_payload_available": 394,
+    "first_ptc_message": 406,
+    "last_ptc_message": 9112
+  },
+  "deadlines_ms": {
+    "attestation": 3000,
+    "payload": 6000,
+    "payload_attestation": 9000,
+    "source": "Nimbus /eth/v1/config/spec (*_DUE_BPS × SLOT_DURATION_MS)"
+  },
+  "ptc_messages_received": 59,
+  "ptc_validators_seen": 59,
+  "ptc_messages_payload_present": 59,
+  "ptc_note": "PTC messages for this slot's beacon root that our node received over gossip before the next slot's block arrived.",
+  "included_ptc": {
+    "slot": 11519855,
+    "payload_present_votes": 512,
+    "ptc_size": 512
+  }
+}

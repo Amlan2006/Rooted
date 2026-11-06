@@ -1,0 +1,112 @@
+{
+  "source": "git branch main of this repo (LICENSE, go.mod, README.md, docs/)",
+  "captured_at": "2026-11-06T14:38:34.325Z",
+  "commit": "9ba9750",
+  "license": "MIT",
+  "repo_url": "https://github.com/Amlan2006/Rooted",
+  "go_version": "1.25.0",
+  "node_version": "24",
+  "built_at": "ETHGlobal Mumbai 2026",
+  "docs": [
+    {
+      "path": "README.md",
+      "title": "Rooted",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/README.md"
+    },
+    {
+      "path": "docs/ANALYST.md",
+      "title": "Analyst",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/ANALYST.md"
+    },
+    {
+      "path": "docs/API.md",
+      "title": "Phase 2 API",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/API.md"
+    },
+    {
+      "path": "docs/BACKEND.md",
+      "title": "Rooted backend",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/BACKEND.md"
+    },
+    {
+      "path": "docs/BAL_ANALYZER.md",
+      "title": "BAL Analyzer Lite — Phase 5",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/BAL_ANALYZER.md"
+    },
+    {
+      "path": "docs/CAPABILITIES.md",
+      "title": "Rooted Phase 1 capabilities",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/CAPABILITIES.md"
+    },
+    {
+      "path": "docs/DASHBOARD.md",
+      "title": "Dashboard and Anon-RPC — Phase 6",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/DASHBOARD.md"
+    },
+    {
+      "path": "docs/EXECUTION_PROFILER.md",
+      "title": "Execution profiler — native replay baseline",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/EXECUTION_PROFILER.md"
+    },
+    {
+      "path": "docs/FRAME_CONFORMANCE.md",
+      "title": "Frame transaction conformance: boundary cases on the alt-mempool devnet",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/FRAME_CONFORMANCE.md"
+    },
+    {
+      "path": "docs/FRAME_DEVNET_TEST.md",
+      "title": "Frame transaction devnet evidence",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/FRAME_DEVNET_TEST.md"
+    },
+    {
+      "path": "docs/FRAME_EXPLORER_REVIEW.md",
+      "title": "Frame explorer review and product boundary",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/FRAME_EXPLORER_REVIEW.md"
+    },
+    {
+      "path": "docs/FRAME_MONITOR.md",
+      "title": "Phase 4 — durable frame transaction monitoring",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/FRAME_MONITOR.md"
+    },
+    {
+      "path": "docs/GUIDED_INVESTIGATION.md",
+      "title": "Guided investigation across modules",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/GUIDED_INVESTIGATION.md"
+    },
+    {
+      "path": "docs/PAYLOADWATCH.md",
+      "title": "PayloadWatch — Phase 3",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/PAYLOADWATCH.md"
+    },
+    {
+      "path": "docs/PROVIDER_COMPARISON.md",
+      "title": "RPC provider comparison",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/PROVIDER_COMPARISON.md"
+    },
+    {
+      "path": "docs/SEPOLIA_NODE.md",
+      "title": "Sepolia Nimbus/Geth connection",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/SEPOLIA_NODE.md"
+    },
+    {
+      "path": "docs/UNISWAP.md",
+      "title": "Uniswap in Rooted: contention under block access lists",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/UNISWAP.md"
+    },
+    {
+      "path": "docs/WORKLOAD_COMPARISON.md",
+      "title": "Controlled workload comparison",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/WORKLOAD_COMPARISON.md"
+    },
+    {
+      "path": "docs/X402_HOSTED.md",
+      "title": "Hosted mode: agents pay for X-ray reports over x402 on Hedera",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/X402_HOSTED.md"
+    },
+    {
+      "path": "docs/XRAY.md",
+      "title": "Glamsterdam X-ray",
+      "url": "https://github.com/Amlan2006/Rooted/blob/main/docs/XRAY.md"
+    }
+  ]
+}

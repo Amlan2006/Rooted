@@ -1,0 +1,25 @@
+{
+  "source": "dashboard/lib/x402.ts on main @ 9ba9750 (code defaults; an operator can override them)",
+  "captured_at": "2026-11-06T14:37:56.736Z",
+  "price": {
+    "amount_atomic": "1000000",
+    "display": "0.01 HBAR",
+    "unit": "per block report"
+  },
+  "network": "hedera:testnet",
+  "testnet": true,
+  "asset": "0.0.0",
+  "asset_symbol": "HBAR",
+  "scheme": "exact",
+  "route": "/api/paid/xray/[hash]",
+  "configurable_via": "ROOTED_X402_PRICE_ATOMIC",
+  "stored_report": {
+    "block_number": 12075883,
+    "block_hash": "0xb0fd451d45f631c940d87babf638680afd116e2383308be97f0744b31ae5939a",
+    "payment_tx": "0.0.9185802@1793963177.452527184",
+    "amount_atomic": "1000000",
+    "hcs_topic": "0.0.11338138",
+    "hcs_sequence": 1,
+    "source": "HCS topic 0.0.11338138 message 1, payment SUCCESS (Hedera testnet mirror node); block number from Geth"
+  }
+}
