@@ -1590,6 +1590,10 @@ td code {
   .notice {
     font-size: 10px;
     margin-inline: 14px;
+    flex-wrap: wrap;
+  }
+  .notice code {
+    overflow-wrap: anywhere;
   }
   .coverage {
     margin-inline: 14px;

@@ -92,7 +92,7 @@ export default function Xray() {
     {briefError && <div className="notice error" role="alert">{briefError}</div>}
     {loaded.status === 402 && <div className="notice warning"><Badge tone="amber">{loaded.paidURL ? "PAID VIA X402" : "BRIEF ONLY"}</Badge>
       <span>{loaded.paidURL ? <>Hosted mode: the full report for this block is sold to agents via x402 at <code>{loaded.paidURL}</code>.</>
-        : "This hosted deployment does not serve full reports; self-hosted Rooted serves them free."} The brief below stays free.</span>
+        : "This hosted deployment does not serve full reports; self-hosted Rooted serves them free."}{brief && " The brief below stays free."}</span>
       {loaded.samples?.map(h => <button key={h} onClick={() => select(h)}>Open free sample {short(h)}</button>)}</div>}
     {loaded.sample && <div className="notice"><Badge tone="green">FREE SAMPLE</Badge>This block&apos;s full report is a free sample on this hosted deployment. Other blocks show the brief only.</div>}
     {loaded.status === 404 && <div className="notice">No stored X-ray for {short(target)} yet.{canCompute ? " Compute it below." : ""}</div>}
