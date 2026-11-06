@@ -7,7 +7,7 @@
 
 ePBS payloads · block access lists · frame-transaction mempool · native execution replay · x402 on Hedera
 
-[Live dashboard](https://app.91-98-123-155.sslip.io) · [Site](https://91-98-123-155.sslip.io)
+[Live dashboard](https://app.91-98-123-155.sslip.io) · [Site](https://rooted-eth.vercel.app)
 
 </div>
 
