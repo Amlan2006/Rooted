@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 
 const DIR = new URL("../data/", import.meta.url);
-const FILES = ["hero-block.json", "blocks.json", "epbs.json", "pricing.json", "meta.json"];
+const FILES = ["hero-block.json", "blocks.json", "epbs.json", "pricing.json", "meta.json", "analyst.json", "analyst-hero.json", "evidence.json"];
 const load = (f) => JSON.parse(readFileSync(new URL(f, DIR), "utf8"));
 const all = readdirSync(DIR).filter((f) => f.endsWith(".json"));
 const hash = /^0x[0-9a-f]{64}$/;
