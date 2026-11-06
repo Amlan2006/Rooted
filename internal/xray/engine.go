@@ -108,7 +108,7 @@ func (e *Engine) Follow(ctx context.Context, gate chan struct{}, logger *slog.Lo
 			if err != nil && ctx.Err() == nil {
 				logger.Warn("xray follow skipped block", "error", err.Error())
 			} else if r != nil {
-				logger.Info("xray stored", "block", r.Block.Number, "transactions", r.Block.TransactionCount, "gas_weighted", r.Ceilings.Gas.Value, "validator_bal_time", r.Ceilings.Validator.Value, "builder_dag_time", r.Ceilings.Builder.Value)
+				logger.Info("xray stored", "block", r.Block.Number, "transactions", r.Block.TransactionCount, "gas_weighted", r.Ceilings.Gas.Value, "execution_gas_weighted", r.Ceilings.Execution.Value, "validator_bal_time", r.Ceilings.Validator.Value, "builder_dag_time", r.Ceilings.Builder.Value)
 			}
 		default:
 			logger.Warn("xray follow skipped tick; a native replay is running")

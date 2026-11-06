@@ -7,7 +7,7 @@ import (
 
 func BriefOf(r Report) Brief {
 	b := Brief{BlockHash: r.Block.Hash, BlockNumber: r.Block.Number, Slot: r.Block.Slot, ComputedAt: r.ComputedAt, Source: r.Source, TransactionCount: r.Block.TransactionCount, HeaderGasUsed: r.Gas.HeaderGasUsed, ReceiptsGasSum: r.Gas.ReceiptsGasSum, CommitmentVerified: r.BAL.CommitmentVerified,
-		GasWeighted: r.Ceilings.Gas.Value, ValidatorBALTime: r.Ceilings.Validator.Value, BuilderDAGTime: r.Ceilings.Builder.Value, GasCappingTx: r.Ceilings.Gas.CappingTx, ValidatorCappingTx: r.Ceilings.Validator.CappingTx}
+		GasWeighted: r.Ceilings.Gas.Value, ExecutionGasWeighted: r.Ceilings.Execution.Value, ValidatorBALTime: r.Ceilings.Validator.Value, BuilderDAGTime: r.Ceilings.Builder.Value, GasCappingTx: r.Ceilings.Gas.CappingTx, ValidatorCappingTx: r.Ceilings.Validator.CappingTx}
 	if r.Ceilings.Builder.Value != nil {
 		n := len(r.Ceilings.Builder.CriticalPath)
 		b.BuilderCriticalPathLength = &n
@@ -24,13 +24,24 @@ func BriefOf(r Report) Brief {
 	if r.EPBS != nil {
 		b.BuilderIndex = &r.EPBS.BuilderIndex
 	}
+	if c := r.Ceilings.Validator.CappingTx; c != nil && *c < len(r.Transactions) {
+		tx := r.Transactions[*c]
+		if r.Ceilings.Gas.Bottleneck != nil {
+			v := int64(tx.GasUsed) < *r.Ceilings.Gas.Bottleneck
+			b.GasMisidentifies = &v
+		}
+		if r.Ceilings.Execution.Bottleneck != nil && tx.ExecutionGas != nil {
+			v := int64(*tx.ExecutionGas) < *r.Ceilings.Execution.Bottleneck
+			b.ExecutionGasMisidentifies = &v
+		}
+	}
 	return b
 }
 
 func Summarize(briefs []Brief) Summary {
 	s := Summary{Blocks: len(briefs)}
-	var gas, validator, builder, v8, b8 []float64
-	var timed, single, misidentified, verified int
+	var gas, execution, validator, builder, v8, b8 []float64
+	var timed, single, misidentified, verified, execTimed, execMisidentified int
 	for i := range briefs {
 		b := &briefs[i]
 		if s.FromBlock == nil || b.BlockNumber < *s.FromBlock {
@@ -39,7 +50,7 @@ func Summarize(briefs []Brief) Summary {
 		if s.ToBlock == nil || b.BlockNumber > *s.ToBlock {
 			s.ToBlock = &b.BlockNumber
 		}
-		gas, validator, builder, v8, b8 = add(gas, b.GasWeighted), add(validator, b.ValidatorBALTime), add(builder, b.BuilderDAGTime), add(v8, b.Speedup8Validator), add(b8, b.Speedup8Builder)
+		gas, execution, validator, builder, v8, b8 = add(gas, b.GasWeighted), add(execution, b.ExecutionGasWeighted), add(validator, b.ValidatorBALTime), add(builder, b.BuilderDAGTime), add(v8, b.Speedup8Validator), add(b8, b.Speedup8Builder)
 		if b.CommitmentVerified {
 			verified++
 		}
@@ -48,13 +59,21 @@ func Summarize(briefs []Brief) Summary {
 			if *b.BuilderCriticalPathLength == 1 {
 				single++
 			}
-			if b.GasCappingTx == nil || *b.GasCappingTx != *b.ValidatorCappingTx {
+			// Briefs stored before the strict flag existed fall back to comparing capping indices (ties count).
+			if b.GasMisidentifies != nil && *b.GasMisidentifies || b.GasMisidentifies == nil && (b.GasCappingTx == nil || *b.GasCappingTx != *b.ValidatorCappingTx) {
 				misidentified++
+			}
+			if b.ExecutionGasMisidentifies != nil {
+				execTimed++
+				if *b.ExecutionGasMisidentifies {
+					execMisidentified++
+				}
 			}
 		}
 	}
-	s.Ceilings.Gas, s.Ceilings.Validator, s.Ceilings.Builder = percentiles(gas), percentiles(validator), percentiles(builder)
+	s.Ceilings.Gas, s.Ceilings.Execution, s.Ceilings.Validator, s.Ceilings.Builder = percentiles(gas), percentiles(execution), percentiles(validator), percentiles(builder)
 	s.SingleTxBound, s.GasMisidentifies, s.CommitmentVerified = share(single, timed), share(misidentified, timed), share(verified, len(briefs))
+	s.ExecMisidentifies = share(execMisidentified, execTimed)
 	if p := percentiles(v8); p != nil {
 		s.Speedup8.Validator = &p.Median
 	}

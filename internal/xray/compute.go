@@ -26,9 +26,10 @@ type Inputs struct {
 	Now       time.Time
 }
 
-// System contracts (4788, 2935, 7002, 7251, system sender) and precompiles 0x01..0x11, 0x100.
+// System contracts written only outside transactions (4788, 2935, system sender) and precompiles 0x01..0x11, 0x100.
+// The 7002/7251 request contracts stay in: user txs write their queues, so two requests in one block really conflict.
 var excludedFixed = func() map[string]bool {
-	m := map[string]bool{"0x000f3df6d732807ef1319fb7b8bb8522d0beac02": true, "0x0000f90827f1c53a10cb7a02335b175320002935": true, "0x00000961ef480eb55e80d19ad83579a64c007002": true, "0x0000bbddc7ce488642fb579f8b00f3a590007251": true, "0xfffffffffffffffffffffffffffffffffffffffe": true, "0x0000000000000000000000000000000000000100": true}
+	m := map[string]bool{"0x000f3df6d732807ef1319fb7b8bb8522d0beac02": true, "0x0000f90827f1c53a10cb7a02335b175320002935": true, "0xfffffffffffffffffffffffffffffffffffffffe": true, "0x0000000000000000000000000000000000000100": true}
 	for i := 1; i <= 0x11; i++ {
 		m[fmt.Sprintf("0x%040x", i)] = true
 	}
@@ -206,15 +207,34 @@ func Compute(in Inputs) (Report, error) {
 	}
 
 	var t []int64
+	var exec, stateGas []uint64
 	if in.Metrics != nil {
-		if t, r.Replay, err = medians(in.Metrics, r.Block.Hash, hashes); err != nil {
+		if t, exec, stateGas, r.Replay, err = medians(in.Metrics, r.Block.Hash, hashes); err != nil {
 			return Report{}, err
 		}
 		for i := range t {
 			r.Transactions[i].ApplyNS = &t[i]
 		}
+		if r.Replay.Timing != TimingControl {
+			r.Coverage = append(r.Coverage, "apply_ns_from_instrumented_replay")
+		}
 	} else {
 		r.Coverage = append(r.Coverage, "no_replay_metrics")
+	}
+	r.Ceilings.Execution = Ceiling{Model: "validator_bal", Weight: "execution_gas"}
+	if exec != nil {
+		var es, ss uint64
+		w := make([]int64, n)
+		for i := range exec {
+			r.Transactions[i].ExecutionGas, r.Transactions[i].StateGas = &exec[i], &stateGas[i]
+			es, ss, w[i] = es+exec[i], ss+stateGas[i], int64(exec[i])
+		}
+		if max(es, ss) != headerGas {
+			return Report{}, errors.New("replay EIP-8037 gas dimensions do not reconcile with header gasUsed")
+		}
+		amdahl(&r.Ceilings.Execution, w)
+	} else {
+		r.Coverage = append(r.Coverage, "execution_gas_unavailable")
 	}
 
 	g := bal.BuildGraph(access, false, 100000)
@@ -241,6 +261,9 @@ func Compute(in Inputs) (Report, error) {
 	r.Ceilings.Gas, r.Ceilings.Validator, r.Ceilings.Builder = Ceilings(t, gas, preds)
 	r.Schedules.Cores = Cores
 	r.Schedules.Validator, r.Schedules.Builder = Speedups(t, preds, Cores)
+	if g.Truncated { // dropped edges would shorten the critical path and overstate the builder view
+		r.Ceilings.Builder, r.Schedules.Builder = Ceiling{Model: "builder_dag", Weight: "ns"}, nil
+	}
 
 	hotEdges(&r, g, in.Uniswap)
 	v3, v4 := map[int]bool{}, map[int]bool{}
@@ -276,40 +299,60 @@ func Compute(in Inputs) (Report, error) {
 	return r, nil
 }
 
-// medians binds replay metrics to the block and takes the per-transaction median apply_ns.
-func medians(raw json.RawMessage, hash string, hashes []string) ([]int64, *Replay, error) {
-	if err := profiler.ValidateMetrics(raw, hash, len(hashes)); err != nil {
-		return nil, nil, err
+// medians binds replay metrics to the block and takes the per-transaction median apply_ns, preferring the
+// uninstrumented control samples (the instrumented ones time every state call, which inflates txs unevenly).
+// exec and state are the per-tx EIP-8037 gas dimensions, nil when the runner predates them.
+func medians(raw json.RawMessage, hash string, hashes []string) (t []int64, exec, state []uint64, replay *Replay, err error) {
+	if err = profiler.ValidateMetrics(raw, hash, len(hashes)); err != nil {
+		return
 	}
 	var m struct {
-		Runner  string `json:"runner"`
-		Geth    string `json:"geth_library"`
-		CPU     string `json:"cpu_model"`
-		CPUs    int    `json:"logical_cpus"`
-		Median  int64  `json:"median_apply_ns"`
-		Samples []struct {
+		Runner        string    `json:"runner"`
+		Geth          string    `json:"geth_library"`
+		CPU           string    `json:"cpu_model"`
+		CPUs          int       `json:"logical_cpus"`
+		Median        int64     `json:"median_apply_ns"`
+		ControlMedian int64     `json:"control_median_ns"`
+		Control       [][]int64 `json:"control_transaction_apply_ns"`
+		Samples       []struct {
 			Transactions []struct {
-				Hash  string `json:"hash"`
-				Apply int64  `json:"apply_ns"`
+				Hash  string  `json:"hash"`
+				Apply int64   `json:"apply_ns"`
+				Exec  *uint64 `json:"execution_gas"`
+				State *uint64 `json:"state_gas"`
 			} `json:"transactions"`
 		} `json:"samples"`
 	}
-	if err := json.Unmarshal(raw, &m); err != nil {
-		return nil, nil, err
+	if err = json.Unmarshal(raw, &m); err != nil {
+		return
 	}
-	t := make([]int64, len(hashes))
-	values := make([]int64, len(m.Samples))
+	replay = &Replay{Runner: m.Runner, GethLibrary: m.Geth, CPUModel: m.CPU, LogicalCPUs: m.CPUs, Samples: len(m.Samples), MedianNS: m.Median, Timing: TimingInstrumented}
+	if m.Control != nil {
+		replay.Samples, replay.MedianNS, replay.Timing = len(m.Control), m.ControlMedian, TimingControl
+	}
+	t, exec, state = make([]int64, len(hashes)), make([]uint64, len(hashes)), make([]uint64, len(hashes))
+	values := make([]int64, replay.Samples)
 	for i, h := range hashes {
 		for s, sample := range m.Samples {
 			if sample.Transactions[i].Hash != "" && !strings.EqualFold(sample.Transactions[i].Hash, h) {
-				return nil, nil, errors.New("replay metrics transaction order differs from the block")
+				return nil, nil, nil, nil, errors.New("replay metrics transaction order differs from the block")
 			}
-			values[s] = sample.Transactions[i].Apply
+			if m.Control == nil {
+				values[s] = sample.Transactions[i].Apply
+			}
+		}
+		for s := range m.Control {
+			values[s] = m.Control[s][i]
 		}
 		sort.Slice(values, func(a, b int) bool { return values[a] < values[b] })
 		t[i] = values[(len(values)+1)/2-1]
+		if d := m.Samples[0].Transactions[i]; exec != nil && d.Exec != nil && d.State != nil {
+			exec[i], state[i] = *d.Exec, *d.State
+		} else {
+			exec, state = nil, nil
+		}
 	}
-	return t, &Replay{Runner: m.Runner, GethLibrary: m.Geth, CPUModel: m.CPU, LogicalCPUs: m.CPUs, Samples: len(m.Samples), MedianNS: m.Median}, nil
+	return
 }
 
 // hotEdges ranks contended locations and counts Uniswap-labelled edges (labels cached per location).

@@ -285,7 +285,8 @@ func ValidateMetrics(raw []byte, hash string, transactions int) error {
 				Finalize int64  `json:"finalize_ns"`
 			} `json:"transactions"`
 		} `json:"samples"`
-		Control []int64 `json:"control_apply_ns"`
+		Control   []int64   `json:"control_apply_ns"`
+		ControlTx [][]int64 `json:"control_transaction_apply_ns"` // optional (older runners omit it)
 	}
 	if json.Unmarshal(raw, &m) != nil || m.Runner != "rooted-native-replay-v1" || !strings.EqualFold(m.Block, hash) || m.Transactions != transactions || m.Median <= 0 || m.ControlMedian <= 0 || len(m.Samples) != 7 || len(m.Control) != 7 {
 		return errors.New("native metrics are missing, unsupported, or bound to another payload")
@@ -310,6 +311,21 @@ func ValidateMetrics(raw []byte, hash string, transactions int) error {
 		}
 		if a != s.Apply || st != s.State || f != s.Finalize || e != *s.EVM || es != *s.EVMState {
 			return errors.New("native timing totals do not reconcile")
+		}
+	}
+	if m.ControlTx != nil && len(m.ControlTx) != len(m.Control) {
+		return errors.New("per-transaction control timings do not cover every control sample")
+	}
+	for i, perTx := range m.ControlTx {
+		var a int64
+		for _, ns := range perTx {
+			if ns <= 0 {
+				return errors.New("invalid control transaction timer")
+			}
+			a += ns
+		}
+		if len(perTx) != transactions || a != m.Control[i] {
+			return errors.New("control timing totals do not reconcile")
 		}
 	}
 	return nil

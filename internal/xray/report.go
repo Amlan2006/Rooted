@@ -1,5 +1,5 @@
-// Package xray compares three parallelism ceilings for one Sepolia block: gas-weighted,
-// validator-with-BAL (Amdahl on measured time) and builder/no-BAL (conflict-DAG critical path).
+// Package xray compares parallelism ceilings for one Sepolia block: gas-weighted (receipt gas and
+// EIP-8037 execution gas), validator-with-BAL (Amdahl on measured time) and builder/no-BAL (conflict-DAG critical path).
 package xray
 
 import (
@@ -9,6 +9,12 @@ import (
 )
 
 const Schema = "rooted-xray-v1"
+
+// Replay.Timing: which replay samples t_i comes from.
+const (
+	TimingControl      = "uninstrumented_control"
+	TimingInstrumented = "instrumented"
+)
 
 var Cores = []int{1, 2, 4, 8, 16}
 
@@ -59,17 +65,19 @@ type BAL struct {
 	Schema             string `json:"schema"`
 }
 type Tx struct {
-	Index     int     `json:"index"`
-	Hash      string  `json:"hash"`
-	From      string  `json:"from"`
-	To        *string `json:"to"`
-	IsCreate  bool    `json:"is_create"`
-	Status    uint64  `json:"status"`
-	GasUsed   uint64  `json:"gas_used"`
-	ApplyNS   *int64  `json:"apply_ns_median"`
-	Reads     int     `json:"reads"`
-	Writes    int     `json:"writes"`
-	DependsOn []int   `json:"depends_on"`
+	Index        int     `json:"index"`
+	Hash         string  `json:"hash"`
+	From         string  `json:"from"`
+	To           *string `json:"to"`
+	IsCreate     bool    `json:"is_create"`
+	Status       uint64  `json:"status"`
+	GasUsed      uint64  `json:"gas_used"`      // receipt gas: execution + EIP-8037 state gas, after refunds
+	ExecutionGas *uint64 `json:"execution_gas"` // EIP-8037 execution dimension, before refunds
+	StateGas     *uint64 `json:"state_gas"`
+	ApplyNS      *int64  `json:"apply_ns_median"`
+	Reads        int     `json:"reads"`
+	Writes       int     `json:"writes"`
+	DependsOn    []int   `json:"depends_on"`
 }
 type Edges struct {
 	RAW            int  `json:"RAW"`
@@ -91,7 +99,8 @@ type Ceiling struct {
 	CriticalPath []int    `json:"critical_path,omitempty"`
 }
 type CeilingSet struct {
-	Gas       Ceiling `json:"gas_weighted"`
+	Gas       Ceiling `json:"gas_weighted"` // receipt gasUsed
+	Execution Ceiling `json:"execution_gas_weighted"`
 	Validator Ceiling `json:"validator_bal_time"`
 	Builder   Ceiling `json:"builder_dag_time"`
 }
@@ -140,6 +149,7 @@ type Replay struct {
 	LogicalCPUs int    `json:"logical_cpus"`
 	Samples     int    `json:"samples"`
 	MedianNS    int64  `json:"median_apply_ns"`
+	Timing      string `json:"timing"`
 }
 type Brief struct {
 	BlockHash                 string    `json:"block_hash"`
@@ -152,6 +162,7 @@ type Brief struct {
 	ReceiptsGasSum            uint64    `json:"receipts_gas_sum"`
 	CommitmentVerified        bool      `json:"commitment_verified"`
 	GasWeighted               *float64  `json:"gas_weighted"`
+	ExecutionGasWeighted      *float64  `json:"execution_gas_weighted"`
 	ValidatorBALTime          *float64  `json:"validator_bal_time"`
 	BuilderDAGTime            *float64  `json:"builder_dag_time"`
 	GasCappingTx              *int      `json:"gas_capping_tx_index"`
@@ -160,6 +171,9 @@ type Brief struct {
 	Speedup8Validator         *float64  `json:"speedup_8_validator"`
 	Speedup8Builder           *float64  `json:"speedup_8_builder"`
 	BuilderIndex              *string   `json:"builder_index"`
+	// Strict: the time-capping tx uses less gas than the gas-capping one, so equal-gas ties do not count.
+	GasMisidentifies          *bool `json:"gas_misidentifies_bottleneck"`
+	ExecutionGasMisidentifies *bool `json:"execution_gas_misidentifies_bottleneck"`
 }
 type Percentiles struct {
 	P10    float64 `json:"p10"`
@@ -172,11 +186,13 @@ type Summary struct {
 	ToBlock   *uint64 `json:"to_block"`
 	Ceilings  struct {
 		Gas       *Percentiles `json:"gas_weighted"`
+		Execution *Percentiles `json:"execution_gas_weighted"`
 		Validator *Percentiles `json:"validator_bal_time"`
 		Builder   *Percentiles `json:"builder_dag_time"`
 	} `json:"ceilings"`
 	SingleTxBound      *float64 `json:"single_tx_bound_share"`
 	GasMisidentifies   *float64 `json:"gas_misidentifies_bottleneck_share"`
+	ExecMisidentifies  *float64 `json:"execution_gas_misidentifies_bottleneck_share"`
 	CommitmentVerified *float64 `json:"commitment_verified_share"`
 	Speedup8           struct {
 		Validator *float64 `json:"validator_median"`

@@ -51,6 +51,8 @@ type Tx struct {
 	EVMState   int64              `json:"state_inside_evm_ns"`
 	Hash       string             `json:"hash"`
 	Gas        uint64             `json:"gas_used"`
+	ExecGas    uint64             `json:"execution_gas"` // EIP-8037 dimensions from the GasPool deltas
+	StateGas   uint64             `json:"state_gas"`
 	Apply      int64              `json:"apply_ns"`
 	State      int64              `json:"state_access_ns"`
 	Finalize   int64              `json:"finalize_ns"`
@@ -69,25 +71,26 @@ type Counter struct {
 	NS    int64  `json:"ns"`
 }
 type Report struct {
-	Runner           string   `json:"runner"`
-	Go               string   `json:"go"`
-	OS               string   `json:"os"`
-	Arch             string   `json:"arch"`
-	CPUs             int      `json:"logical_cpus"`
-	CPU              string   `json:"cpu_model"`
-	Geth             string   `json:"geth_library"`
-	ModuleSum        string   `json:"module_sum"`
-	BlockHash        string   `json:"block_hash"`
-	Transactions     int      `json:"transaction_count"`
-	Gas              uint64   `json:"gas_used"`
-	Warmups          int      `json:"warmups"`
-	Samples          []Sample `json:"samples"`
-	ControlNS        []int64  `json:"control_apply_ns"`
-	MedianNS         int64    `json:"median_apply_ns"`
-	P95NS            int64    `json:"p95_apply_ns"`
-	ControlMedianNS  int64    `json:"control_median_ns"`
-	MedianStateNS    int64    `json:"median_state_ns"`
-	MedianFinalizeNS int64    `json:"median_finalize_ns"`
+	Runner           string    `json:"runner"`
+	Go               string    `json:"go"`
+	OS               string    `json:"os"`
+	Arch             string    `json:"arch"`
+	CPUs             int       `json:"logical_cpus"`
+	CPU              string    `json:"cpu_model"`
+	Geth             string    `json:"geth_library"`
+	ModuleSum        string    `json:"module_sum"`
+	BlockHash        string    `json:"block_hash"`
+	Transactions     int       `json:"transaction_count"`
+	Gas              uint64    `json:"gas_used"`
+	Warmups          int       `json:"warmups"`
+	Samples          []Sample  `json:"samples"`
+	ControlNS        []int64   `json:"control_apply_ns"`
+	ControlTxNS      [][]int64 `json:"control_transaction_apply_ns"` // per control sample, per tx: uninstrumented apply_ns
+	MedianNS         int64     `json:"median_apply_ns"`
+	P95NS            int64     `json:"p95_apply_ns"`
+	ControlMedianNS  int64     `json:"control_median_ns"`
+	MedianStateNS    int64     `json:"median_state_ns"`
+	MedianFinalizeNS int64     `json:"median_finalize_ns"`
 }
 
 func percentile(values []int64, p float64) int64 {
@@ -280,9 +283,11 @@ func run(in Input) (Report, error) {
 			}
 			evm := vm.NewEVM(blockCtx, stateDB, chain, config)
 			evm.SetTxContext(core.NewEVMTxContext(messages[i]))
+			exec, stateGas := gp.CumulativeExecution(), gp.CumulativeState()
 			start := time.Now()
 			result, err := core.ApplyMessage(evm, messages[i], gp)
 			elapsed := time.Since(start).Nanoseconds()
+			exec, stateGas = gp.CumulativeExecution()-exec, gp.CumulativeState()-stateGas
 			if err != nil {
 				return Sample{}, fmt.Errorf("replay tx %d: %w", i, err)
 			}
@@ -309,7 +314,7 @@ func run(in Input) (Report, error) {
 			sample.Apply += elapsed
 			sample.State += counter.elapsed
 			sample.Finalize += finalize
-			sample.Transactions = append(sample.Transactions, Tx{EVM: evmNS, EVMState: counter.evmState, Hash: tx.Hash().Hex(), Gas: result.UsedGas, Apply: elapsed, State: counter.elapsed, Finalize: finalize, StateCalls: counter.counts})
+			sample.Transactions = append(sample.Transactions, Tx{EVM: evmNS, EVMState: counter.evmState, Hash: tx.Hash().Hex(), Gas: result.UsedGas, ExecGas: exec, StateGas: stateGas, Apply: elapsed, State: counter.elapsed, Finalize: finalize, StateCalls: counter.counts})
 		}
 		if gp.Used() != h.GasUsed {
 			return Sample{}, fmt.Errorf("replayed block gas dimensions differ from header")
@@ -324,7 +329,7 @@ func run(in Input) (Report, error) {
 			return Report{}, err
 		}
 	}
-	report := Report{Runner: "rooted-native-replay-v1", Go: runtime.Version(), OS: runtime.GOOS, Arch: runtime.GOARCH, CPUs: runtime.NumCPU(), CPU: cpuModel(), Geth: "v1.17.10", BlockHash: block.Hash.Hex(), Transactions: n, Gas: h.GasUsed, Warmups: 2, Samples: []Sample{}, ControlNS: []int64{}}
+	report := Report{Runner: "rooted-native-replay-v1", Go: runtime.Version(), OS: runtime.GOOS, Arch: runtime.GOARCH, CPUs: runtime.NumCPU(), CPU: cpuModel(), Geth: "v1.17.10", BlockHash: block.Hash.Hex(), Transactions: n, Gas: h.GasUsed, Warmups: 2, Samples: []Sample{}, ControlNS: []int64{}, ControlTxNS: [][]int64{}}
 	if build, ok := debug.ReadBuildInfo(); ok {
 		for _, dep := range build.Deps {
 			if dep.Path == "github.com/ethereum/go-ethereum" {
@@ -353,6 +358,11 @@ func run(in Input) (Report, error) {
 			return Report{}, err
 		}
 		report.ControlNS = append(report.ControlNS, control.Apply)
+		perTx := make([]int64, n)
+		for j, tx := range control.Transactions {
+			perTx[j] = tx.Apply
+		}
+		report.ControlTxNS = append(report.ControlTxNS, perTx)
 		report.Samples = append(report.Samples, sample)
 		apply = append(apply, sample.Apply)
 		stateTime = append(stateTime, sample.State)
