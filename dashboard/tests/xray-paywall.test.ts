@@ -22,6 +22,31 @@ test("turning the x402 paywall on closes the free report proxy even without ROOT
   } finally { delete process.env.ROOTED_X402_ENABLED; }
 });
 
+test("ROOTED_FREE_XRAY_BLOCKS opens exact listed reports through the hosted proxy; other hashes and paths stay closed", async (t) => {
+  const sample = "0x" + "cd".repeat(32), called: string[] = [];
+  t.mock.method(globalThis, "fetch", async (url: URL) => { called.push(url.pathname); return Response.json({ data: {} }); });
+  process.env.ROOTED_FREE_XRAY_BLOCKS = `${hash}0, ${sample.toUpperCase().replace("0X", "0x")} `;
+  try {
+    for (const env of [{ ROOTED_X402_ENABLED: "true" }, { ROOTED_HOSTED: "1" }]) {
+      Object.assign(process.env, env);
+      called.length = 0;
+      const free = await get(["api", "v1", "xray", "blocks", sample.replace("cd", "CD")]);
+      assert.equal(free.status, 200);
+      assert.equal(free.headers.get("X-Rooted-Sample"), "free");
+      const closed = await get(["api", "v1", "xray", "blocks", hash]);
+      assert.equal(closed.status, env.ROOTED_HOSTED ? 403 : 402);
+      assert.deepEqual((await closed.json()).error.free_samples, [sample], "a malformed list entry frees nothing");
+      for (const trick of [["api", "v1", "xray", "blocks", sample, "capture"], ["api", "v1", "xray", "blocks", sample + "00"], ["api", "v1", "xray", "blocks", sample.slice(0, -2)]])
+        assert.equal((await get(trick)).status, 400, trick.join("/"));
+      assert.deepEqual(called, [`/api/v1/xray/blocks/${sample.replace("cd", "CD")}`], "only the sample reached the backend");
+      for (const k of Object.keys(env)) delete process.env[k];
+    }
+    const self = await get(["api", "v1", "xray", "blocks", hash]);
+    assert.equal(self.status, 200, "self-hosted: every report is free");
+    assert.equal(self.headers.get("X-Rooted-Sample"), null, "and none is labelled a sample");
+  } finally { delete process.env.ROOTED_FREE_XRAY_BLOCKS; delete process.env.ROOTED_X402_ENABLED; delete process.env.ROOTED_HOSTED; }
+});
+
 test("execution-gas lanes and ceiling are optional but validated when present", () => {
   const h = (c: string) => "0x" + c.repeat(64);
   const tx = (index: number, gas: number, exec: number | null) => ({ index, hash: h(String(index + 1)), from: "0x" + "1".repeat(40), to: null, is_create: false, status: 1, gas_used: gas, execution_gas: exec, state_gas: exec == null ? null : gas - exec, apply_ns_median: 100, reads: 0, writes: 0, depends_on: [] });

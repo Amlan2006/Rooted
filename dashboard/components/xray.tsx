@@ -10,7 +10,7 @@ import uniswapExample from "@/lib/uniswap-contention-example.json";
 
 const repo = "https://github.com/Amlan2006/Rooted/blob/main";
 const percent = (n: number | null | undefined) => (n == null ? "Unknown" : (n * 100).toFixed(0) + "%");
-type Loaded = { report?: Report; status: number | null; error?: string; stored?: boolean; paidURL?: string };
+type Loaded = { report?: Report; status: number | null; error?: string; stored?: boolean; paidURL?: string; samples?: string[]; sample?: boolean };
 
 export default function Xray() {
   const [selected, setSelected] = useState<string | null>(null);
@@ -46,9 +46,10 @@ export default function Xray() {
       if (!target) return set({ status: null });
       const response = await fetch(`/api/backend/api/v1/xray/blocks/${target}?network=sepolia`, { cache: "no-store", signal });
       const body = await response.json().catch(() => ({}));
-      if (response.status === 402) return set({ status: 402, paidURL: body.error?.paid_url });
+      // Hosted mode: 402 when sold via x402, 403 hosted_read_only without a paywall. Both keep the free brief.
+      if (response.status === 402 || body.error?.code === "hosted_read_only") return set({ status: 402, paidURL: body.error?.paid_url, samples: body.error?.free_samples });
       if (!response.ok) return set({ status: response.status, error: body.error?.message || `Backend HTTP ${response.status}` });
-      set({ report: parseReport(body.data), status: 200 });
+      set({ report: parseReport(body.data), status: 200, sample: response.headers.get("X-Rooted-Sample") === "free" });
     }
     load().catch(e => set({ status: null, error: e instanceof Error ? e.message : "X-ray request failed" }));
     return () => { stopped = true; };
@@ -74,7 +75,7 @@ export default function Xray() {
   }
   const report = loaded.report;
   const brief = briefs.find(b => b.block_hash === target);
-  const canCompute = loaded.status !== 402 && !readOnly && !offline;
+  const canCompute = loaded.status !== 402 && !loaded.sample && !readOnly && !offline;
   return <>
     <div className="coverage-banner">
       <div className="banner-icon"><Cpu size={18} /></div>
@@ -89,7 +90,11 @@ export default function Xray() {
       : loaded.error && <div className="notice error" role="alert">{loaded.error}</div>)
       : <Notice resource={blocks} empty={!briefs.length && !selected} />}
     {briefError && <div className="notice error" role="alert">{briefError}</div>}
-    {loaded.status === 402 && <div className="notice warning"><Badge tone="amber">PAID VIA X402</Badge>Hosted mode: the full report for this block is sold to agents via x402{loaded.paidURL ? <> at <code>{loaded.paidURL}</code></> : null}. The brief below stays free.</div>}
+    {loaded.status === 402 && <div className="notice warning"><Badge tone="amber">{loaded.paidURL ? "PAID VIA X402" : "BRIEF ONLY"}</Badge>
+      <span>{loaded.paidURL ? <>Hosted mode: the full report for this block is sold to agents via x402 at <code>{loaded.paidURL}</code>.</>
+        : "This hosted deployment does not serve full reports; self-hosted Rooted serves them free."} The brief below stays free.</span>
+      {loaded.samples?.map(h => <button key={h} onClick={() => select(h)}>Open free sample {short(h)}</button>)}</div>}
+    {loaded.sample && <div className="notice"><Badge tone="green">FREE SAMPLE</Badge>This block&apos;s full report is a free sample on this hosted deployment. Other blocks show the brief only.</div>}
     {loaded.status === 404 && <div className="notice">No stored X-ray for {short(target)} yet.{canCompute ? " Compute it below." : ""}</div>}
     {loaded.error && !offline && loaded.status !== 404 && <div className="notice error" role="alert">{loaded.error}<button onClick={() => setReload(n => n + 1)}>Retry</button></div>}
     {!offline && <RecentBlocks briefs={briefs} target={target} stats={stats} onSelect={select} />}
@@ -105,7 +110,7 @@ export default function Xray() {
         {computeError && <div className="notice error" role="alert">{computeError}</div>}
       </form>
     </Panel>}
-    <HostedAPI hash={report?.block.hash ?? target} />
+    <HostedAPI hash={report?.block.hash ?? target} hosted={loaded.status === 402 || !!loaded.sample} />
   </>;
 }
 
@@ -293,7 +298,7 @@ function RecentBlocks({ briefs, target, stats, onSelect }: { briefs: Brief[]; ta
   </Panel>;
 }
 
-function HostedAPI({ hash }: { hash: string | null }) {
+function HostedAPI({ hash, hosted }: { hash: string | null; hosted: boolean }) {
   const [probe, setProbe] = useState<{ status: number | null; terms: PaymentTerms[] }>({ status: null, terms: [] });
   useEffect(() => {
     if (!hash) return;
@@ -304,11 +309,13 @@ function HostedAPI({ hash }: { hash: string | null }) {
       .catch(() => { if (!stopped) setProbe({ status: null, terms: [] }); });
     return () => { stopped = true; };
   }, [hash]);
-  return <Panel title="Hosted API for agents" subtitle="Self-hosting is free. A hosted deployment can sell per-block reports over x402." action={<Badge tone={probe.status === 402 ? "green" : "neutral"}>{probe.status === 402 ? "PAYWALL LIVE" : "READ-ONLY"}</Badge>}>
+  return <Panel title="Hosted API for agents" subtitle="Self-hosting is free. A hosted deployment can sell per-block reports over x402." action={<Badge tone={probe.status === 402 || probe.status === 200 ? "green" : "neutral"}>{probe.status === 402 ? "PAYWALL LIVE" : probe.status === 200 ? "FREE SAMPLE" : "READ-ONLY"}</Badge>}>
     <div className="analysis-form">
       <p>Paid endpoint: <code>GET /api/paid/xray/{"{block_hash}"}</code> returns the stored <code>rooted-xray-v1</code> report. Settlement happens only after a response below 400, so an unknown block or a backend failure is never charged. Recent-block briefs and the summary stay free.</p>
       {probe.status === 402 && probe.terms.length ? probe.terms.map((t, i) => <p key={i}>Price: <strong>{formatPrice(t)}</strong> on <code>{t.network}</code> · pay to {t.network.startsWith("hedera:") ? <a className="text-button" href={`https://hashscan.io/${t.network.split(":")[1]}/account/${t.payTo}`} target="_blank" rel="noreferrer">{t.payTo}</a> : <code>{t.payTo}</code>}{t.maxTimeoutSeconds ? ` · ${t.maxTimeoutSeconds}s payment window` : ""}. Terms read live from this deployment&apos;s 402 response.</p>)
-        : <p>{probe.status === 404 ? "The paywall is off on this deployment (the default). Full reports are free here at /api/backend/api/v1/xray/blocks/{block_hash}?network=sepolia." : probe.status == null ? "Paid endpoint status unknown." : `Paid endpoint answered HTTP ${probe.status}; price unavailable.`}</p>}
+        : <p>{probe.status === 200 ? "This block is a free sample, so the paid endpoint serves it without payment. Other blocks answer 402 with live terms."
+          : probe.status === 404 ? (hosted ? "The paywall is off on this hosted deployment, so it serves block briefs and free samples, not full reports. Self-hosted Rooted serves every report free."
+            : "The paywall is off on this deployment (the default). Full reports are free here at /api/backend/api/v1/xray/blocks/{block_hash}?network=sepolia.") : probe.status == null ? "Paid endpoint status unknown." : `Paid endpoint answered HTTP ${probe.status}; price unavailable.`}</p>}
       <p>How an agent pays: (1) GET the endpoint and receive 402 with a <code>PAYMENT-REQUIRED</code> header naming network, asset, amount and pay-to. (2) Its x402 client checks its spending limits, signs a Hedera testnet transfer and retries with the payment header. No human approves it. (3) The facilitator verifies and settles, and <code>PAYMENT-RESPONSE</code> carries the transaction id to look up on HashScan.</p>
       <p><a className="text-button" href={`${repo}/integrations/x402-agent/README.md`} target="_blank" rel="noreferrer">Agent setup and spend controls</a> · <a className="text-button" href={`${repo}/docs/XRAY.md`} target="_blank" rel="noreferrer">X-ray method</a> · <a className="text-button" href="https://x402.org" target="_blank" rel="noreferrer">x402 protocol</a></p>
     </div>

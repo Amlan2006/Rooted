@@ -1,11 +1,12 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { withX402, x402ResourceServer } from "@x402/next";
 import { HTTPFacilitatorClient, type FacilitatorClient } from "@x402/core/server";
 import { ExactHederaScheme } from "@x402/hedera/exact/server";
 import { backendURL } from "@/lib/proxy";
+import { freeXrayBlocks } from "@/lib/hosted";
 
 // Hosted mode (spec §6): agents pay per block hash on Hedera testnet; off by default so self-hosting stays free.
-export type X402Config = { payTo: string; asset: string; amount: string; facilitatorURL: string; maxTimeoutSeconds: number };
+export type X402Config = { payTo: string; asset: string; amount: string; facilitatorURL: string; maxTimeoutSeconds: number; publicURL: string | null };
 export const PAID_ROUTE = "/api/paid/xray/[hash]";
 const fail = (status: number, code: string, message: string) =>
   NextResponse.json({ error: { code, message } }, { status, headers: { "Cache-Control": "no-store" } });
@@ -24,7 +25,11 @@ export function x402Config(env: Record<string, string | undefined>): X402Config 
   try { url = new URL(env.ROOTED_X402_FACILITATOR_URL || "https://x402.org/facilitator"); } catch { throw Error("ROOTED_X402_FACILITATOR_URL must be a URL"); }
   if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash)
     throw Error("ROOTED_X402_FACILITATOR_URL must be an https URL without credentials");
-  return { payTo, asset, amount, facilitatorURL: url.href.replace(/\/$/, ""), maxTimeoutSeconds: +timeout };
+  let publicURL: URL | null = null;
+  try { if (env.ROOTED_PUBLIC_URL) publicURL = new URL(env.ROOTED_PUBLIC_URL); } catch { throw Error("ROOTED_PUBLIC_URL must be a URL"); }
+  if (publicURL && (!["http:", "https:"].includes(publicURL.protocol) || publicURL.username || publicURL.password || publicURL.pathname !== "/" || publicURL.search || publicURL.hash))
+    throw Error("ROOTED_PUBLIC_URL must be an http(s) origin such as https://rooted.example.org");
+  return { payTo, asset, amount, facilitatorURL: url.href.replace(/\/$/, ""), maxTimeoutSeconds: +timeout, publicURL: publicURL?.origin ?? null };
 }
 
 export const paidHash = (pathname: string) => {
@@ -70,8 +75,12 @@ export function paidXray(cfg: X402Config | null, facilitator?: FacilitatorClient
       mimeType: "application/json",
     },
   }, server);
-  // Reject malformed hashes before asking for payment.
-  return async (request: NextRequest) => paidHash(request.nextUrl.pathname)
-    ? paid(request)
-    : fail(400, "invalid_hash", "Use a lowercase 0x-prefixed 32-byte block hash.");
+  return async (request: NextRequest) => {
+    // Reject malformed hashes before asking for payment.
+    const hash = paidHash(request.nextUrl.pathname);
+    if (!hash) return fail(400, "invalid_hash", "Use a lowercase 0x-prefixed 32-byte block hash.");
+    if (freeXrayBlocks().has(hash)) return report(request); // ROOTED_FREE_XRAY_BLOCKS sample: same checks, no payment
+    // Behind a reverse proxy request.url is the internal origin; PAYMENT-REQUIRED must name the public one.
+    return paid(cfg.publicURL ? new NextRequest(new URL(request.nextUrl.pathname + request.nextUrl.search, cfg.publicURL), { headers: request.headers }) : request);
+  };
 }

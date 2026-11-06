@@ -17,17 +17,17 @@ test("proxy allows the X-ray and frame conformance reads only", () => {
     assert.throws(() => backendURL(route, "", base));
 });
 
-test("hosted mode sells full block reports, keeps lists free, and closes compute routes", async (t) => {
+test("hosted mode without a paywall withholds full block reports, keeps lists free, and closes compute routes", async (t) => {
   let called = "";
   t.mock.method(globalThis, "fetch", async (url: URL) => { called = String(url); return Response.json({ data: [] }); });
   assert.equal((await get(["api", "v1", "xray", "blocks", hash])).status, 200, "self-hosted reports stay free");
   process.env.ROOTED_HOSTED = "1";
   try {
     called = "";
-    const paid = await get(["api", "v1", "xray", "blocks", hash]);
-    assert.equal(paid.status, 402);
-    assert.deepEqual((await paid.json()).error, { code: "payment_required", message: "Hosted mode: per-block X-ray reports are sold to agents via x402", paid_url: `/api/paid/xray/${hash.toLowerCase()}` });
-    assert.equal(called, "", "a paywalled report never reaches the backend");
+    const withheld = await get(["api", "v1", "xray", "blocks", hash]);
+    assert.equal(withheld.status, 403, "nothing is sold, so no 402");
+    assert.deepEqual((await withheld.json()).error, { code: "hosted_read_only", message: "This hosted deployment serves block briefs, not full reports. Self-host Rooted to read them for free.", free_samples: [] });
+    assert.equal(called, "", "a withheld report never reaches the backend");
     for (const free of [["api", "v1", "xray", "blocks"], ["api", "v1", "xray", "summary"], ["api", "v1", "xray", "uniswap"]]) assert.equal((await get(free)).status, 200);
     const post = new Request("http://localhost:3000/x", { method: "POST", headers: { Origin: "http://localhost:3000", "Content-Type": "application/json" }, body: "{}" });
     for (const route of [analysis, profiler, providers]) assert.equal((await route(post.clone())).status, 403);

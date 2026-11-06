@@ -1,5 +1,5 @@
 import { backendURL } from "@/lib/proxy";
-import { hosted, hostedForbidden } from "@/lib/hosted";
+import { freeXrayBlocks, hosted, hostedForbidden } from "@/lib/hosted";
 export const dynamic = "force-dynamic";
 export async function GET(
   request: Request,
@@ -24,16 +24,25 @@ export async function GET(
     );
   }
   const paid = path.join("/").match(/^api\/v1\/xray\/blocks\/(0x[0-9a-fA-F]{64})$/);
-  if (paid && hosted())
+  const free = freeXrayBlocks(), sold = process.env.ROOTED_X402_ENABLED === "true";
+  const sample = !!paid && hosted() && free.has(paid[1].toLowerCase());
+  if (paid && hosted() && !sample)
     return Response.json(
       {
-        error: {
-          code: "payment_required",
-          message: "Hosted mode: per-block X-ray reports are sold to agents via x402",
-          paid_url: `/api/paid/xray/${paid[1].toLowerCase()}`,
-        },
+        error: sold
+          ? {
+              code: "payment_required",
+              message: "Hosted mode: per-block X-ray reports are sold to agents via x402",
+              paid_url: `/api/paid/xray/${paid[1].toLowerCase()}`,
+              free_samples: [...free],
+            }
+          : {
+              code: "hosted_read_only",
+              message: "This hosted deployment serves block briefs, not full reports. Self-host Rooted to read them for free.",
+              free_samples: [...free],
+            },
       },
-      { status: 402, headers: { "Cache-Control": "no-store" } },
+      { status: sold ? 402 : 403, headers: { "Cache-Control": "no-store" } },
     );
   // Profiles hold the paid report's inputs (per-tx timings, the full capture), so hosted mode does not serve them free.
   if (hosted() && /^api\/v1\/profiles(\/|$)/.test(path.join("/"))) return hostedForbidden();
@@ -56,6 +65,7 @@ export async function GET(
           response.headers.get("content-type") || "application/json",
         "Cache-Control": "no-store",
         "X-Accel-Buffering": "no",
+        ...(sample && { "X-Rooted-Sample": "free" }),
       },
     });
   } catch {

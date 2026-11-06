@@ -51,6 +51,7 @@ agent.mjs ──GET──▶ dashboard /api/paid/xray/[hash]   (Next.js route, w
 Guarantees enforced in `dashboard/lib/x402.ts`:
 
 - Malformed hashes get a 400 before any payment is requested.
+- Only an exact `ROOTED_FREE_XRAY_BLOCKS` hash skips payment, and it still goes through the report checks below.
 - `withX402` settles only when the handler returns a status below 400. An unknown hash (404), a backend outage (502) or a backend body that is not the `rooted-xray-v1` report for that exact hash (502 `invalid_report`) is never charged.
 - The backend origin goes through the same `backendURL` guard as the read proxy: http(s) only, no credentials, no path.
 - A misconfigured paywall throws when the module loads (fail closed) instead of serving reports free or at the wrong price.
@@ -78,12 +79,14 @@ Dashboard environment. Set `ROOTED_X402_ENABLED=true` in the hosting environment
 | Variable | Default | Rule |
 |---|---|---|
 | `ROOTED_X402_ENABLED` | unset (off) | only the exact value `true` enables the paywall; it implies hosted mode |
-| `ROOTED_HOSTED` | unset (off) | `1` or `true`: hosted mode without a paywall (full reports 402, compute routes 403) |
+| `ROOTED_HOSTED` | unset (off) | `1` or `true`: hosted mode without a paywall (full reports and compute routes 403 `hosted_read_only`) |
 | `ROOTED_X402_PAY_TO` | none (required) | `0.0.N`, N ≥ 1; the `.env.example` placeholder `0.0.0000000` is rejected |
 | `ROOTED_X402_HEDERA_ASSET` | `0.0.0` (HBAR) | `0.0.429274` = testnet USDC (HTS) |
 | `ROOTED_X402_PRICE_ATOMIC` | `1000000` (0.01 HBAR) | positive integer in atomic units; `10000` = 0.01 USDC |
 | `ROOTED_X402_FACILITATOR_URL` | `https://x402.org/facilitator` | https without credentials; fallback `https://api.testnet.blocky402.com` |
 | `ROOTED_X402_MAX_TIMEOUT_SECONDS` | `120` | 1–180, because Hedera rejects transaction valid durations above 180 s |
+| `ROOTED_PUBLIC_URL` | unset (request origin) | http(s) origin without a path, such as `https://rooted.example.org`. Behind a reverse proxy the request origin is the internal one, so set this and `PAYMENT-REQUIRED` names the public resource URL. The x402 agent reads the same variable as its base URL |
+| `ROOTED_FREE_XRAY_BLOCKS` | unset (none) | comma-separated block hashes whose full report hosted mode serves without payment, on the paid route and the read proxy, labelled as a free sample in the X-ray view. Exact match after trimming and lowercasing; an entry that is not a 32-byte hash is dropped |
 
 Keys:
 
