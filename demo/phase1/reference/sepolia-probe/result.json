@@ -1,0 +1,71 @@
+{
+  "status": "passed",
+  "result": {
+    "slot": "11518273",
+    "payload_hash": "0xd0c1ebdf40a22ff4e79f632ad7dc1de980be0f770628b92c975f1b3433a9a5b1",
+    "builder_index": "7",
+    "identifiers_matched": true,
+    "beacon_root_checked_against_header": true,
+    "execution_number": "0xb84137",
+    "bal_commitment": "0x5582149e5e4759e6a998c7f09e5f432bf08b0916f97fc3aa7c1131bf009f3185",
+    "reveal_latency_ms": null,
+    "ptc_timely": null,
+    "blob_available": null,
+    "independent_execution_validity": null,
+    "beacon_root": "0x5e9489b8e11d5a0fa33c111f6ec40f87cfa120b9ddf372590b29f23154865dff",
+    "genesis_validators_root": "0xd8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078",
+    "beacon_fork": "gloas",
+    "included_ptc_attestations": [
+      {
+        "aggregation_bits": "0xebffffdfffffffefff7fcfffedfb67dbfffffdfffff776df7f7fffffffdfffdfff7febefffeffffffffffff7ffffffff5ed7ef7ff7fffffbffff7fff7ffff77f",
+        "data": {
+          "beacon_block_root": "0x3306325cd5b65c774f454633a2f060279841f1bafbfe47dec8a72f7d55c2dc91",
+          "slot": "11518272",
+          "payload_present": true,
+          "blob_data_available": true
+        },
+        "signature": "0x855c03e6e537d2daa87e41a85d3c3a4a16690c1585033fe991814f24f7be99d28ce2a83da29b89cb32b93106b3507e640756b91d63712ab53edc4477ee32a5a058cb0580b8b3fed6d5484e3f139bc2ec41cbd7385efb07debe7b09ff40532a22"
+      }
+    ],
+    "execution_client": {
+      "status": "available",
+      "value": "Geth/v1.17.10-stable-1df30b18/linux-amd64/go1.27.3"
+    },
+    "beacon_client": {
+      "status": "available",
+      "value": {
+        "data": {
+          "version": "Nimbus/v26.10.2-0abc0d-stateofus"
+        }
+      }
+    },
+    "native_bal_getter": {
+      "status": "unavailable",
+      "reason": "rpc_unsupported",
+      "accounts": null
+    },
+    "envelope_bal_present": true,
+    "envelope_commitment_verified": true,
+    "stream": {
+      "status": "available",
+      "value": {
+        "event_types": [
+          "block",
+          "execution_payload",
+          "execution_payload_available",
+          "execution_payload_gossip",
+          "payload_attestation_message"
+        ],
+        "bytes": 11312,
+        "original_arrival_timing_verified": false
+      }
+    },
+    "prestate_trace": {
+      "status": "available"
+    }
+  },
+  "schema": "rooted.phase1-probe-v1",
+  "probe": "sepolia",
+  "checked_at": "2026-11-06T08:14:48.629926+00:00",
+  "mode": "live_probe_attempt"
+}

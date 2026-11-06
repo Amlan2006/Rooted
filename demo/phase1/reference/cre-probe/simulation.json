@@ -1,0 +1,7 @@
+{
+  "cli_exit_code": 1,
+  "http_value_verified": false,
+  "evm_tick_spacing_verified": false,
+  "execution_mode": "simulation",
+  "broadcast": false
+}

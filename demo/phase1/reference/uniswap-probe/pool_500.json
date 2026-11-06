@@ -1,0 +1,23 @@
+{
+  "started_at_utc": "2026-11-06T08:14:48.789539+00:00",
+  "source_origin": "http://127.0.0.1",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "eth_call",
+    "params": [
+      {
+        "to": "0x0227628f3f023bb0b980b67d528571c95c6dac1c",
+        "data": "0x1698ee82000000000000000000000000fff9976782d46cc05630d1f6ebab18b2324d6b140000000000000000000000001c7d4b196cb0c7b01d743fbc6116a902379c723800000000000000000000000000000000000000000000000000000000000001f4"
+      },
+      {
+        "blockHash": "0xa0038510b048ca39b286cdbe59e947d58c8726669ba8536cb3cf59195696e9a3",
+        "requireCanonical": true
+      }
+    ]
+  },
+  "http_status": "200",
+  "curl_exit": 0,
+  "body": "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":\"0x0000000000000000000000003289680dd4d6c10bb19b899729cda5eef58aeff1\"}",
+  "mode": "live_probe_attempt"
+}

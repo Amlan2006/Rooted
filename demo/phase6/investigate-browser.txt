@@ -1,0 +1,215 @@
+# Rooted dashboard accessibility snapshot: investigate
+# captured_at_utc: 2026-11-06T08:39:43.755Z
+# url: http://127.0.0.1:3000/?view=investigate&report=0xd384d6c001b20a907159076dd2910f4d8bdbbab6d0c5151c874b5a960597a364&network=sepolia&mode=live&transaction=0x4a32623f9cc2e432e77e3d0ec267d64b87fc21a0ee38960563881844389cc72f&source=sepolia-nimbus-geth-1
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+# note: Investigate view, 'Open latest saved report' clicked, 15 s wait for optional evidence lookups.
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: Investigate
+  - text: API stream connected Sepolia 11155111
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "Guided investigation." [level=1]
+  - paragraph: Follow a transaction through delivery, shared state, and policy evidence.
+  - text: SCOPED INVESTIGATION
+  - heading "Start with a Sepolia transaction" [level=2]
+  - paragraph: Paste a hash to fetch a native BAL and inspect shared state.
+  - text: Transaction hash
+  - textbox "Transaction hash":
+    - /placeholder: 0x…
+  - button "Analyze"
+  - paragraph: Finds the mined transaction’s block, verifies its BAL, and traces this transaction for calls and swap evidence. Results are saved. Requests use the configured backend connection.
+  - navigation "Investigation steps":
+    - link "1 Transaction & block":
+      - /url: "#investigation-identities"
+    - link "2 Payload delivery":
+      - /url: "#investigation-payload"
+    - link "3 Shared state":
+      - /url: "#state-dependencies"
+    - link "4 Swaps":
+      - /url: "#uniswap-results"
+    - link "5 Policy checks":
+      - /url: "#investigation-policy"
+    - link "6 Export":
+      - /url: "#investigation-download"
+  - heading "1. Transaction and execution block" [level=2]
+  - paragraph: A pinned report with explicit immutable identities
+  - term: Transaction
+  - definition:
+    - code: "0x4a32623f9cc2e432e77e3d0ec267d64b87fc21a0ee38960563881844389cc72f"
+  - term: Execution block
+  - definition:
+    - code: "0x4182f5031028fe934963c1252fdfe92915c788fdfb06ffb47bae00715f34cc71"
+  - term: Report
+  - definition:
+    - code: "0xd384d6c001b20a907159076dd2910f4d8bdbbab6d0c5151c874b5a960597a364"
+  - term: Network / mode / chain
+  - definition: sepolia / live / 11155111
+  - paragraph: "Transaction index: 82 (zero-based). Tracing is selected for this transaction; see report-specific coverage. Analyzed 2026-11-06T08:28:03.000953797Z. Canonical at fetch: Confirmed."
+  - button "Investigation identity and scope"
+  - heading "2. Payload delivery" [level=2]
+  - paragraph: Correlated by execution hash, network, mode, source, slot, and Beacon root
+  - text: Matched evidence
+  - button "Recheck linked evidence"
+  - article:
+    - heading "Slot 11518333 · sepolia-nimbus-geth-1" [level=3]
+    - term: Beacon root
+    - definition:
+      - code: "0x72ba455559ff9f7a7ff1b90d6167d48ec5160428814307a448ad83f71e4d34a9"
+    - term: Execution hash
+    - definition:
+      - code: "0x4182f5031028fe934963c1252fdfe92915c788fdfb06ffb47bae00715f34cc71"
+    - text: "Collector receipt difference:"
+    - strong: Unknown
+    - text: "Canonical: Confirmed Execution validation (source-reported): Unknown"
+    - paragraph: Timing describes the collector’s observation path. It is not global propagation time or a protocol timeliness verdict. Missing timing remains unknown.
+    - button "Payload evidence for slot 11518333"
+    - paragraph: 2 matching journal events; showing 2 (first 200 entries searched).
+    - table:
+      - rowgroup:
+        - row "Event Observed at Timed receipt":
+          - columnheader "Event"
+          - columnheader "Observed at"
+          - columnheader "Timed receipt"
+      - rowgroup:
+        - row "ptc 2026-11-06T08:27:14.872884723Z No":
+          - cell "ptc"
+          - cell "2026-11-06T08:27:14.872884723Z"
+          - cell "No"
+        - row "snapshot 2026-11-06T08:39:26.741739374Z No":
+          - cell "snapshot"
+          - cell "2026-11-06T08:39:26.741739374Z"
+          - cell "No"
+    - button "Matching journal evidence for slot 11518333"
+  - paragraph: "Payload source: sepolia-nimbus-geth-1. Only this pinned source is searched: at most 200 observations, using the header slot when available. Missing results do not establish that no evidence exists."
+  - text: 3–4. Inspect shared-state conflicts and swap outcomes below. Missing delivery or policy evidence does not stop this investigation. LIVE · NATIVE BAL
+  - heading "Block 12,075,378" [level=2]
+  - code: "0x4182f5031028fe934963c1252fdfe92915c788fdfb06ffb47bae00715f34cc71"
+  - text: "sepolia · chain 11155111 Analyzed 11m ago Canonical at fetch: Confirmed"
+  - heading "Download investigation" [level=2]
+  - paragraph: A readable report or versioned evidence bundle for this saved analysis
+  - paragraph: sepolia · live · Storage projection · Transaction 82. Exports preserve this selection and include both returned graphs.
+  - button "Download report (.md)"
+  - button "Download JSON bundle"
+  - paragraph: The Markdown report embeds its complete JSON evidence. Optional payload and policy links are checked by immutable identity. Endpoints, operator source names, credentials, and raw responses are excluded. This download uses the ordinary backend connection.
+  - text: Committed changes
+  - strong: Native BAL
+  - text: 363 accounts · commitment confirmed Observed depth
+  - strong: "3"
+  - text: Storage projection · unit-cost nodes Largest observed layer
+  - strong: "106"
+  - text: Partial graph; not an execution schedule Speedup
+  - strong: Unknown
+  - text: No full model or execution benchmark
+  - heading "State dependency map" [level=2]
+  - paragraph: Transaction order → exact state-location overlap
+  - button "Storage projection"
+  - button "All known state"
+  - text: RAW 0 WAR 0 WAW 13 Read / read is not a conflict
+  - img "Observed transaction dependency graph":
+    - button "Inspect transaction 0": 0 TX 0
+    - button "Inspect transaction 1": 1 TX 1
+    - button "Inspect transaction 2": 2 TX 2
+    - button "Inspect transaction 3": 3 TX 3
+    - button "Inspect transaction 4": 4 TX 4
+    - button "Inspect transaction 5": 5 TX 5
+    - button "Inspect transaction 6": 6 TX 6
+    - button "Inspect transaction 7": 7 TX 7
+    - button "Inspect transaction 8": 8 TX 8
+    - button "Inspect transaction 9": 9 TX 9
+    - button "Inspect transaction 10": 10 TX 10
+    - button "Inspect transaction 82": 82 TX 82
+  - paragraph: Showing up to 12 transactions, prioritizing observed pool overlaps. Lines group location-level edges by transaction pair and type. Balance, nonce, code, and fee-recipient effects are excluded from this projection.
+  - strong: Transaction 82
+  - code: 0x4a32623f…9cc72f
+  - text: 3 known reads · 9 committed writes
+  - button "Transaction access evidence"
+  - group: Coverage & provenance 8 notes
+  - heading "Uniswap contention breakdown" [level=2]
+  - paragraph: Where the returned location-level conflict edges occur
+  - button "Contention evidence"
+  - strong: 0 location-level conflict edges
+  - text: "Storage projection · Edges involving transaction 82 · 13 edges in the returned graph sepolia · live · 1 transaction(s) selected for tracing Transaction storage-read coverage: incomplete Returned graph not truncated Verified pool storage"
+  - strong: "0"
+  - text: No denominator
+  - 'meter "Verified pool storage: 0 of 0 edges"'
+  - text: Identified token storage
+  - strong: "0"
+  - text: No denominator
+  - 'meter "Identified token storage: 0 of 0 edges"'
+  - text: Shared account effects
+  - strong: "0"
+  - text: No denominator
+  - 'meter "Shared account effects: 0 of 0 edges"'
+  - text: Unclassified locations
+  - strong: "0"
+  - text: No denominator
+  - 'meter "Unclassified locations: 0 of 0 edges"'
+  - paragraph: Each edge belongs to one category. Counts cover the selected returned edge set, including edges beyond the 60-row conflict table and the 12-node map. They count location-level dependencies, not unique transaction pairs or execution time.
+  - paragraph: Balance, nonce, code, and fee-recipient account effects are excluded from this projection. Token identity comes from verified pool metadata; it does not identify the meaning of a token storage key.
+  - text: No conflict edges in this selection. Incomplete evidence does not establish transaction independence.
+  - heading "Different pools, shared token state" [level=3]
+  - paragraph: No corroborated cross-pool token-storage conflict in this selection. Shared token addresses alone are not proof of a conflict, and missing traces do not establish independence.
+  - text: Partial dependency coverage; additional conflicts may be missing. No execution-time savings are inferred.
+  - heading "Uniswap v3 pools" [level=2]
+  - paragraph: Identity checked through factory.getPool
+  - text: U Ξ
+  - heading "USDC / WETH fee 500" [level=3]
+  - code: 0x3289680d…8aeff1
+  - text: "Token addresses: 0x1c7d4b19…9c7238 / 0xfff99767…4d6b14 Verified"
+  - paragraph: Known token symbols identify the tested Sepolia deployment; unknown tokens retain addresses. No decimal-adjusted amounts are inferred.
+  - heading "Swap outcomes" [level=2]
+  - paragraph: Retained events and rolled-back internal calls are distinct
+  - strong: "1"
+  - text: committed events
+  - strong: "1"
+  - text: observed swap calls
+  - strong: "0"
+  - text: uncommitted calls
+  - code: 0x4a32623f…9cc72f
+  - text: Committed
+  - heading "Conflict evidence" [level=2]
+  - paragraph: Exact location-level conflicts; first 60 matching rows
+  - button "Sources"
+  - table:
+    - rowgroup:
+      - row "Transaction pair Dependency Account Field / storage key Explanation":
+        - columnheader "Transaction pair"
+        - columnheader "Dependency"
+        - columnheader "Account"
+        - columnheader "Field / storage key"
+        - columnheader "Explanation"
+    - rowgroup
+  - text: Incomplete evidence does not establish independence.
+  - button "Full analysis report"
+  - heading "5. Related CRE policy checks" [level=2]
+  - paragraph: Window-level checks containing an explicitly matched payload observation
+  - text: Evidence unavailable No related policy check is established here. This is not a healthy or unhealthy verdict about the transaction.
+  - paragraph: "Search limits: 100 reports and 10 distinct summaries. Summary fetch failures: 0."
+  - text: Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

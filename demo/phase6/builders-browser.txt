@@ -1,0 +1,129 @@
+# Rooted dashboard accessibility snapshot: builders
+# captured_at_utc: 2026-11-06T08:34:39.055Z
+# url: http://127.0.0.1:3000/?view=builders
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: Builders
+  - text: API stream connected Sepolia 11155111
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "Builder observations." [level=1]
+  - paragraph: Delivery evidence, with its denominator in view.
+  - text: Payload evidence
+  - combobox "Payload evidence mode":
+    - option "Sepolia · live · sepolia-nimbus-geth-1" [selected]
+    - option "Synthetic lifecycle demo"
+  - strong: Know what the data can tell you.
+  - paragraph: Beacon stream connected. Timing is reported only where comparable source observations exist.
+  - text: Polling ok
+  - heading "Delivery by builder" [level=2]
+  - paragraph: Canonical selected commitments first observed in the selected window
+  - combobox "Builder observation window":
+    - option "Last hour" [selected]
+    - option "Last 24 hours"
+    - option "Last 7 days"
+  - table:
+    - rowgroup:
+      - row "Builder index Observations Payload retrieved Fully healthy Unknown P50 reveal Timing samples":
+        - columnheader "Builder index"
+        - columnheader "Observations"
+        - columnheader "Payload retrieved"
+        - columnheader "Fully healthy"
+        - columnheader "Unknown"
+        - columnheader "P50 reveal"
+        - columnheader "Timing samples"
+    - rowgroup:
+      - row "12 10 100.0% 0.0% 10 116 ms 9":
+        - cell "12"
+        - cell "10"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "10"
+        - cell "116 ms"
+        - cell "9"
+      - row "Self-build 9 100.0% 0.0% 9 157 ms 8":
+        - cell "Self-build"
+        - cell "9"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "9"
+        - cell "157 ms"
+        - cell "8"
+      - row "0 6 100.0% 0.0% 6 345 ms 6":
+        - cell "0"
+        - cell "6"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "6"
+        - cell "345 ms"
+        - cell "6"
+      - row "4 6 100.0% 0.0% 6 230 ms 6":
+        - cell "4"
+        - cell "6"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "6"
+        - cell "230 ms"
+        - cell "6"
+      - row "9 4 100.0% 0.0% 4 380 ms 4":
+        - cell "9"
+        - cell "4"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "4"
+        - cell "380 ms"
+        - cell "4"
+      - row "1 2 100.0% 0.0% 2 372 ms 2":
+        - cell "1"
+        - cell "2"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "2"
+        - cell "372 ms"
+        - cell "2"
+      - row "7 2 100.0% 0.0% 2 462 ms 2":
+        - cell "7"
+        - cell "2"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "2"
+        - cell "462 ms"
+        - cell "2"
+      - row "2 1 100.0% 0.0% 1 Unknown 0":
+        - cell "2"
+        - cell "1"
+        - cell "100.0%"
+        - cell "0.0%"
+        - cell "1"
+        - cell "Unknown"
+        - cell "0"
+  - text: Updated · 0s ago Coverage ratios describe observations, not builder reputation.
+  - group: Coverage & provenance 3 notes
+  - text: Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

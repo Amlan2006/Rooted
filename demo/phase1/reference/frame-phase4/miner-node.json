@@ -1,0 +1,26 @@
+{
+  "network": "frame-devnet",
+  "mode": "live",
+  "node": "miner",
+  "chain_id": "1337",
+  "genesis_hash": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+  "info": {
+    "source_origin": "https://altmempool.forshtat.com",
+    "protocolVersion": 1,
+    "chainId": 1337,
+    "version": "v4.1.1",
+    "commit": "",
+    "bootId": "bb2fdf74c0a68783",
+    "latestSeq": 151,
+    "oldestSeq": 1,
+    "historyCapacity": 10000,
+    "bundlingMode": "auto",
+    "p2pEnabled": true,
+    "faucetEnabled": false
+  },
+  "updated_at": "2026-11-06T08:18:38.450283Z",
+  "poll_status": "ok",
+  "stream_status": "connected",
+  "scan_cursor": null,
+  "stream_seq": 152
+}

@@ -1,0 +1,123 @@
+{
+  "id": "0x71b791215f48e4d2db1539d3f74e45be768114eb58e1768a57392a4faa3e75fc",
+  "network": "sepolia",
+  "mode": "live",
+  "chain_id": "11155111",
+  "network_anchor": {
+    "number": "0xa7d8c0",
+    "hash": "0x2896cc6e67bae1116829775906356da77d7263646429faebc769b0404ea3ecf2"
+  },
+  "canonical_at_fetch": true,
+  "uniswap_pools": [
+    {
+      "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+      "factory": "0x0227628f3f023bb0b980b67d528571c95c6dac1c",
+      "token0": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+      "token1": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+      "fee": 500,
+      "verified": true,
+      "coverage": []
+    }
+  ],
+  "uniswap_swaps": [
+    {
+      "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+      "transaction_hash": "0xa5022a3a5d0fc3e2faae2af2ec64816d759a4345ec2b71f87eb44dbca7403927",
+      "log_index": "0xbe",
+      "sender": "0x3bfa4769fb09eefc5a80d6e87c3b9c650f7ae48e",
+      "recipient": "0x4f97fb85ee74468eb140ecb963746314dfec2017",
+      "amount0_raw": "-26160946",
+      "amount1_raw": "1000000000000000",
+      "sqrt_price_x96": "489718433953073079799963616511018",
+      "liquidity": "16015164692173004",
+      "tick": 174593,
+      "pool_verified": true
+    }
+  ],
+  "uniswap_swap_calls": [
+    {
+      "ancestor_failed": false,
+      "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+      "transaction_hash": "0xa5022a3a5d0fc3e2faae2af2ec64816d759a4345ec2b71f87eb44dbca7403927",
+      "selector": "0x128acb08",
+      "call_failed": false,
+      "transaction_reverted": false,
+      "committed": true,
+      "pool_verified": true,
+      "recipient": "0x4f97fb85ee74468eb140ecb963746314dfec2017",
+      "zero_for_one": false,
+      "amount_specified_raw": "1000000000000000",
+      "sqrt_price_limit_x96": "1461446703485210103287273052203988822378723970341"
+    }
+  ],
+  "coverage": [
+    "unselected_transactions_have_no_attributed_read_trace",
+    "no_measured_parallel_execution_speedup",
+    "gas_used_is_whole_transaction_not_pool_exclusive"
+  ],
+  "created_at": "2026-11-06T08:15:35.782661517Z",
+  "block": {
+    "hash": "0x98399bab67e4e7e0eed93273ab8afd27484b4c67b4b41217830987b1a036fee3",
+    "number": "0xb84107",
+    "slotNumber": "0xafc110",
+    "parentHash": "0x434e4f4df40dfb5591f38d18e2bdd6a176810758b2cbe25df396ad352fe09027",
+    "miner": "0x421df94fe5cb177c666df6402e7de7d368319ec3",
+    "blockAccessListHash": "0x207322d7c088d05fc87f8db98e0c0bac4732b7b56795fc7e1533a273d6f1e6b4"
+  },
+  "transaction_count": 118,
+  "native_bal": {
+    "accounts": 348,
+    "computed_commitment": "0x207322d7c088d05fc87f8db98e0c0bac4732b7b56795fc7e1533a273d6f1e6b4",
+    "commitment_verified": true,
+    "schema": "eip-7928-rlp-index-value-v1",
+    "normalized_changes": 746
+  },
+  "traced_transaction_coverage": [
+    {
+      "call_trace_available": true,
+      "state_diff_available": false,
+      "opcode_trace_available": true,
+      "coverage": []
+    }
+  ],
+  "graphs": {
+    "graph": {
+      "observed_conflict_counts": {
+        "RAW": 0,
+        "WAR": 0,
+        "WAW": 7205
+      },
+      "observed_dependency_depth": 118,
+      "observed_max_layer_width": 1,
+      "transactions": 118,
+      "truncated": false,
+      "full_dependency_coverage": false,
+      "storage_read_coverage_complete": false,
+      "theoretical_speedup": null,
+      "coverage": [
+        "observed_evidence_graph_not_a_complete_execution_schedule",
+        "account_existence_authorization_and_client_semantics_not_fully_modeled"
+      ]
+    },
+    "storage_projection": {
+      "observed_conflict_counts": {
+        "RAW": 0,
+        "WAR": 0,
+        "WAW": 11
+      },
+      "observed_dependency_depth": 3,
+      "observed_max_layer_width": 113,
+      "transactions": 118,
+      "truncated": false,
+      "full_dependency_coverage": false,
+      "storage_read_coverage_complete": false,
+      "theoretical_speedup": null,
+      "coverage": [
+        "observed_evidence_graph_not_a_complete_execution_schedule",
+        "account_existence_authorization_and_client_semantics_not_fully_modeled",
+        "storage_projection_excludes_balance_nonce_code_and_fee_recipient_dependencies"
+      ]
+    }
+  },
+  "note": "Compact projection of the live `rooted analyze` report captured 2026-11-06 (native BAL from the Nimbus execution payload envelope, traces from the local Sepolia Geth). Full normalized and raw evidence is in the local analysis API."
+}

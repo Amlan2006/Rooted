@@ -1,0 +1,17 @@
+{
+  "result": "passed",
+  "fork_id": "0x2371b33476927f9a2dd6dc4dc07e475083edc1b447f9f482e60f9272e2cedd8a",
+  "native_id": "0x71b791215f48e4d2db1539d3f74e45be768114eb58e1768a57392a4faa3e75fc",
+  "fork_block_hash": "0x9328ccf305e791d718545b1e10351bcb403a463d0e746f8c34ce68c17cc3243a",
+  "native_block_hash": "0x98399bab67e4e7e0eed93273ab8afd27484b4c67b4b41217830987b1a036fee3",
+  "committed_swaps": 3,
+  "swap_calls": 4,
+  "verified_pools": 2,
+  "conflicts": {
+    "RAW": 12,
+    "WAR": 4,
+    "WAW": 10
+  },
+  "native_commitment_verified": true,
+  "full_dependency_coverage": false
+}

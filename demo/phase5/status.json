@@ -1,0 +1,82 @@
+{
+  "schema": "rooted.phase5-status-v1",
+  "assessed_at": "2026-11-06T13:51:49+05:30",
+  "implementation": "ready",
+  "acceptance": "fresh_live_native_fork_persistence_and_api_checks_passed",
+  "features": [
+    "native_eip_7928_json_decoder",
+    "native_eip_7928_rlp_decoder",
+    "commitment_and_index_validation",
+    "beacon_envelope_bal_fallback",
+    "trace_access_attribution",
+    "raw_war_waw_dependency_graphs",
+    "storage_only_graph_projection",
+    "uniswap_v3_pool_verification",
+    "signed_swap_event_and_call_decoding",
+    "revert_and_ancestor_failure_distinction",
+    "versioned_analysis_reports_and_raw_evidence",
+    "scoped_analysis_rest_views",
+    "live_and_fork_cli_analysis",
+    "loopback_anvil_workload",
+    "controlled_workload_comparison"
+  ],
+  "verification": {
+    "go_tests": {
+      "command": "go test -count=1 ./internal/analysis/... ./internal/uniswap/...",
+      "passed_test_results": 32,
+      "failed": 0,
+      "skipped": 1,
+      "skipped_reason": "TestStoreDurabilityScopeAndIdempotency needs TEST_DATABASE_URL; it passed when run separately against a dedicated PostgreSQL database"
+    },
+    "dashboard_tests": {
+      "command": "node --import tsx --test tests/workload-comparison.test.ts tests/contention.test.ts tests/conflict-explanation.test.ts tests/investigation-export.test.ts tests/guided-investigation.test.ts",
+      "passed": 29,
+      "failed": 0
+    },
+    "captured_fork_replay": "passed",
+    "captured_comparison_replay": "passed",
+    "smoke_phase5_api": "passed",
+    "smoke_phase5_after_server_restart": "passed",
+    "repeat_ingestion_counts_unchanged": "passed",
+    "http_block_ingest": 200,
+    "http_transaction_ingest": 200
+  },
+  "captured_evidence": {
+    "mode": "fresh",
+    "captured_on": "2026-11-06",
+    "native_report": "demo/phase5/reference/native-summary.json",
+    "native_block_hash": "0x98399bab67e4e7e0eed93273ab8afd27484b4c67b4b41217830987b1a036fee3",
+    "native_bal_source": "nimbus_execution_payload_envelope_rlp",
+    "native_commitment_verified": true,
+    "fork_report": "demo/phase5/reference/fork-analysis.json",
+    "fork_raw_evidence": "demo/phase5/reference/fork-evidence.json.gz",
+    "fork_block_hash": "0x9328ccf305e791d718545b1e10351bcb403a463d0e746f8c34ce68c17cc3243a",
+    "workload_summary": "demo/phase5/reference/workload.json",
+    "comparison_bundle": "demo/phase5/reference/workload-comparison/workload-comparison.json",
+    "comparison_raw_evidence": "demo/phase5/reference/workload-comparison/evidence.json.gz",
+    "persistence_check": "demo/phase5/reference/persistence-check.json",
+    "api_check": "demo/phase5/reference/api-check.json",
+    "persistence_verified": true,
+    "fresh_live_ingestion_verified": true,
+    "fresh_anvil_run_verified": true
+  },
+  "coverage_boundary": [
+    "native_BAL_read_only_keys_are_block_scoped",
+    "trace_reads_are_provider_and_opcode_coverage_limited",
+    "geth_has_no_trace_replayTransaction_so_live_state_diff_is_unavailable",
+    "fork_native_bal_is_null",
+    "full_dependency_coverage_is_false",
+    "theoretical_speedup_is_null",
+    "execution_genesis_not_checked"
+  ],
+  "open_checks": [
+    "dashboard_proxy_submission_not_rerun",
+    "browser_download_and_compare_view_not_rerun"
+  ],
+  "runtime": {
+    "execution_and_trace": "Geth/v1.17.10 (local Sepolia, snap sync)",
+    "beacon": "Nimbus/v26.10.2",
+    "fork": "anvil/v1.9.0",
+    "postgresql": "local compose database"
+  }
+}

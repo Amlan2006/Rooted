@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "result": {
+    "network": "sepolia",
+    "chain_id": "11155111",
+    "protocol": "Uniswap v3",
+    "pools": [
+      {
+        "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+        "fee": 500,
+        "factory_verified": true,
+        "sampled_events": 14
+      },
+      {
+        "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+        "fee": 3000,
+        "factory_verified": true,
+        "sampled_events": 4
+      }
+    ],
+    "samples": [
+      {
+        "transaction_hash": "0x43e2abb95a206b5c0cd7edc3926fbdc212bac5e91c1e62c393b656bd6be480be",
+        "block_hash": "0x787eabec3712a09e3f6e806f1bc4e919affd84aead6dd5e77ea6b3c4363e94c6",
+        "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+        "receipt_status": "0x1",
+        "gas_used": "0x42882"
+      },
+      {
+        "transaction_hash": "0xa5022a3a5d0fc3e2faae2af2ec64816d759a4345ec2b71f87eb44dbca7403927",
+        "block_hash": "0x98399bab67e4e7e0eed93273ab8afd27484b4c67b4b41217830987b1a036fee3",
+        "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+        "receipt_status": "0x1",
+        "gas_used": "0x25c74"
+      },
+      {
+        "transaction_hash": "0xc24841016a4035386b5e5d15b64d6ecfd1830042d01dccddad43ffd0ee67a28a",
+        "block_hash": "0x1ead7c8dcf8e35db5843eefcda6e3083cc0777a249dc8d8468c781f266b03232",
+        "pool": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+        "receipt_status": "0x1",
+        "gas_used": "0x41edc"
+      },
+      {
+        "transaction_hash": "0x3980fd5d2e136b77d4779e5ea858d3b490a0f32e472e5f2cb8965ecd89ef0ef8",
+        "block_hash": "0xe2b644aea24e022e746773344317a4b3dc828212d501cf05d6afc6c8cb63047d",
+        "pool": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+        "receipt_status": "0x1",
+        "gas_used": "0xf5d15"
+      }
+    ],
+    "call_trace_status": "available",
+    "call_trace_reason": null,
+    "scope": "read_only_existing_swaps",
+    "controlled_workload_executed": false,
+    "complete_read_write_coverage": false
+  },
+  "schema": "rooted.phase1-probe-v1",
+  "probe": "uniswap",
+  "checked_at": "2026-11-06T08:14:49.475601+00:00",
+  "mode": "live_probe_attempt"
+}

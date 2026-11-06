@@ -1,0 +1,17 @@
+{
+  "attempt_id": "098a70d228187bf2e0fbc3971639cd0c",
+  "network": "frame-devnet",
+  "mode": "live",
+  "node": "gateway",
+  "expected_hash": "0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7",
+  "submitted_at": "2026-11-06T08:17:31.05652Z",
+  "submission_status": "rpc_rejected",
+  "response": {
+    "id": 1,
+    "error": {
+      "code": -32500,
+      "message": "validation frame 0: the payer 0x0e3990ccd0b6c9930690fb4d6153b0aaa213c13e has 0 wei, the transaction's maximum cost is 205652000000000 wei"
+    },
+    "jsonrpc": "2.0"
+  }
+}

@@ -1,0 +1,166 @@
+# Rooted dashboard accessibility snapshot: synthetic-timeline
+# captured_at_utc: 2026-11-06T08:34:46.446Z
+# url: http://127.0.0.1:3000/?view=payloadwatch
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+# note: Payload evidence mode set to Synthetic lifecycle demo (source phase3-demo); slot 101 opened.
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents": Incidents 7
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: PayloadWatch
+  - text: API stream connected Sepolia 11155111
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "PayloadWatch." [level=1]
+  - paragraph: Follow the commitment-to-payload lifecycle.
+  - text: Payload evidence
+  - combobox "Payload evidence mode":
+    - option "Sepolia · live · sepolia-nimbus-geth-1"
+    - option "Synthetic lifecycle demo" [selected]
+  - text: Synthetic PayloadWatch lifecycle evidence · source phase3-demo. Frame-devnet data remains independently live.
+  - strong: Know what the data can tell you.
+  - paragraph: Beacon stream connected. Timing is reported only where comparable source observations exist.
+  - text: Polling ok
+  - heading "Payload lifecycle" [level=2]
+  - paragraph: Commitment, presence, and validation coverage
+  - textbox "Search slots":
+    - /placeholder: Slot, root, or builder…
+  - table:
+    - rowgroup:
+      - row "Slot / block root Builder Payload delivery Reveal latency Evidence":
+        - columnheader "Slot / block root"
+        - columnheader "Builder"
+        - columnheader "Payload delivery"
+        - columnheader "Reveal latency"
+        - columnheader "Evidence"
+        - columnheader
+    - rowgroup:
+      - row "107 0x51ee131e…d6f9af 42 revealed 1,000 ms 4 events warning Inspect slot 107":
+        - cell "107 0x51ee131e…d6f9af":
+          - button "107"
+          - code: 0x51ee131e…d6f9af
+        - cell "42"
+        - cell "revealed"
+        - cell "1,000 ms"
+        - cell "4 events warning"
+        - cell "Inspect slot 107":
+          - button "Inspect slot 107"
+      - row "106 0x4963a298…dadaeb 42 pending Unknown 2 events pending Inspect slot 106":
+        - cell "106 0x4963a298…dadaeb":
+          - button "106"
+          - code: 0x4963a298…dadaeb
+        - cell "42"
+        - cell "pending"
+        - cell "Unknown"
+        - cell "2 events pending"
+        - cell "Inspect slot 106":
+          - button "Inspect slot 106"
+      - row "105 0xccd5c4cc…eaf96a 42 revealed 1,000 ms 4 events failed Inspect slot 105":
+        - cell "105 0xccd5c4cc…eaf96a":
+          - button "105"
+          - code: 0xccd5c4cc…eaf96a
+        - cell "42"
+        - cell "revealed"
+        - cell "1,000 ms"
+        - cell "4 events failed"
+        - cell "Inspect slot 105":
+          - button "Inspect slot 105"
+      - row "104 0xb90cb3e8…62ad2d 42 missing Unknown 3 events failed Inspect slot 104":
+        - cell "104 0xb90cb3e8…62ad2d":
+          - button "104"
+          - code: 0xb90cb3e8…62ad2d
+        - cell "42"
+        - cell "missing"
+        - cell "Unknown"
+        - cell "3 events failed"
+        - cell "Inspect slot 104":
+          - button "Inspect slot 104"
+      - row "103 0x54cad07b…aa8601 42 missing Unknown 2 events warning Inspect slot 103":
+        - cell "103 0x54cad07b…aa8601":
+          - button "103"
+          - code: 0x54cad07b…aa8601
+        - cell "42"
+        - cell "missing"
+        - cell "Unknown"
+        - cell "2 events warning"
+        - cell "Inspect slot 103":
+          - button "Inspect slot 103"
+      - row "102 0x75a8c6af…7c014f 42 late 3,000 ms 3 events warning Inspect slot 102":
+        - cell "102 0x75a8c6af…7c014f":
+          - button "102"
+          - code: 0x75a8c6af…7c014f
+        - cell "42"
+        - cell "late"
+        - cell "3,000 ms"
+        - cell "3 events warning"
+        - cell "Inspect slot 102":
+          - button "Inspect slot 102"
+      - row "101 0x853c3424…43bba3 42 revealed 1,000 ms 5 events healthy Inspect slot 101":
+        - cell "101 0x853c3424…43bba3":
+          - button "101"
+          - code: 0x853c3424…43bba3
+        - cell "42"
+        - cell "revealed"
+        - cell "1,000 ms"
+        - cell "5 events healthy"
+        - cell "Inspect slot 101":
+          - button "Inspect slot 101"
+  - text: Updated · 1s ago Synthetic replay · no inferred arrival times
+  - heading "Slot 101" [level=2]
+  - paragraph: "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3"
+  - button "Close slot details"
+  - text: Delivery
+  - strong: revealed
+  - text: Reveal latency
+  - strong: 1,000 ms
+  - text: PTC timely
+  - strong: Confirmed
+  - text: Blob availability
+  - strong: Confirmed
+  - text: Execution validity
+  - strong: Confirmed
+  - text: Canonical
+  - strong: Confirmed
+  - strong: block seen
+  - paragraph: 11/6/2026, 8:12:52 AM Comparable timing
+  - text: "#62"
+  - strong: snapshot
+  - paragraph: 11/6/2026, 8:12:52 AM Comparable timing
+  - text: "#64"
+  - strong: payload seen
+  - paragraph: 11/6/2026, 8:12:53 AM Comparable timing
+  - text: "#76"
+  - strong: validation
+  - paragraph: 11/6/2026, 8:12:53 AM Comparable timing
+  - text: "#78"
+  - strong: ptc
+  - paragraph: 11/6/2026, 8:12:54 AM Comparable timing
+  - text: "#84"
+  - group: Coverage & provenance 1 notes
+  - text: phase3-demo · synthetic · 21m ago
+  - button "Slot evidence"
+  - text: Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

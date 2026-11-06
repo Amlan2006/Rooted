@@ -1,0 +1,693 @@
+{
+  "canonicality_rechecked_now": false,
+  "captured_states": [
+    {
+      "first_observed_at": "2026-11-06T08:16:55.038146Z",
+      "network": "frame-devnet",
+      "mode": "captured",
+      "node": "gateway",
+      "boot_id": "9c7ea46a50c67b59",
+      "tx_hash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+      "admission": {
+        "observed_event_seq": 59,
+        "observed_pool_status": "OnChain",
+        "id": 30,
+        "txHash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+        "sender": "0xe01B92F1148d2158bEaB016e6243A1FEC6431b19",
+        "nonce": "0x1",
+        "nonceKeys": [
+          "0x0"
+        ],
+        "at": 1793952851772,
+        "source": "rpc",
+        "outcome": "included",
+        "includer": "0x5544596212f91984c986a919c8026df0576816f9",
+        "checks": [
+          {
+            "rule": "gas-limit",
+            "verdict": "pass"
+          },
+          {
+            "rule": "recent-root",
+            "verdict": "pass"
+          },
+          {
+            "rule": "prefix",
+            "verdict": "pass"
+          },
+          {
+            "rule": "structure",
+            "verdict": "pass"
+          },
+          {
+            "rule": "signature",
+            "verdict": "pass"
+          },
+          {
+            "rule": "simulation",
+            "verdict": "pass"
+          },
+          {
+            "rule": "trace-alignment",
+            "verdict": "pass"
+          },
+          {
+            "rule": "OP-061",
+            "verdict": "pass"
+          },
+          {
+            "rule": "execution",
+            "verdict": "pass"
+          },
+          {
+            "rule": "trace-alignment",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "out-of-gas",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "OP-011",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "create",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "storage",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "COD-010",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "entrypoint-access",
+            "verdict": "pass",
+            "frameIndex": 0,
+            "entity": "sender"
+          },
+          {
+            "rule": "trace-alignment",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "out-of-gas",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "OP-011",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "create",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "storage",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "COD-010",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "entrypoint-access",
+            "verdict": "pass",
+            "frameIndex": 1,
+            "entity": "payer"
+          },
+          {
+            "rule": "mempool",
+            "verdict": "pass"
+          }
+        ],
+        "frames": [
+          {
+            "mode": 1,
+            "flags": 2,
+            "target": null,
+            "limits": {
+              "execution": "0xc8",
+              "state": "0x0"
+            },
+            "value": "0x0",
+            "data": "0x"
+          },
+          {
+            "mode": 1,
+            "flags": 1,
+            "target": "0x7503eD4e90B0cAB850412Fd8bf318B8e269f9996",
+            "limits": {
+              "execution": "0xea60",
+              "state": "0x0"
+            },
+            "value": "0x0",
+            "data": "0x6901f668"
+          },
+          {
+            "mode": 2,
+            "flags": 0,
+            "target": "0x7503eD4e90B0cAB850412Fd8bf318B8e269f9996",
+            "limits": {
+              "execution": "0x249f0",
+              "state": "0x0"
+            },
+            "value": "0x0",
+            "data": "0x887c10000000000000000000000000000000000000000000000000000000000000187e58000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "mode": 2,
+            "flags": 0,
+            "target": "0x601e8c20e53154778316bf7262b58475d8946680",
+            "limits": {
+              "execution": "0x4660",
+              "state": "0x0"
+            },
+            "value": "0x0",
+            "data": "0xa9059cbb0000000000000000000000008943545177806ed17b9f23f0a21ee5948ecaa7760000000000000000000000000000000000000000000000000000000000000001"
+          },
+          {
+            "mode": 2,
+            "flags": 0,
+            "target": "0x7503eD4e90B0cAB850412Fd8bf318B8e269f9996",
+            "limits": {
+              "execution": "0x14c08",
+              "state": "0x0"
+            },
+            "value": "0x0",
+            "data": "0x278ecde10000000000000000000000000000000000000000000000000000000000000002"
+          }
+        ],
+        "frameStatuses": [
+          "success",
+          "success",
+          "success",
+          "success",
+          "success"
+        ]
+      },
+      "events": [
+        {
+          "seq": 58,
+          "txHash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+          "at": 1793952854297,
+          "kind": "admitted",
+          "status": "New"
+        },
+        {
+          "seq": 59,
+          "txHash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+          "at": 1793952871083,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      ],
+      "receipt_check": {
+        "execution_origin": "https://altmempool.forshtat.com",
+        "checked_at": "2026-11-06T08:18:31.105307229Z",
+        "receipt": {
+          "transactionHash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+          "blockHash": "0x011f3369f37057daeaf7c6b4a93d482b2fbf44f6ae8f83463f504e713c36dfed",
+          "blockNumber": "0x420",
+          "status": "0x1",
+          "type": "0x6",
+          "gasUsed": "0x4265e",
+          "frameReceipts": [
+            {
+              "logs": [],
+              "status": "0x1",
+              "gasUsed": "0x64",
+              "stateGasUsed": "0x0"
+            },
+            {
+              "logs": [],
+              "status": "0x1",
+              "gasUsed": "0xbdd2",
+              "stateGasUsed": "0x0"
+            },
+            {
+              "logs": [
+                {
+                  "data": "0x00000000000000000000000000000000000000000000000000025d8de6f4dc00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe90c88000000000000000000000000000000000000000000031c72e129d0da252bdf15000000000000000000000000000000000000000000000000000031a7af3120d2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf6320000000000000000000000000000000000000000000000000000000000000bb8",
+                  "topics": [
+                    "0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f",
+                    "0x54078dc76392ab22ff5aa126186285a6c9809ac03f23da66e8452106533f9138",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996"
+                  ],
+                  "address": "0x6bf9aa9c04fd001385742d61f6818c3236429848"
+                },
+                {
+                  "data": "0x000000000000000000000000000000000000000000000000000000000016f378",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848"
+                  ],
+                  "address": "0x601e8c20e53154778316bf7262b58475d8946680"
+                },
+                {
+                  "data": "0x00000000000000000000000000000000000000000000000000025d8de6f4dc00",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996"
+                  ],
+                  "address": "0xfffffffffffffffffffffffffffffffffffffffe"
+                },
+                {
+                  "data": "0x000000000000000000000000000000000000000000000000000000000016f37800000000000000000000000000000000000000000000000000025d8de6f4dc00",
+                  "topics": [
+                    "0x468aeeec0e901c52363552a06c1e39331d44c3cc886eb200af127ded3f380f82",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19"
+                  ],
+                  "address": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996"
+                },
+                {
+                  "data": "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf632fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf632",
+                  "topics": [
+                    "0x6f6b28f63b6025cb11d3a5b349b642f47a3ed2d5eedfdc69c827cd5dab69f513"
+                  ],
+                  "address": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996"
+                }
+              ],
+              "status": "0x1",
+              "gasUsed": "0x1bf15",
+              "stateGasUsed": "0x0"
+            },
+            {
+              "logs": [
+                {
+                  "data": "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19",
+                    "0x0000000000000000000000008943545177806ed17b9f23f0a21ee5948ecaa776"
+                  ],
+                  "address": "0x601e8c20e53154778316bf7262b58475d8946680"
+                }
+              ],
+              "status": "0x1",
+              "gasUsed": "0x3ae2",
+              "stateGasUsed": "0x0"
+            },
+            {
+              "logs": [
+                {
+                  "data": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffa50f4391a4000000000000000000000000000000000000000000000000000000000000036d81000000000000000000000000000000000000000000031c61351e8a413f6a7aa8000000000000000000000000000000000000000000000000000031a7af3120d2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf6300000000000000000000000000000000000000000000000000000000000000bb8",
+                  "topics": [
+                    "0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f",
+                    "0x54078dc76392ab22ff5aa126186285a6c9809ac03f23da66e8452106533f9138",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996"
+                  ],
+                  "address": "0x6bf9aa9c04fd001385742d61f6818c3236429848"
+                },
+                {
+                  "data": "0x00000000000000000000000000000000000000000000000000005af0bc6e5c00",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848"
+                  ],
+                  "address": "0xfffffffffffffffffffffffffffffffffffffffe"
+                },
+                {
+                  "data": "0x0000000000000000000000000000000000000000000000000000000000036d81",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19"
+                  ],
+                  "address": "0x601e8c20e53154778316bf7262b58475d8946680"
+                },
+                {
+                  "data": "0x0000000000000000000000000000000000000000000000000000000000036d8100000000000000000000000000000000000000000000000000005af0bc6e5c00",
+                  "topics": [
+                    "0x2dc8e290002f06fc0085bbca9dfb8b415cf4d1178950c72ff9ee8f4d8878ee66",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19"
+                  ],
+                  "address": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996"
+                }
+              ],
+              "status": "0x1",
+              "gasUsed": "0x12146",
+              "stateGasUsed": "0x0"
+            }
+          ]
+        },
+        "frame_receipt": {
+          "payer": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996",
+          "status": "success",
+          "blockNumber": "0x420",
+          "frameReceipts": [
+            {
+              "logs": [],
+              "status": "success",
+              "gasUsed": {
+                "state": "0x0",
+                "execution": "0x64"
+              }
+            },
+            {
+              "logs": [],
+              "status": "success",
+              "gasUsed": {
+                "state": "0x0",
+                "execution": "0xbdd2"
+              }
+            },
+            {
+              "logs": [
+                {
+                  "data": "0x00000000000000000000000000000000000000000000000000025d8de6f4dc00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe90c88000000000000000000000000000000000000000000031c72e129d0da252bdf15000000000000000000000000000000000000000000000000000031a7af3120d2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf6320000000000000000000000000000000000000000000000000000000000000bb8",
+                  "topics": [
+                    "0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f",
+                    "0x54078dc76392ab22ff5aa126186285a6c9809ac03f23da66e8452106533f9138",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996"
+                  ],
+                  "address": "0x6bf9aa9c04fd001385742d61f6818c3236429848"
+                },
+                {
+                  "data": "0x000000000000000000000000000000000000000000000000000000000016f378",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848"
+                  ],
+                  "address": "0x601e8c20e53154778316bf7262b58475d8946680"
+                },
+                {
+                  "data": "0x00000000000000000000000000000000000000000000000000025d8de6f4dc00",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996"
+                  ],
+                  "address": "0xfffffffffffffffffffffffffffffffffffffffe"
+                },
+                {
+                  "data": "0x000000000000000000000000000000000000000000000000000000000016f37800000000000000000000000000000000000000000000000000025d8de6f4dc00",
+                  "topics": [
+                    "0x468aeeec0e901c52363552a06c1e39331d44c3cc886eb200af127ded3f380f82",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19"
+                  ],
+                  "address": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996"
+                },
+                {
+                  "data": "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf632fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf632",
+                  "topics": [
+                    "0x6f6b28f63b6025cb11d3a5b349b642f47a3ed2d5eedfdc69c827cd5dab69f513"
+                  ],
+                  "address": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996"
+                }
+              ],
+              "status": "success",
+              "gasUsed": {
+                "state": "0x0",
+                "execution": "0x1bf15"
+              }
+            },
+            {
+              "logs": [
+                {
+                  "data": "0x0000000000000000000000000000000000000000000000000000000000000001",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19",
+                    "0x0000000000000000000000008943545177806ed17b9f23f0a21ee5948ecaa776"
+                  ],
+                  "address": "0x601e8c20e53154778316bf7262b58475d8946680"
+                }
+              ],
+              "status": "success",
+              "gasUsed": {
+                "state": "0x0",
+                "execution": "0x3ae2"
+              }
+            },
+            {
+              "logs": [
+                {
+                  "data": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffa50f4391a4000000000000000000000000000000000000000000000000000000000000036d81000000000000000000000000000000000000000000031c61351e8a413f6a7aa8000000000000000000000000000000000000000000000000000031a7af3120d2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcf6300000000000000000000000000000000000000000000000000000000000000bb8",
+                  "topics": [
+                    "0x40e9cecb9f5f1f1c5b9c97dec2917b7ee92e57ba5563708daca94dd84ad7112f",
+                    "0x54078dc76392ab22ff5aa126186285a6c9809ac03f23da66e8452106533f9138",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996"
+                  ],
+                  "address": "0x6bf9aa9c04fd001385742d61f6818c3236429848"
+                },
+                {
+                  "data": "0x00000000000000000000000000000000000000000000000000005af0bc6e5c00",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x0000000000000000000000007503ed4e90b0cab850412fd8bf318b8e269f9996",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848"
+                  ],
+                  "address": "0xfffffffffffffffffffffffffffffffffffffffe"
+                },
+                {
+                  "data": "0x0000000000000000000000000000000000000000000000000000000000036d81",
+                  "topics": [
+                    "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "0x0000000000000000000000006bf9aa9c04fd001385742d61f6818c3236429848",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19"
+                  ],
+                  "address": "0x601e8c20e53154778316bf7262b58475d8946680"
+                },
+                {
+                  "data": "0x0000000000000000000000000000000000000000000000000000000000036d8100000000000000000000000000000000000000000000000000005af0bc6e5c00",
+                  "topics": [
+                    "0x2dc8e290002f06fc0085bbca9dfb8b415cf4d1178950c72ff9ee8f4d8878ee66",
+                    "0x000000000000000000000000e01b92f1148d2158beab016e6243a1fec6431b19"
+                  ],
+                  "address": "0x7503ed4e90b0cab850412fd8bf318b8e269f9996"
+                }
+              ],
+              "status": "success",
+              "gasUsed": {
+                "state": "0x0",
+                "execution": "0x12146"
+              }
+            }
+          ],
+          "cumulativeGasUsed": "0x4265e"
+        },
+        "canonical": true,
+        "identity_matched": true,
+        "coverage": []
+      },
+      "status": "included",
+      "admission_confirmed": true,
+      "inclusion_confirmed": true,
+      "execution_success": true,
+      "admission_to_inclusion_ms": 16786,
+      "coverage": [],
+      "incidents": [],
+      "updated_at": "2026-11-06T08:18:31.105307229Z"
+    },
+    {
+      "first_observed_at": "2026-11-06T08:17:31.196284Z",
+      "network": "frame-devnet",
+      "mode": "captured",
+      "node": "gateway",
+      "boot_id": "9c7ea46a50c67b59",
+      "tx_hash": "0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7",
+      "admission": {
+        "observed_event_seq": 62,
+        "id": 33,
+        "txHash": "0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7",
+        "sender": "0x0e3990CCD0b6c9930690FB4D6153B0AaA213C13e",
+        "nonce": "0x0",
+        "nonceKeys": [
+          "0x0"
+        ],
+        "at": 1793953051124,
+        "source": "rpc",
+        "outcome": "rejected",
+        "errorCode": -32500,
+        "checks": [
+          {
+            "rule": "gas-limit",
+            "verdict": "pass"
+          },
+          {
+            "rule": "recent-root",
+            "verdict": "pass"
+          },
+          {
+            "rule": "prefix",
+            "verdict": "pass"
+          },
+          {
+            "rule": "structure",
+            "verdict": "pass"
+          },
+          {
+            "rule": "signature",
+            "verdict": "pass"
+          },
+          {
+            "rule": "simulation",
+            "verdict": "fail",
+            "detail": "validation frame 0: the payer 0x0e3990ccd0b6c9930690fb4d6153b0aaa213c13e has 0 wei, the transaction's maximum cost is 205652000000000 wei"
+          },
+          {
+            "rule": "trace-alignment",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "OP-061",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "execution",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "mempool",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "out-of-gas",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "OP-011",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "create",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "storage",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "COD-010",
+            "verdict": "skipped"
+          },
+          {
+            "rule": "entrypoint-access",
+            "verdict": "skipped"
+          }
+        ],
+        "frames": [
+          {
+            "mode": 1,
+            "flags": 3,
+            "target": null,
+            "limits": {
+              "execution": "0x7530",
+              "state": "0x0"
+            },
+            "value": "0x0",
+            "data": "0x"
+          },
+          {
+            "mode": 2,
+            "flags": 0,
+            "target": "0x0e3990CCD0b6c9930690FB4D6153B0AaA213C13e",
+            "limits": {
+              "execution": "0xc350",
+              "state": "0x0"
+            },
+            "value": "0x1",
+            "data": "0x"
+          }
+        ],
+        "frameStatuses": [
+          "not-run",
+          "not-run"
+        ]
+      },
+      "events": [
+        {
+          "seq": 62,
+          "txHash": "0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7",
+          "at": 1793953051134,
+          "kind": "rejected",
+          "reason": "validation frame 0: the payer 0x0e3990ccd0b6c9930690fb4d6153b0aaa213c13e has 0 wei, the transaction's maximum cost is 205652000000000 wei"
+        }
+      ],
+      "receipt_check": {
+        "execution_origin": "https://altmempool.forshtat.com",
+        "checked_at": "2026-11-06T08:18:29.608005788Z",
+        "receipt": null,
+        "canonical": null,
+        "identity_matched": false,
+        "coverage": [
+          "execution_receipt_unavailable"
+        ]
+      },
+      "status": "rejected",
+      "admission_confirmed": false,
+      "inclusion_confirmed": false,
+      "execution_success": null,
+      "admission_to_inclusion_ms": null,
+      "coverage": [
+        "execution_receipt_unavailable",
+        "successful_admission_not_observed",
+        "canonical_inclusion_not_confirmed",
+        "same_node_admission_to_inclusion_timing_unknown"
+      ],
+      "incidents": [
+        "admission_rejected"
+      ],
+      "updated_at": "2026-11-06T08:18:29.608005788Z"
+    }
+  ],
+  "funded_own_submission_verified": false,
+  "persistence_verified": false,
+  "schema": "rooted.phase4-offline-evidence-v1",
+  "synthetic_acknowledgment_only": {
+    "first_observed_at": "2026-11-06T00:00:00Z",
+    "network": "test-frame",
+    "mode": "synthetic",
+    "node": "gateway",
+    "boot_id": "synthetic-boot",
+    "tx_hash": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "admission": null,
+    "events": [],
+    "receipt_check": null,
+    "status": "unknown",
+    "admission_confirmed": false,
+    "inclusion_confirmed": false,
+    "execution_success": null,
+    "admission_to_inclusion_ms": null,
+    "coverage": [
+      "successful_admission_not_observed",
+      "canonical_inclusion_not_confirmed",
+      "same_node_admission_to_inclusion_timing_unknown"
+    ],
+    "incidents": [],
+    "updated_at": "2026-11-06T00:00:00Z"
+  },
+  "verification": "offline_reducer_only"
+}

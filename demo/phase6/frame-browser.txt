@@ -1,0 +1,683 @@
+# Rooted dashboard accessibility snapshot: frame
+# captured_at_utc: 2026-11-06T08:34:54.861Z
+# url: http://127.0.0.1:3000/?view=frames
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+# note: Frame devnet gateway selected; first listed frame transaction opened.
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: Frame mempool
+  - text: API stream connected Frame devnet 1337
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "Frame mempool." [level=1]
+  - paragraph: From admission to verified inclusion.
+  - text: Independent network · chain 1337
+  - combobox "Frame node":
+    - option "Frame devnet · gateway" [selected]
+    - option "Frame devnet · miner"
+  - text: Network
+  - strong: Frame devnet
+  - text: Chain 1337 · gateway Observed lifecycles
+  - strong: "50"
+  - text: Latest 50 states in selected node Verified inclusions
+  - strong: "39"
+  - text: Receipt + canonical block match Admission rejected
+  - strong: "8"
+  - text: Our funded inclusion demo remains blocked
+  - heading "Frame transaction lifecycle" [level=2]
+  - paragraph: Admission reports and receipt verification are separate facts
+  - text: LIVE · CHAIN 1337
+  - table:
+    - rowgroup:
+      - row "Transaction Lifecycle Admitted Inclusion verified Admission → inclusion":
+        - columnheader "Transaction"
+        - columnheader "Lifecycle"
+        - columnheader "Admitted"
+        - columnheader "Inclusion verified"
+        - columnheader "Admission → inclusion"
+        - columnheader
+    - rowgroup:
+      - row "0x1e74fd1b…d727d1 5s ago included Confirmed Confirmed 9,995 ms Inspect frame 0x1e74fd1b37808bcd2433a669fe8753825c75966f02b186cca17736f0bad727d1":
+        - cell "0x1e74fd1b…d727d1 5s ago":
+          - button "0x1e74fd1b…d727d1"
+          - text: 5s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "9,995 ms"
+        - cell "Inspect frame 0x1e74fd1b37808bcd2433a669fe8753825c75966f02b186cca17736f0bad727d1":
+          - button "Inspect frame 0x1e74fd1b37808bcd2433a669fe8753825c75966f02b186cca17736f0bad727d1"
+      - row "0x85fdaee8…1f30d2 6s ago included Confirmed Confirmed 30,238 ms Inspect frame 0x85fdaee83716d70be3dc657510d232c3b1fd4eddd4cdf1dea4944b786d1f30d2":
+        - cell "0x85fdaee8…1f30d2 6s ago":
+          - button "0x85fdaee8…1f30d2"
+          - text: 6s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "30,238 ms"
+        - cell "Inspect frame 0x85fdaee83716d70be3dc657510d232c3b1fd4eddd4cdf1dea4944b786d1f30d2":
+          - button "Inspect frame 0x85fdaee83716d70be3dc657510d232c3b1fd4eddd4cdf1dea4944b786d1f30d2"
+      - row "0xb795dfdf…de437b 6s ago admitted Confirmed Not confirmed Unknown Inspect frame 0xb795dfdf47d533c54d3b4570fcfdcde54d8964c2bf1f53fd73df7400d2de437b":
+        - cell "0xb795dfdf…de437b 6s ago":
+          - button "0xb795dfdf…de437b"
+          - text: 6s ago
+        - cell "admitted"
+        - cell "Confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xb795dfdf47d533c54d3b4570fcfdcde54d8964c2bf1f53fd73df7400d2de437b":
+          - button "Inspect frame 0xb795dfdf47d533c54d3b4570fcfdcde54d8964c2bf1f53fd73df7400d2de437b"
+      - row "0xd60b0606…8bc67b 7s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0xd60b06060b6b591e4f71c4f380504f9ec378169c63bf31f4a74938a0bc8bc67b":
+        - cell "0xd60b0606…8bc67b 7s ago":
+          - button "0xd60b0606…8bc67b"
+          - text: 7s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xd60b06060b6b591e4f71c4f380504f9ec378169c63bf31f4a74938a0bc8bc67b":
+          - button "Inspect frame 0xd60b06060b6b591e4f71c4f380504f9ec378169c63bf31f4a74938a0bc8bc67b"
+      - row "0x9b4350ef…63ce64 7s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0x9b4350ef3221444dc8dc2fba1baec0b6965b9e0d6734aeba65a1081fc463ce64":
+        - cell "0x9b4350ef…63ce64 7s ago":
+          - button "0x9b4350ef…63ce64"
+          - text: 7s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x9b4350ef3221444dc8dc2fba1baec0b6965b9e0d6734aeba65a1081fc463ce64":
+          - button "Inspect frame 0x9b4350ef3221444dc8dc2fba1baec0b6965b9e0d6734aeba65a1081fc463ce64"
+      - row "0x7d597a50…e9c4ec 8s ago included Confirmed Confirmed 19,490 ms Inspect frame 0x7d597a50b7731a50bdf497196bbacc0b4b049e09339048a4ab5a78ae6ce9c4ec":
+        - cell "0x7d597a50…e9c4ec 8s ago":
+          - button "0x7d597a50…e9c4ec"
+          - text: 8s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "19,490 ms"
+        - cell "Inspect frame 0x7d597a50b7731a50bdf497196bbacc0b4b049e09339048a4ab5a78ae6ce9c4ec":
+          - button "Inspect frame 0x7d597a50b7731a50bdf497196bbacc0b4b049e09339048a4ab5a78ae6ce9c4ec"
+      - row "0xf46c46ce…7587c8 8s ago included Confirmed Confirmed 10,511 ms Inspect frame 0xf46c46ce7784c714c09e92e86b39593e67098564da2c15085da84160967587c8":
+        - cell "0xf46c46ce…7587c8 8s ago":
+          - button "0xf46c46ce…7587c8"
+          - text: 8s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "10,511 ms"
+        - cell "Inspect frame 0xf46c46ce7784c714c09e92e86b39593e67098564da2c15085da84160967587c8":
+          - button "Inspect frame 0xf46c46ce7784c714c09e92e86b39593e67098564da2c15085da84160967587c8"
+      - row "0x45fcd889…4e1dd3 9s ago included Confirmed Confirmed 13,000 ms Inspect frame 0x45fcd889938d04890cedf379a8bd83e3e34b818a71ac7975b65c742eaa4e1dd3":
+        - cell "0x45fcd889…4e1dd3 9s ago":
+          - button "0x45fcd889…4e1dd3"
+          - text: 9s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "13,000 ms"
+        - cell "Inspect frame 0x45fcd889938d04890cedf379a8bd83e3e34b818a71ac7975b65c742eaa4e1dd3":
+          - button "Inspect frame 0x45fcd889938d04890cedf379a8bd83e3e34b818a71ac7975b65c742eaa4e1dd3"
+      - row "0x08c48367…35b6b7 10s ago included Confirmed Confirmed 27,243 ms Inspect frame 0x08c4836702188f61108cb21f7e0067ef07f2a47e7bc123ceda62cdcf1835b6b7":
+        - cell "0x08c48367…35b6b7 10s ago":
+          - button "0x08c48367…35b6b7"
+          - text: 10s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "27,243 ms"
+        - cell "Inspect frame 0x08c4836702188f61108cb21f7e0067ef07f2a47e7bc123ceda62cdcf1835b6b7":
+          - button "Inspect frame 0x08c4836702188f61108cb21f7e0067ef07f2a47e7bc123ceda62cdcf1835b6b7"
+      - row "0xd1e8b853…4a5905 11s ago included Confirmed Confirmed 12,248 ms Inspect frame 0xd1e8b85331769d0718b2640d425c7d49d799a0973a0e56c3bde6bcc0df4a5905":
+        - cell "0xd1e8b853…4a5905 11s ago":
+          - button "0xd1e8b853…4a5905"
+          - text: 11s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "12,248 ms"
+        - cell "Inspect frame 0xd1e8b85331769d0718b2640d425c7d49d799a0973a0e56c3bde6bcc0df4a5905":
+          - button "Inspect frame 0xd1e8b85331769d0718b2640d425c7d49d799a0973a0e56c3bde6bcc0df4a5905"
+      - row "0x5a3c6dca…7f5001 11s ago included Confirmed Confirmed 29,998 ms Inspect frame 0x5a3c6dcaf5eea5f6867690d24e0dfdf4711352df31e8dc7cf14bfb31267f5001":
+        - cell "0x5a3c6dca…7f5001 11s ago":
+          - button "0x5a3c6dca…7f5001"
+          - text: 11s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "29,998 ms"
+        - cell "Inspect frame 0x5a3c6dcaf5eea5f6867690d24e0dfdf4711352df31e8dc7cf14bfb31267f5001":
+          - button "Inspect frame 0x5a3c6dcaf5eea5f6867690d24e0dfdf4711352df31e8dc7cf14bfb31267f5001"
+      - row "0xf6c17f4b…551aee 12s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0xf6c17f4bf940d9300742fc01ab5e6c8d3e440a18eebf7c5d1c4fde495e551aee":
+        - cell "0xf6c17f4b…551aee 12s ago":
+          - button "0xf6c17f4b…551aee"
+          - text: 12s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xf6c17f4bf940d9300742fc01ab5e6c8d3e440a18eebf7c5d1c4fde495e551aee":
+          - button "Inspect frame 0xf6c17f4bf940d9300742fc01ab5e6c8d3e440a18eebf7c5d1c4fde495e551aee"
+      - row "0xcc7f63d3…93c3e5 18s ago included Confirmed Confirmed Unknown Inspect frame 0xcc7f63d33eecb24f9697be415f4a29481ee68cd476355ac403d434e93593c3e5":
+        - cell "0xcc7f63d3…93c3e5 18s ago":
+          - button "0xcc7f63d3…93c3e5"
+          - text: 18s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xcc7f63d33eecb24f9697be415f4a29481ee68cd476355ac403d434e93593c3e5":
+          - button "Inspect frame 0xcc7f63d33eecb24f9697be415f4a29481ee68cd476355ac403d434e93593c3e5"
+      - row "0xa35c8750…c5200c 18s ago included Confirmed Confirmed Unknown Inspect frame 0xa35c8750fb35b4a079ec9d6b030fd373d3013bd573312081b24a950949c5200c":
+        - cell "0xa35c8750…c5200c 18s ago":
+          - button "0xa35c8750…c5200c"
+          - text: 18s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xa35c8750fb35b4a079ec9d6b030fd373d3013bd573312081b24a950949c5200c":
+          - button "Inspect frame 0xa35c8750fb35b4a079ec9d6b030fd373d3013bd573312081b24a950949c5200c"
+      - row "0x15980cca…980fb1 19s ago included Confirmed Confirmed Unknown Inspect frame 0x15980cca9ba048542e7e7d136d3963d7ecf8e45b6a45618ab7ab1b9c8a980fb1":
+        - cell "0x15980cca…980fb1 19s ago":
+          - button "0x15980cca…980fb1"
+          - text: 19s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x15980cca9ba048542e7e7d136d3963d7ecf8e45b6a45618ab7ab1b9c8a980fb1":
+          - button "Inspect frame 0x15980cca9ba048542e7e7d136d3963d7ecf8e45b6a45618ab7ab1b9c8a980fb1"
+      - row "0x563574c9…63c5fb 19s ago included Confirmed Confirmed 25,664 ms Inspect frame 0x563574c9ddffa4aa3c0df06c0d9628e4340565101499bb28e4e090731463c5fb":
+        - cell "0x563574c9…63c5fb 19s ago":
+          - button "0x563574c9…63c5fb"
+          - text: 19s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "25,664 ms"
+        - cell "Inspect frame 0x563574c9ddffa4aa3c0df06c0d9628e4340565101499bb28e4e090731463c5fb":
+          - button "Inspect frame 0x563574c9ddffa4aa3c0df06c0d9628e4340565101499bb28e4e090731463c5fb"
+      - row "0xf6d930d9…d57783 20s ago admitted Confirmed Not confirmed Unknown Inspect frame 0xf6d930d95f2d8953166156b53778f1b1ff2c2c70315cb8829723ce54e7d57783":
+        - cell "0xf6d930d9…d57783 20s ago":
+          - button "0xf6d930d9…d57783"
+          - text: 20s ago
+        - cell "admitted"
+        - cell "Confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xf6d930d95f2d8953166156b53778f1b1ff2c2c70315cb8829723ce54e7d57783":
+          - button "Inspect frame 0xf6d930d95f2d8953166156b53778f1b1ff2c2c70315cb8829723ce54e7d57783"
+      - row "0xb8fe5232…809b38 20s ago included Confirmed Confirmed 28,782 ms Inspect frame 0xb8fe5232f88d560a28b59e34a17a0da3e918785b5ba058093e69eb7e3e809b38":
+        - cell "0xb8fe5232…809b38 20s ago":
+          - button "0xb8fe5232…809b38"
+          - text: 20s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "28,782 ms"
+        - cell "Inspect frame 0xb8fe5232f88d560a28b59e34a17a0da3e918785b5ba058093e69eb7e3e809b38":
+          - button "Inspect frame 0xb8fe5232f88d560a28b59e34a17a0da3e918785b5ba058093e69eb7e3e809b38"
+      - row "0x41d3ab8e…f64467 21s ago included Confirmed Confirmed 12,999 ms Inspect frame 0x41d3ab8e3547c4fc1eaab91d7dedbd7d5091874f7003dda68cdb3e074df64467":
+        - cell "0x41d3ab8e…f64467 21s ago":
+          - button "0x41d3ab8e…f64467"
+          - text: 21s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "12,999 ms"
+        - cell "Inspect frame 0x41d3ab8e3547c4fc1eaab91d7dedbd7d5091874f7003dda68cdb3e074df64467":
+          - button "Inspect frame 0x41d3ab8e3547c4fc1eaab91d7dedbd7d5091874f7003dda68cdb3e074df64467"
+      - row "0x7c55efcd…5ad907 21s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0x7c55efcd72390927262aaba64cbf7c7d77a135eb3c2e737cd8ae022d2b5ad907":
+        - cell "0x7c55efcd…5ad907 21s ago":
+          - button "0x7c55efcd…5ad907"
+          - text: 21s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x7c55efcd72390927262aaba64cbf7c7d77a135eb3c2e737cd8ae022d2b5ad907":
+          - button "Inspect frame 0x7c55efcd72390927262aaba64cbf7c7d77a135eb3c2e737cd8ae022d2b5ad907"
+      - row "0xb6bcbb00…2eb44d 21s ago included Confirmed Confirmed 8,448 ms Inspect frame 0xb6bcbb0089eb5b02b4e207069d1664174f0893c648597ece9239a99c122eb44d":
+        - cell "0xb6bcbb00…2eb44d 21s ago":
+          - button "0xb6bcbb00…2eb44d"
+          - text: 21s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "8,448 ms"
+        - cell "Inspect frame 0xb6bcbb0089eb5b02b4e207069d1664174f0893c648597ece9239a99c122eb44d":
+          - button "Inspect frame 0xb6bcbb0089eb5b02b4e207069d1664174f0893c648597ece9239a99c122eb44d"
+      - row "0xf19a53be…6b17c2 22s ago included Confirmed Confirmed 17,371 ms Inspect frame 0xf19a53be948a050a2e1b517f7ba7267be53e178fa678a04a8172762bb16b17c2":
+        - cell "0xf19a53be…6b17c2 22s ago":
+          - button "0xf19a53be…6b17c2"
+          - text: 22s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "17,371 ms"
+        - cell "Inspect frame 0xf19a53be948a050a2e1b517f7ba7267be53e178fa678a04a8172762bb16b17c2":
+          - button "Inspect frame 0xf19a53be948a050a2e1b517f7ba7267be53e178fa678a04a8172762bb16b17c2"
+      - row "0x28f5671f…f558a4 23s ago included Confirmed Confirmed 25,944 ms Inspect frame 0x28f5671f4fd42689c70bd8e0850f5b237f7d31416f3eb6a7b39d43a74af558a4":
+        - cell "0x28f5671f…f558a4 23s ago":
+          - button "0x28f5671f…f558a4"
+          - text: 23s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "25,944 ms"
+        - cell "Inspect frame 0x28f5671f4fd42689c70bd8e0850f5b237f7d31416f3eb6a7b39d43a74af558a4":
+          - button "Inspect frame 0x28f5671f4fd42689c70bd8e0850f5b237f7d31416f3eb6a7b39d43a74af558a4"
+      - row "0x5d4cb1b3…1409b8 24s ago included Confirmed Confirmed 9,832 ms Inspect frame 0x5d4cb1b3f1cb4553d53c7586f860efe6560be97741e5bb334989660e991409b8":
+        - cell "0x5d4cb1b3…1409b8 24s ago":
+          - button "0x5d4cb1b3…1409b8"
+          - text: 24s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "9,832 ms"
+        - cell "Inspect frame 0x5d4cb1b3f1cb4553d53c7586f860efe6560be97741e5bb334989660e991409b8":
+          - button "Inspect frame 0x5d4cb1b3f1cb4553d53c7586f860efe6560be97741e5bb334989660e991409b8"
+      - row "0x994af404…6248a0 25s ago included Confirmed Confirmed 9,822 ms Inspect frame 0x994af404b19327704f6c37d5131eb9663a6cb6b69ae2a905afd5bd72006248a0":
+        - cell "0x994af404…6248a0 25s ago":
+          - button "0x994af404…6248a0"
+          - text: 25s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "9,822 ms"
+        - cell "Inspect frame 0x994af404b19327704f6c37d5131eb9663a6cb6b69ae2a905afd5bd72006248a0":
+          - button "Inspect frame 0x994af404b19327704f6c37d5131eb9663a6cb6b69ae2a905afd5bd72006248a0"
+      - row "0xf6e7aa14…203fda 25s ago included Confirmed Confirmed 12,583 ms Inspect frame 0xf6e7aa14d9c64d05848aaa2bce1e028f011be3a052c6e7163915a13c5b203fda":
+        - cell "0xf6e7aa14…203fda 25s ago":
+          - button "0xf6e7aa14…203fda"
+          - text: 25s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "12,583 ms"
+        - cell "Inspect frame 0xf6e7aa14d9c64d05848aaa2bce1e028f011be3a052c6e7163915a13c5b203fda":
+          - button "Inspect frame 0xf6e7aa14d9c64d05848aaa2bce1e028f011be3a052c6e7163915a13c5b203fda"
+      - row "0x6856c93e…5591ec 27s ago included Confirmed Confirmed 14,673 ms Inspect frame 0x6856c93ec942a0a5250b80b875348c28acb38cf9d3b8e100b5d0ba7aaa5591ec":
+        - cell "0x6856c93e…5591ec 27s ago":
+          - button "0x6856c93e…5591ec"
+          - text: 27s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "14,673 ms"
+        - cell "Inspect frame 0x6856c93ec942a0a5250b80b875348c28acb38cf9d3b8e100b5d0ba7aaa5591ec":
+          - button "Inspect frame 0x6856c93ec942a0a5250b80b875348c28acb38cf9d3b8e100b5d0ba7aaa5591ec"
+      - row "0xc84d0418…d0582f 28s ago included Confirmed Confirmed 17,063 ms Inspect frame 0xc84d0418435ec06ec335c572134282122e16d8495f83986112ed3f4898d0582f":
+        - cell "0xc84d0418…d0582f 28s ago":
+          - button "0xc84d0418…d0582f"
+          - text: 28s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "17,063 ms"
+        - cell "Inspect frame 0xc84d0418435ec06ec335c572134282122e16d8495f83986112ed3f4898d0582f":
+          - button "Inspect frame 0xc84d0418435ec06ec335c572134282122e16d8495f83986112ed3f4898d0582f"
+      - row "0x17f3fa4c…cf5537 29s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0x17f3fa4cd80642eb89ba044d4e62be2a487e9c5276d57f136e6d5c9245cf5537":
+        - cell "0x17f3fa4c…cf5537 29s ago":
+          - button "0x17f3fa4c…cf5537"
+          - text: 29s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x17f3fa4cd80642eb89ba044d4e62be2a487e9c5276d57f136e6d5c9245cf5537":
+          - button "Inspect frame 0x17f3fa4cd80642eb89ba044d4e62be2a487e9c5276d57f136e6d5c9245cf5537"
+      - row "0x53b44da5…cf7afd 29s ago reverted Confirmed Confirmed 40,057 ms Inspect frame 0x53b44da563b180982098c6afa5c2672cd738f0288ab05c8517a2a27bebcf7afd":
+        - cell "0x53b44da5…cf7afd 29s ago":
+          - button "0x53b44da5…cf7afd"
+          - text: 29s ago
+        - cell "reverted"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "40,057 ms"
+        - cell "Inspect frame 0x53b44da563b180982098c6afa5c2672cd738f0288ab05c8517a2a27bebcf7afd":
+          - button "Inspect frame 0x53b44da563b180982098c6afa5c2672cd738f0288ab05c8517a2a27bebcf7afd"
+      - row "0x88293e09…2652a3 30s ago included Not confirmed Confirmed Unknown Inspect frame 0x88293e09cea4e0e50b7586d6772483c6e83ae11b04769aadbb047dbbfe2652a3":
+        - cell "0x88293e09…2652a3 30s ago":
+          - button "0x88293e09…2652a3"
+          - text: 30s ago
+        - cell "included"
+        - cell "Not confirmed"
+        - cell "Confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x88293e09cea4e0e50b7586d6772483c6e83ae11b04769aadbb047dbbfe2652a3":
+          - button "Inspect frame 0x88293e09cea4e0e50b7586d6772483c6e83ae11b04769aadbb047dbbfe2652a3"
+      - row "0x7d7cb0bd…562c3d 31s ago included Confirmed Confirmed 14,765 ms Inspect frame 0x7d7cb0bd8bda77d8004b5767f90061f969b2e33dffa444c1685a6746b4562c3d":
+        - cell "0x7d7cb0bd…562c3d 31s ago":
+          - button "0x7d7cb0bd…562c3d"
+          - text: 31s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "14,765 ms"
+        - cell "Inspect frame 0x7d7cb0bd8bda77d8004b5767f90061f969b2e33dffa444c1685a6746b4562c3d":
+          - button "Inspect frame 0x7d7cb0bd8bda77d8004b5767f90061f969b2e33dffa444c1685a6746b4562c3d"
+      - row "0x93cdd6fe…469651 31s ago included Confirmed Confirmed 33,775 ms Inspect frame 0x93cdd6fe08f4523b84f05a0a07fb7f643d4cdc47cf3d675efca8f59455469651":
+        - cell "0x93cdd6fe…469651 31s ago":
+          - button "0x93cdd6fe…469651"
+          - text: 31s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "33,775 ms"
+        - cell "Inspect frame 0x93cdd6fe08f4523b84f05a0a07fb7f643d4cdc47cf3d675efca8f59455469651":
+          - button "Inspect frame 0x93cdd6fe08f4523b84f05a0a07fb7f643d4cdc47cf3d675efca8f59455469651"
+      - row "0x89d35f0f…109e2a 32s ago admitted Confirmed Not confirmed Unknown Inspect frame 0x89d35f0f123f0ae0bca2f6775ecb6b0e46a168cc351aa8095be12a319b109e2a":
+        - cell "0x89d35f0f…109e2a 32s ago":
+          - button "0x89d35f0f…109e2a"
+          - text: 32s ago
+        - cell "admitted"
+        - cell "Confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x89d35f0f123f0ae0bca2f6775ecb6b0e46a168cc351aa8095be12a319b109e2a":
+          - button "Inspect frame 0x89d35f0f123f0ae0bca2f6775ecb6b0e46a168cc351aa8095be12a319b109e2a"
+      - row "0x21ba020a…040c41 32s ago included Confirmed Confirmed 22,206 ms Inspect frame 0x21ba020a2cd782733c170bbb703f527b3cd30750cb6bd7b47135cac728040c41":
+        - cell "0x21ba020a…040c41 32s ago":
+          - button "0x21ba020a…040c41"
+          - text: 32s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "22,206 ms"
+        - cell "Inspect frame 0x21ba020a2cd782733c170bbb703f527b3cd30750cb6bd7b47135cac728040c41":
+          - button "Inspect frame 0x21ba020a2cd782733c170bbb703f527b3cd30750cb6bd7b47135cac728040c41"
+      - row "0xa103cd06…6015cf 33s ago included Confirmed Confirmed 8,161 ms Inspect frame 0xa103cd06e40e557fabbd23cabcdb9ee52195b8670cb9544649699ce1916015cf":
+        - cell "0xa103cd06…6015cf 33s ago":
+          - button "0xa103cd06…6015cf"
+          - text: 33s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "8,161 ms"
+        - cell "Inspect frame 0xa103cd06e40e557fabbd23cabcdb9ee52195b8670cb9544649699ce1916015cf":
+          - button "Inspect frame 0xa103cd06e40e557fabbd23cabcdb9ee52195b8670cb9544649699ce1916015cf"
+      - row "0x8f43230f…571140 34s ago included Confirmed Confirmed 12,717 ms Inspect frame 0x8f43230f77ebbd567b2cff0239f702a9b1884f4417be937ea4a6c2c51a571140":
+        - cell "0x8f43230f…571140 34s ago":
+          - button "0x8f43230f…571140"
+          - text: 34s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "12,717 ms"
+        - cell "Inspect frame 0x8f43230f77ebbd567b2cff0239f702a9b1884f4417be937ea4a6c2c51a571140":
+          - button "Inspect frame 0x8f43230f77ebbd567b2cff0239f702a9b1884f4417be937ea4a6c2c51a571140"
+      - row "0x6a8c4c74…cff812 35s ago included Confirmed Confirmed 12,772 ms Inspect frame 0x6a8c4c749e9ca8700c53bb833d835fc05ecdf86b7b7d44b863bdacd2b4cff812":
+        - cell "0x6a8c4c74…cff812 35s ago":
+          - button "0x6a8c4c74…cff812"
+          - text: 35s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "12,772 ms"
+        - cell "Inspect frame 0x6a8c4c749e9ca8700c53bb833d835fc05ecdf86b7b7d44b863bdacd2b4cff812":
+          - button "Inspect frame 0x6a8c4c749e9ca8700c53bb833d835fc05ecdf86b7b7d44b863bdacd2b4cff812"
+      - row "0xb3e53ed4…86b7f7 36s ago included Confirmed Confirmed 16,536 ms Inspect frame 0xb3e53ed4816645021f579fe68605982015573466b5a1bc5f43f612a9ca86b7f7":
+        - cell "0xb3e53ed4…86b7f7 36s ago":
+          - button "0xb3e53ed4…86b7f7"
+          - text: 36s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "16,536 ms"
+        - cell "Inspect frame 0xb3e53ed4816645021f579fe68605982015573466b5a1bc5f43f612a9ca86b7f7":
+          - button "Inspect frame 0xb3e53ed4816645021f579fe68605982015573466b5a1bc5f43f612a9ca86b7f7"
+      - row "0xc1e6d8b8…d2f4ce 37s ago included Confirmed Confirmed 14,503 ms Inspect frame 0xc1e6d8b8125467a573e78ab914a25ea237f8e9ffb803db3711f5a3eb66d2f4ce":
+        - cell "0xc1e6d8b8…d2f4ce 37s ago":
+          - button "0xc1e6d8b8…d2f4ce"
+          - text: 37s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "14,503 ms"
+        - cell "Inspect frame 0xc1e6d8b8125467a573e78ab914a25ea237f8e9ffb803db3711f5a3eb66d2f4ce":
+          - button "Inspect frame 0xc1e6d8b8125467a573e78ab914a25ea237f8e9ffb803db3711f5a3eb66d2f4ce"
+      - row "0x83a3f639…7a1e46 38s ago included Confirmed Confirmed 26,491 ms Inspect frame 0x83a3f639c235f97b94bf729a01d868a0c97feb7cc50c1d7bb8674cb3847a1e46":
+        - cell "0x83a3f639…7a1e46 38s ago":
+          - button "0x83a3f639…7a1e46"
+          - text: 38s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "26,491 ms"
+        - cell "Inspect frame 0x83a3f639c235f97b94bf729a01d868a0c97feb7cc50c1d7bb8674cb3847a1e46":
+          - button "Inspect frame 0x83a3f639c235f97b94bf729a01d868a0c97feb7cc50c1d7bb8674cb3847a1e46"
+      - row "0x794a03f1…36954d 39s ago included Confirmed Confirmed 21,002 ms Inspect frame 0x794a03f1505e3a22013e2cb78a814d4a92e53c34f6cb0e5475939fec8536954d":
+        - cell "0x794a03f1…36954d 39s ago":
+          - button "0x794a03f1…36954d"
+          - text: 39s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "21,002 ms"
+        - cell "Inspect frame 0x794a03f1505e3a22013e2cb78a814d4a92e53c34f6cb0e5475939fec8536954d":
+          - button "Inspect frame 0x794a03f1505e3a22013e2cb78a814d4a92e53c34f6cb0e5475939fec8536954d"
+      - row "0x715ae84c…3154a9 39s ago included Confirmed Confirmed 11,327 ms Inspect frame 0x715ae84c97255761412427a732e160db6518e7d2c61fd13be39b87e6d73154a9":
+        - cell "0x715ae84c…3154a9 39s ago":
+          - button "0x715ae84c…3154a9"
+          - text: 39s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "11,327 ms"
+        - cell "Inspect frame 0x715ae84c97255761412427a732e160db6518e7d2c61fd13be39b87e6d73154a9":
+          - button "Inspect frame 0x715ae84c97255761412427a732e160db6518e7d2c61fd13be39b87e6d73154a9"
+      - row "0x199c9f97…23e467 40s ago included Not confirmed Confirmed Unknown Inspect frame 0x199c9f97bdb588fc82c08b5fc435e7eec10953b04741fdbeb75dbf9c9123e467":
+        - cell "0x199c9f97…23e467 40s ago":
+          - button "0x199c9f97…23e467"
+          - text: 40s ago
+        - cell "included"
+        - cell "Not confirmed"
+        - cell "Confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x199c9f97bdb588fc82c08b5fc435e7eec10953b04741fdbeb75dbf9c9123e467":
+          - button "Inspect frame 0x199c9f97bdb588fc82c08b5fc435e7eec10953b04741fdbeb75dbf9c9123e467"
+      - row "0x0cd83f6a…f54051 41s ago included Confirmed Confirmed 16,786 ms Inspect frame 0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051":
+        - cell "0x0cd83f6a…f54051 41s ago":
+          - button "0x0cd83f6a…f54051"
+          - text: 41s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "16,786 ms"
+        - cell "Inspect frame 0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051":
+          - button "Inspect frame 0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051"
+      - row "0x4d69dea6…293ef2 42s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0x4d69dea609ca411b67eab66f4f2aad178614a8d50ef9d0928df90fabae293ef2":
+        - cell "0x4d69dea6…293ef2 42s ago":
+          - button "0x4d69dea6…293ef2"
+          - text: 42s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x4d69dea609ca411b67eab66f4f2aad178614a8d50ef9d0928df90fabae293ef2":
+          - button "Inspect frame 0x4d69dea609ca411b67eab66f4f2aad178614a8d50ef9d0928df90fabae293ef2"
+      - row "0x4b5285e6…020484 42s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0x4b5285e64e19eaf769fcec964b0919480029bc80cff7c731185a4d9233020484":
+        - cell "0x4b5285e6…020484 42s ago":
+          - button "0x4b5285e6…020484"
+          - text: 42s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0x4b5285e64e19eaf769fcec964b0919480029bc80cff7c731185a4d9233020484":
+          - button "Inspect frame 0x4b5285e64e19eaf769fcec964b0919480029bc80cff7c731185a4d9233020484"
+      - row "0xbfa4f185…3a25c7 42s ago rejected Not confirmed Not confirmed Unknown Inspect frame 0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7":
+        - cell "0xbfa4f185…3a25c7 42s ago":
+          - button "0xbfa4f185…3a25c7"
+          - text: 42s ago
+        - cell "rejected"
+        - cell "Not confirmed"
+        - cell "Not confirmed"
+        - cell "Unknown"
+        - cell "Inspect frame 0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7":
+          - button "Inspect frame 0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7"
+      - row "0x093995fa…2da012 42s ago included Confirmed Confirmed 14,013 ms Inspect frame 0x093995fae0e51ab9359890b22cfae57bc16782af5fe692745d2c1e68b92da012":
+        - cell "0x093995fa…2da012 42s ago":
+          - button "0x093995fa…2da012"
+          - text: 42s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "14,013 ms"
+        - cell "Inspect frame 0x093995fae0e51ab9359890b22cfae57bc16782af5fe692745d2c1e68b92da012":
+          - button "Inspect frame 0x093995fae0e51ab9359890b22cfae57bc16782af5fe692745d2c1e68b92da012"
+      - row "0x0c189ea5…02e2b6 43s ago included Confirmed Confirmed 12,754 ms Inspect frame 0x0c189ea52417c0084659df427edab5a26afeca0b4ee427de97accefd6002e2b6":
+        - cell "0x0c189ea5…02e2b6 43s ago":
+          - button "0x0c189ea5…02e2b6"
+          - text: 43s ago
+        - cell "included"
+        - cell "Confirmed"
+        - cell "Confirmed"
+        - cell "12,754 ms"
+        - cell "Inspect frame 0x0c189ea52417c0084659df427edab5a26afeca0b4ee427de97accefd6002e2b6":
+          - button "Inspect frame 0x0c189ea52417c0084659df427edab5a26afeca0b4ee427de97accefd6002e2b6"
+  - text: Updated · 5s ago
+  - button "Node identity"
+  - heading "Admission & inclusion evidence" [level=2]
+  - paragraph: "0x1e74fd1b37808bcd2433a669fe8753825c75966f02b186cca17736f0bad727d1"
+  - button "Close frame details"
+  - text: Admission
+  - strong: Confirmed
+  - text: Canonical receipt
+  - strong: Confirmed
+  - text: Execution success
+  - strong: Confirmed
+  - table:
+    - rowgroup:
+      - row "Admission rule Verdict Detail":
+        - columnheader "Admission rule"
+        - columnheader "Verdict"
+        - columnheader "Detail"
+    - rowgroup:
+      - row "gas-limit pass No detail":
+        - cell "gas-limit"
+        - cell "pass"
+        - cell "No detail"
+      - row "recent-root pass No detail":
+        - cell "recent-root"
+        - cell "pass"
+        - cell "No detail"
+      - row "prefix pass No detail":
+        - cell "prefix"
+        - cell "pass"
+        - cell "No detail"
+      - row "structure pass No detail":
+        - cell "structure"
+        - cell "pass"
+        - cell "No detail"
+      - row "signature pass No detail":
+        - cell "signature"
+        - cell "pass"
+        - cell "No detail"
+      - row "simulation pass No detail":
+        - cell "simulation"
+        - cell "pass"
+        - cell "No detail"
+      - row "trace-alignment pass No detail":
+        - cell "trace-alignment"
+        - cell "pass"
+        - cell "No detail"
+      - row "OP-061 pass No detail":
+        - cell "OP-061"
+        - cell "pass"
+        - cell "No detail"
+      - row "execution pass No detail":
+        - cell "execution"
+        - cell "pass"
+        - cell "No detail"
+      - row "trace-alignment pass No detail":
+        - cell "trace-alignment"
+        - cell "pass"
+        - cell "No detail"
+      - row "out-of-gas pass No detail":
+        - cell "out-of-gas"
+        - cell "pass"
+        - cell "No detail"
+      - row "OP-011 pass No detail":
+        - cell "OP-011"
+        - cell "pass"
+        - cell "No detail"
+      - row "create pass No detail":
+        - cell "create"
+        - cell "pass"
+        - cell "No detail"
+      - row "storage pass No detail":
+        - cell "storage"
+        - cell "pass"
+        - cell "No detail"
+      - row "COD-010 pass No detail":
+        - cell "COD-010"
+        - cell "pass"
+        - cell "No detail"
+      - row "entrypoint-access pass No detail":
+        - cell "entrypoint-access"
+        - cell "pass"
+        - cell "No detail"
+      - row "trace-alignment pass No detail":
+        - cell "trace-alignment"
+        - cell "pass"
+        - cell "No detail"
+      - row "out-of-gas pass No detail":
+        - cell "out-of-gas"
+        - cell "pass"
+        - cell "No detail"
+      - row "OP-011 pass No detail":
+        - cell "OP-011"
+        - cell "pass"
+        - cell "No detail"
+      - row "create pass No detail":
+        - cell "create"
+        - cell "pass"
+        - cell "No detail"
+      - row "storage pass No detail":
+        - cell "storage"
+        - cell "pass"
+        - cell "No detail"
+      - row "COD-010 pass No detail":
+        - cell "COD-010"
+        - cell "pass"
+        - cell "No detail"
+      - row "entrypoint-access pass No detail":
+        - cell "entrypoint-access"
+        - cell "pass"
+        - cell "No detail"
+      - row "mempool pass No detail":
+        - cell "mempool"
+        - cell "pass"
+        - cell "No detail"
+  - group: Coverage & provenance 0 notes
+  - button "Lifecycle events"
+  - button "Full frame evidence"
+  - text: Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

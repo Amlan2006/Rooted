@@ -1,0 +1,16 @@
+{
+  "started_at_utc": "2026-11-06T08:14:38.494445+00:00",
+  "source_origin": "http://127.0.0.1",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "eth_getBlockAccessList",
+    "params": [
+      "0xd0c1ebdf40a22ff4e79f632ad7dc1de980be0f770628b92c975f1b3433a9a5b1"
+    ]
+  },
+  "http_status": "200",
+  "curl_exit": 0,
+  "body": "{\"jsonrpc\":\"2.0\",\"id\":1,\"error\":{\"code\":-32601,\"message\":\"the method eth_getBlockAccessList does not exist/is not available\"}}",
+  "mode": "live_probe_attempt"
+}

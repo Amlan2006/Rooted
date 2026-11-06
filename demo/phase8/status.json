@@ -1,0 +1,79 @@
+{
+  "assessed_at": "2026-11-06T08:20:16.151459+00:00",
+  "cre_phase_7": "deferred_by_user",
+  "schema": "rooted.phase8-status-v1",
+  "implementation": "ready_for_live_acceptance",
+  "acceptance": "provider_comparison_and_cross_module_smoke_verified_other_suites_not_run_in_this_check",
+  "features": [
+    "deterministic_exact_location_conflict_explanations",
+    "exclusive_uniswap_contention_categories",
+    "source_pinned_guided_investigation",
+    "allowlisted_json_and_embedded_markdown_exports",
+    "controlled_workload_comparison_gates",
+    "immutable_same_block_provider_checks",
+    "provider_cli_api_dashboard_and_persistence",
+    "read_only_cross_module_smoke_tool"
+  ],
+  "verification": {
+    "scope": "provider_comparison_and_read_only_smoke",
+    "go_race_tests": {
+      "packages": [
+        "rooted/internal/providers"
+      ],
+      "result": "passed",
+      "skipped": 0,
+      "test_database": "scratch_postgresql"
+    },
+    "frontend_tests": {
+      "files": [
+        "dashboard/tests/provider-comparison.test.ts"
+      ],
+      "passed": 3,
+      "failed": 0
+    },
+    "fresh_provider_comparison": {
+      "status": "matching_block_with_observation_gaps",
+      "block_hash": "0x5003b43a843799fd3043275a52cfc9f1d16907e685e0781b0cb13aa21a326cdc",
+      "report": "demo/provider-comparison/live-report.json",
+      "primary": "local Geth v1.17.10 / Nimbus v26.10.2",
+      "reference": "public Sepolia RPC and Beacon API",
+      "observation_gap": "primary eth_getBlockAccessList -32601"
+    },
+    "live_smoke": {
+      "status": "passed",
+      "exit_code": 0,
+      "via": "backend_api",
+      "checks": [
+        "collector_source_discovered",
+        "payload_scope_isolated",
+        "saved_analysis_views",
+        "saved_provider_comparison",
+        "saved_profile_capture_and_timers"
+      ]
+    },
+    "not_run": [
+      "conflict_contention_investigation_export_and_workload_suites",
+      "frontend_typecheck",
+      "frontend_production_build",
+      "dashboard_proxy_smoke",
+      "browser_flow"
+    ]
+  },
+  "open_checks": [
+    "live_cross_module_dashboard_proxy_smoke",
+    "clean_checkout_install_and_runtime_verification"
+  ],
+  "migrations": {
+    "database_execution_verified_here": true,
+    "005_cre": "deferred",
+    "applied": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "006",
+      "007"
+    ]
+  },
+  "evidence": "demo/provider-comparison/live-report.json"
+}

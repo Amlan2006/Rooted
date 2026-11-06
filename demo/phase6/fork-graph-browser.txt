@@ -1,0 +1,260 @@
+# Rooted dashboard accessibility snapshot: fork-graph
+# captured_at_utc: 2026-11-06T08:35:01.264Z
+# url: http://127.0.0.1:3000/?view=bal
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+# note: Analysis evidence mode set to Local fork; transaction 3 (reverted-after-swap case) selected.
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: BAL analyzer
+  - text: API stream connected Sepolia fork 31337
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "BAL analyzer." [level=1]
+  - paragraph: Find the state your transactions share.
+  - text: Analysis evidence
+  - combobox "Analysis evidence mode":
+    - option "Sepolia · native BAL"
+    - option "Local fork · controlled trace demo" [selected]
+  - link "Investigate this report across modules →":
+    - /url: "?view=investigate&report=0xbd5c1185510db7de4d588f70383123d2cd754135d29d6c9f046eb0745514ab4e&network=sepolia-fork&mode=fork&transaction=0x3eb353ac2d5d3dc80d04d782790efad5f6652915cacb4f0217d409323a6de4b8"
+  - text: LOCAL FORK · TRACE DEMO
+  - heading "Block 12,075,387" [level=2]
+  - code: "0xa2c667dce5480913e8519043e080167c88f4f5bb7ab118b89f92371f5d54f72e"
+  - text: "sepolia-fork · chain 31337 Analyzed 7m ago Canonical at fetch: Confirmed"
+  - heading "Download investigation" [level=2]
+  - paragraph: A readable report or versioned evidence bundle for this saved analysis
+  - paragraph: sepolia-fork · fork · Storage projection · Transaction 3. Exports preserve this selection and include both returned graphs.
+  - button "Download report (.md)"
+  - button "Download JSON bundle"
+  - paragraph: The Markdown report embeds its complete JSON evidence. Optional payload and policy links are checked by immutable identity. Endpoints, operator source names, credentials, and raw responses are excluded. This download uses the ordinary backend connection.
+  - text: Committed changes
+  - strong: Trace diff
+  - text: Conventional fork · native BAL unavailable Observed depth
+  - strong: "3"
+  - text: Storage projection · unit-cost nodes Largest observed layer
+  - strong: "2"
+  - text: Partial graph; not an execution schedule Speedup
+  - strong: Unknown
+  - text: No full model or execution benchmark
+  - heading "State dependency map" [level=2]
+  - paragraph: Transaction order → exact state-location overlap
+  - button "Storage projection"
+  - button "All known state"
+  - text: RAW 12 WAR 4 WAW 4 Read / read is not a conflict
+  - img "Observed transaction dependency graph":
+    - button "Inspect transaction 0": 0 TX 0
+    - button "Inspect transaction 1": 1 TX 1
+    - button "Inspect transaction 2": 2 TX 2
+    - button "Inspect transaction 3": 3 TX 3
+  - paragraph: Showing up to 12 transactions, prioritizing observed pool overlaps. Lines group location-level edges by transaction pair and type. Balance, nonce, code, and fee-recipient effects are excluded from this projection.
+  - strong: Transaction 3
+  - code: 0xa3fc51a5…b7073d
+  - text: 15 known reads · 3 committed writes
+  - button "Transaction access evidence"
+  - group: Coverage & provenance 8 notes
+  - heading "Uniswap contention breakdown" [level=2]
+  - paragraph: Where the returned location-level conflict edges occur
+  - button "Contention evidence"
+  - strong: 8 location-level conflict edges
+  - text: "Storage projection · Edges involving transaction 3 · 20 edges in the returned graph sepolia-fork · fork · 4 transaction(s) selected for tracing Transaction storage-read coverage: complete as reported Returned graph not truncated Verified pool storage"
+  - strong: "4"
+  - text: 50.0% of 8 edges
+  - 'meter "Verified pool storage: 4 of 8 edges"'
+  - text: Identified token storage
+  - strong: "4"
+  - text: 50.0% of 8 edges
+  - 'meter "Identified token storage: 4 of 8 edges"'
+  - text: Shared account effects
+  - strong: "0"
+  - text: 0.0% of 8 edges
+  - 'meter "Shared account effects: 0 of 8 edges"'
+  - text: Unclassified locations
+  - strong: "0"
+  - text: 0.0% of 8 edges
+  - 'meter "Unclassified locations: 0 of 8 edges"'
+  - paragraph: Each edge belongs to one category. Counts cover the selected returned edge set, including edges beyond the 60-row conflict table and the 12-node map. They count location-level dependencies, not unique transaction pairs or execution time.
+  - paragraph: Balance, nonce, code, and fee-recipient account effects are excluded from this projection. Token identity comes from verified pool metadata; it does not identify the meaning of a token storage key.
+  - heading "Most frequent shared locations" [level=3]
+  - paragraph: Showing 4 of 4 exact locations, ranked by edge count. Reader and writer counts are derived only from these edges.
+  - table:
+    - rowgroup:
+      - row "Category / exact location Edges Readers / writers Transaction indexes":
+        - columnheader "Category / exact location"
+        - columnheader "Edges"
+        - columnheader "Readers / writers"
+        - columnheader "Transaction indexes"
+    - rowgroup:
+      - row "Identified token storage 0x1c7d4b19…9c7238 storage · 0xa38910b6…4531d7 2 1 / 2 0, 1, 3":
+        - cell "Identified token storage 0x1c7d4b19…9c7238 storage · 0xa38910b6…4531d7":
+          - text: Identified token storage
+          - code: 0x1c7d4b19…9c7238
+          - code: storage · 0xa38910b6…4531d7
+        - cell "2"
+        - cell "1 / 2"
+        - cell "0, 1, 3"
+      - row "Verified pool storage 0x3289680d…8aeff1 storage · 0x00000000…000000 2 1 / 2 0, 1, 3":
+        - cell "Verified pool storage 0x3289680d…8aeff1 storage · 0x00000000…000000":
+          - text: Verified pool storage
+          - code: 0x3289680d…8aeff1
+          - code: storage · 0x00000000…000000
+        - cell "2"
+        - cell "1 / 2"
+        - cell "0, 1, 3"
+      - row "Verified pool storage 0x3289680d…8aeff1 storage · 0x00000000…000002 2 1 / 2 0, 1, 3":
+        - cell "Verified pool storage 0x3289680d…8aeff1 storage · 0x00000000…000002":
+          - text: Verified pool storage
+          - code: 0x3289680d…8aeff1
+          - code: storage · 0x00000000…000002
+        - cell "2"
+        - cell "1 / 2"
+        - cell "0, 1, 3"
+      - row "Identified token storage 0xfff99767…4d6b14 storage · 0x621ed32f…e27b2d 2 1 / 2 0, 1, 3":
+        - cell "Identified token storage 0xfff99767…4d6b14 storage · 0x621ed32f…e27b2d":
+          - text: Identified token storage
+          - code: 0xfff99767…4d6b14
+          - code: storage · 0x621ed32f…e27b2d
+        - cell "2"
+        - cell "1 / 2"
+        - cell "0, 1, 3"
+  - heading "Different pools, shared token state" [level=3]
+  - paragraph: No corroborated cross-pool token-storage conflict in this selection. Shared token addresses alone are not proof of a conflict, and missing traces do not establish independence.
+  - text: Partial dependency coverage; additional conflicts may be missing. No execution-time savings are inferred.
+  - heading "Uniswap v3 pools" [level=2]
+  - paragraph: Identity checked through factory.getPool
+  - text: U Ξ
+  - heading "USDC / WETH fee 500" [level=3]
+  - code: 0x3289680d…8aeff1
+  - text: "Token addresses: 0x1c7d4b19…9c7238 / 0xfff99767…4d6b14 Verified U Ξ"
+  - heading "USDC / WETH fee 3000" [level=3]
+  - code: 0x6ce0896e…f59b50
+  - text: "Token addresses: 0x1c7d4b19…9c7238 / 0xfff99767…4d6b14 Verified"
+  - paragraph: Known token symbols identify the tested Sepolia deployment; unknown tokens retain addresses. No decimal-adjusted amounts are inferred.
+  - heading "Swap outcomes" [level=2]
+  - paragraph: Retained events and rolled-back internal calls are distinct
+  - strong: "3"
+  - text: committed events
+  - strong: "4"
+  - text: observed swap calls
+  - strong: "1"
+  - text: uncommitted calls
+  - code: 0x3eb353ac…6de4b8
+  - text: Committed
+  - code: 0x52702d03…9c6371
+  - text: Committed
+  - code: 0xa3fc51a5…b7073d
+  - text: Transaction reverted
+  - code: 0xbdbec2e2…5d874e
+  - text: Committed
+  - heading "Conflict evidence" [level=2]
+  - paragraph: Exact location-level conflicts; first 60 matching rows
+  - button "Sources"
+  - table:
+    - rowgroup:
+      - row "Transaction pair Dependency Account Field / storage key Explanation":
+        - columnheader "Transaction pair"
+        - columnheader "Dependency"
+        - columnheader "Account"
+        - columnheader "Field / storage key"
+        - columnheader "Explanation"
+    - rowgroup:
+      - row "0 → 3 RAW 0x1c7d4b19…9c7238 storage · 0xa38910b6…4531d7 Explain RAW":
+        - cell "0 → 3"
+        - cell "RAW"
+        - cell "0x1c7d4b19…9c7238":
+          - code: 0x1c7d4b19…9c7238
+        - cell "storage · 0xa38910b6…4531d7":
+          - code: storage · 0xa38910b6…4531d7
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "0 → 3 RAW 0x3289680d…8aeff1 storage · 0x00000000…000000 Explain RAW":
+        - cell "0 → 3"
+        - cell "RAW"
+        - cell "0x3289680d…8aeff1":
+          - code: 0x3289680d…8aeff1
+        - cell "storage · 0x00000000…000000":
+          - code: storage · 0x00000000…000000
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "0 → 3 RAW 0x3289680d…8aeff1 storage · 0x00000000…000002 Explain RAW":
+        - cell "0 → 3"
+        - cell "RAW"
+        - cell "0x3289680d…8aeff1":
+          - code: 0x3289680d…8aeff1
+        - cell "storage · 0x00000000…000002":
+          - code: storage · 0x00000000…000002
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "0 → 3 RAW 0xfff99767…4d6b14 storage · 0x621ed32f…e27b2d Explain RAW":
+        - cell "0 → 3"
+        - cell "RAW"
+        - cell "0xfff99767…4d6b14":
+          - code: 0xfff99767…4d6b14
+        - cell "storage · 0x621ed32f…e27b2d":
+          - code: storage · 0x621ed32f…e27b2d
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "1 → 3 RAW 0x1c7d4b19…9c7238 storage · 0xa38910b6…4531d7 Explain RAW":
+        - cell "1 → 3"
+        - cell "RAW"
+        - cell "0x1c7d4b19…9c7238":
+          - code: 0x1c7d4b19…9c7238
+        - cell "storage · 0xa38910b6…4531d7":
+          - code: storage · 0xa38910b6…4531d7
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "1 → 3 RAW 0x3289680d…8aeff1 storage · 0x00000000…000000 Explain RAW":
+        - cell "1 → 3"
+        - cell "RAW"
+        - cell "0x3289680d…8aeff1":
+          - code: 0x3289680d…8aeff1
+        - cell "storage · 0x00000000…000000":
+          - code: storage · 0x00000000…000000
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "1 → 3 RAW 0x3289680d…8aeff1 storage · 0x00000000…000002 Explain RAW":
+        - cell "1 → 3"
+        - cell "RAW"
+        - cell "0x3289680d…8aeff1":
+          - code: 0x3289680d…8aeff1
+        - cell "storage · 0x00000000…000002":
+          - code: storage · 0x00000000…000002
+        - cell "Explain RAW":
+          - button "Explain RAW"
+      - row "1 → 3 RAW 0xfff99767…4d6b14 storage · 0x621ed32f…e27b2d Explain RAW":
+        - cell "1 → 3"
+        - cell "RAW"
+        - cell "0xfff99767…4d6b14":
+          - code: 0xfff99767…4d6b14
+        - cell "storage · 0x621ed32f…e27b2d":
+          - code: storage · 0x621ed32f…e27b2d
+        - cell "Explain RAW":
+          - button "Explain RAW"
+  - text: Incomplete evidence does not establish independence.
+  - button "Full analysis report"
+  - text: Updated · 1s ago Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

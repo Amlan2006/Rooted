@@ -1,0 +1,300 @@
+{
+  "schema": "rooted.phase1-probe-v1",
+  "probe": "frame_stream",
+  "checked_at": "2026-11-06T08:16:11.398Z",
+  "mode": "live_probe_attempt",
+  "status": "passed",
+  "reason": "bounded_20_events",
+  "subscription_acknowledged": true,
+  "replayed_events": 20,
+  "identity_verified": true,
+  "source_origin": "wss://altmempoolgateway.forshtat.com",
+  "messages": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": "0xf1bb563911656c71c9fb38ee1ee97834"
+    },
+    {},
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 1,
+          "txHash": "0x563574c9ddffa4aa3c0df06c0d9628e4340565101499bb28e4e090731463c5fb",
+          "at": 1793951688568,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 2,
+          "txHash": "0xf6d930d95f2d8953166156b53778f1b1ff2c2c70315cb8829723ce54e7d57783",
+          "at": 1793951709018,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 3,
+          "txHash": "0x15980cca9ba048542e7e7d136d3963d7ecf8e45b6a45618ab7ab1b9c8a980fb1",
+          "at": 1793951714193,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 4,
+          "txHash": "0xa35c8750fb35b4a079ec9d6b030fd373d3013bd573312081b24a950949c5200c",
+          "at": 1793951714208,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 5,
+          "txHash": "0xcc7f63d33eecb24f9697be415f4a29481ee68cd476355ac403d434e93593c3e5",
+          "at": 1793951714220,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 6,
+          "txHash": "0x563574c9ddffa4aa3c0df06c0d9628e4340565101499bb28e4e090731463c5fb",
+          "at": 1793951714232,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 7,
+          "txHash": "0xb8fe5232f88d560a28b59e34a17a0da3e918785b5ba058093e69eb7e3e809b38",
+          "at": 1793951735427,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 8,
+          "txHash": "0xb8fe5232f88d560a28b59e34a17a0da3e918785b5ba058093e69eb7e3e809b38",
+          "at": 1793951764209,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 9,
+          "txHash": "0x41d3ab8e3547c4fc1eaab91d7dedbd7d5091874f7003dda68cdb3e074df64467",
+          "at": 1793951821227,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 10,
+          "txHash": "0x41d3ab8e3547c4fc1eaab91d7dedbd7d5091874f7003dda68cdb3e074df64467",
+          "at": 1793951834226,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 11,
+          "txHash": "0x7c55efcd72390927262aaba64cbf7c7d77a135eb3c2e737cd8ae022d2b5ad907",
+          "at": 1793951871764,
+          "kind": "rejected",
+          "reason": "payer accesses un-deployed contract address 0x0000000000000000000000000000000000000005 with opcode STATICCALL"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 12,
+          "txHash": "0xb6bcbb0089eb5b02b4e207069d1664174f0893c648597ece9239a99c122eb44d",
+          "at": 1793951875795,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 13,
+          "txHash": "0xb6bcbb0089eb5b02b4e207069d1664174f0893c648597ece9239a99c122eb44d",
+          "at": 1793951884243,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 14,
+          "txHash": "0xf19a53be948a050a2e1b517f7ba7267be53e178fa678a04a8172762bb16b17c2",
+          "at": 1793951896883,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 15,
+          "txHash": "0xf19a53be948a050a2e1b517f7ba7267be53e178fa678a04a8172762bb16b17c2",
+          "at": 1793951914254,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 16,
+          "txHash": "0x28f5671f4fd42689c70bd8e0850f5b237f7d31416f3eb6a7b39d43a74af558a4",
+          "at": 1793951988336,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 17,
+          "txHash": "0x5d4cb1b3f1cb4553d53c7586f860efe6560be97741e5bb334989660e991409b8",
+          "at": 1793952004461,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 18,
+          "txHash": "0x28f5671f4fd42689c70bd8e0850f5b237f7d31416f3eb6a7b39d43a74af558a4",
+          "at": 1793952014280,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 19,
+          "txHash": "0x5d4cb1b3f1cb4553d53c7586f860efe6560be97741e5bb334989660e991409b8",
+          "at": 1793952014293,
+          "kind": "included",
+          "status": "OnChain"
+        }
+      }
+    },
+    {
+      "jsonrpc": "2.0",
+      "method": "skandha_subscription",
+      "params": {
+        "subscription": "0xf1bb563911656c71c9fb38ee1ee97834",
+        "result": {
+          "seq": 20,
+          "txHash": "0x994af404b19327704f6c37d5131eb9663a6cb6b69ae2a905afd5bd72006248a0",
+          "at": 1793952054474,
+          "kind": "admitted",
+          "status": "New"
+        }
+      }
+    }
+  ]
+}

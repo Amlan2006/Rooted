@@ -1,0 +1,86 @@
+# Rooted dashboard accessibility snapshot: nox-header
+# captured_at_utc: 2026-11-06T08:35:07.061Z
+# url: http://127.0.0.1:3000/?view=privacy
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: Private RPC
+  - text: API stream connected Sepolia 11155111
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "Private RPC." [level=1]
+  - paragraph: Inspect execution state through Anon-RPC.
+  - text: READ-ONLY INVESTIGATION ANON-RPC / EXECUTION READS
+  - heading "Investigate with a private route." [level=2]
+  - paragraph: Nox carries supported execution reads through a sandboxed Sphinx mixnet worker. Backend observations use a separate connection.
+  - text: Transport
+  - strong: Nox
+  - text: Default · anonymizing worker Worker
+  - strong: ready
+  - text: "Ready time: 3,284 ms Last RPC duration"
+  - strong: 882 ms
+  - text: Browser transport time only Completed reads
+  - strong: "1"
+  - text: 2 direct specifier reads
+  - heading "RPC investigation" [level=2]
+  - paragraph: "Destination: Sepolia · chain 11155111"
+  - text: ready
+  - button "Anonymous · Nox"
+  - button "Direct · exposes IP"
+  - text: Execution read
+  - combobox "Execution read":
+    - option "Latest block header" [selected]
+    - option "Network identity"
+    - option "Transaction receipt"
+    - option "Uniswap v3 pool · slot0"
+    - option "Uniswap Swap logs · last 64 blocks"
+  - button "Run read"
+  - button "Connect"
+  - button "Disconnect worker"
+  - paragraph: "A direct bootstrap discovers the worker before the mixnet is available. The harness verifies the bundle against the specifier’s hash. Destination chain: Sepolia verified."
+  - text: "anonymous result 882 ms { \"baseFeePerGas\": \"0x10\", \"blobGasUsed\": \"0x240000\", \"blockAccessListHash\": \"0x34d6ea14b6a303888649e6369452a0cf13b240127ef5623fdd9d37c30e0696bb\", \"difficulty\": \"0x0\", \"excessBlobGas\": \"0x59fffd\", \"extraData\": \"0x626573752032362e31312e30\", \"gasLimit\": \"0xbebc200\", \"gasUsed\": \"0x2bec431\", \"hash\": \"0x59bbfb9e59becdf5be3520ddb9f291623a452eeda23016f895b2980fa38b1e29\", \"logsBloom\": \"0x043a010c82820c320240040000001000c006800000088000500100401102004a880041008000201282000242c8800050208040206616a040804001c068a4410010248a000d000832100050898508121220010008300400800008048880420010280408041242201aa021188000182a102820228000b400100821a0108410200000000404401448302048000002004c10084801a10000804050a4000204c86008120a41100080a0060008850012103810000480010900000888b060090001080000018067820010000008040802002403021004008404480950000200802060400090010204a4201a141010800001000002c208100480804004000402400c0a0c\", \"miner\": \"0x3826539cbd8d68dcf119e80b994557b4278cec9f\", \"mixHash\": \"0xc7a2ea7fe92b5a608821be3eb142269020a8e6a0b12800f8947066688bfab974\", \"nonce\": \"0x0000000000000000\", \"number\": \"0xb8419c\", \"parentBeaconBlockRoot\": \"0x929e81278f2def613895a6391c9e0ed9ab980d7d471528a4dbc629ab99f20a1c\", \"parentHash\": \"0xea2ba8cbe251f39a01210f121c95369445136b3a53fa1341422df72fb89f3ae6\", \"receiptsRoot\": \"0x96d2a520f3f734e90aba81b3c7b429d046251716f049ca7e24d2824db824de13\", \"requestsHash\": \"0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\", \"sha3Uncles\": \"0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347\", \"size\": \"0x54ef\", \"slotNumber\": \"0xafc1a7\", \"stateRoot\": \"0x9c103051014542a8619c9ac874cfe179fd8429297534304b365daf9f1e580c14\", \"timestamp\": \"0x6aed9134\", \"transactions\": [ \"0x1e5d2404a02e8afa5c339ed9b9a9dd1933773ab172f84211aed2f3b415a71259\", \"0x40345d8a3effb56f541a6aac838a66f801ee4dcb13349f29761d52a03663ada8\", \"0x283e5a726421716a25075d0049146c4840d19d93e47f903316c075c7f23426c4\", \"0x5e514daa9b619b7688744f76d5e0adfe6f580bd1a41a7fadab470bc209601c3f\", \"0x03cea38f9f352cce18c1df3cbf18c1cea16f052178228385b0d5e9a06aa589af\", \"0x7508dd114baa8810a723b4f4685858980b2128441e8287853b01d493efe4d053\", \"0xcbf5bd6b84652c334192faf8d8c07562a2316d5da464a36f1ea40f9adecc31c9\", \"0x66cc0b9728bdd00e045b21c387474b53ff95a5c3cf7b84fd4ac40b8a6caf8f13\", \"0x6adfa9ec765a9714ee89b5a74bf5abe3e23cdbb86cfff35c45b44dc93a704a09\", \"0x8bab2d3f6820466ddb2a08332c19371c2141bd2d72093b21e8ce12a2df9552e2\", \"0x2cfd022439c7b0e8e6ad92c922b8cfeea217c5ca47a773d0ab686bdfb4cf90b4\", \"0x0fc4b93a2d963599eb50742352632d2e50d4afa6bfaafb6a17a81fd328550d79\", \"0xa6a7c485edda98c8c46e11d3a0b88b5b0ec2232b4254955cfb05f086f0da9d17\", \"0xa8adf6d97b8495c2f88226c0029ce3e33a8659c75902e5dbd0492723c1a1a809\", \"0xf02f46534197df24b9d9afdc429bcee2e9a0b780e5b69354bbdac1a8106e20c6\", \"0xcfd129d0c0be4ea6b0976f25db89957af83396ae47bff9234cb6a19871d1ab11\", \"0x1d2be3bdf5e5bc0697665eeb8631b8463a4d1ab313b26bedb3d5d5b5fa4cfd2e\", \"0xc6694a5498a2c07dcfcc2873ed5f27e9cd54f9da2499581de39b168e1dc18722\", \"0x3c3d1797b1fe82513a0323d6f331d4b017d40c4edafb93c3691c4b64aa518884\", \"0x75943606285d531ad752c953ce61e593cad4d3c4b12a891055bd7d30b521315c\", \"0xa3a964741d22d49ab964722c377f271a7fa01658d8104af0cbac1fe2ec4fd45d\", \"0x6761b998dd789a896ac462e5ba5cecff8955d889a847e6214a4f73a5d573690a\", \"0x8a4e701946a3d33cf7847bbfaf7e067bbb6ad1d67cbe900b733101a138377008\", \"0xa7ce346954e660d1179eefbd54ee7a4063a5481756de14e6c62f306f688ad8ee\", \"0x93cd7611354bfab05b68d922cbd03a7936ca9471ce52a8b4180593c314330533\", \"0xa674ba9c426136ee94f350f16fc4abe73fd28c50e170d59653d7b5cc4301bffc\", \"0xdbd35e46c78e8e3d800009144b216cd4053bea59be50d0f1690a7b820294b335\", \"0x2b797a78425df3311f07962160526911bb80958ef5068bad4f1aa9389c269053\", \"0x3aa7df8cb71f46b0fb59d94fe8a3daf11640ce8ffa153115cde9e746ce101923\", \"0x5db779b70ccf4dbd23f043f401206b6e90a430f8d05a5ff81aa2142d2ce26c22\", \"0x0bb6de8726dbc6409994e87dc1b83500bf12c2dc0fd743d8cebe9d55c57f8768\", \"0x584e35852255a58664c65a22631c07758de0e72f41ae4c2023f7fcfac4418f35\", \"0xc75ecbf7578b0f92a0d152d3ea6c58061e02d5741851e2e33c1fffba085cbe9b\", \"0x9dbd1da28a631928d11c8a005140be4dc0042099852a54181f019633d1619c67\", \"0x7929ca7c803bea7f59dbb5feb8ba9e98e19e02c7883f815a2c76fb77e7c1fa1b\", \"0x53f5a7dc09ef9effcbb046509cd8f5d230489a4f5ac8594068008c7276ef9acf\", \"0xd1e43be9b60adb70b026b117ce1f65458278aef2f2a813c286fc2d360dbc067a\", \"0x09fabb822f51307d586e592e42ddeecba55b8ddb594e8e51c8fb74ca086d819e\", \"0x8506b68777bec1e470416a23fdd2d12aa602d0fcb55f25d625815ec1cebea44d\", \"0x082ba4d6da8d956070fcf1a80f733b48e299c372799082b8b8eb23bd943b6ef3\", \"0xf69bc1a01f639aa0545092d73db72ee20e635ad5a4f046796c3e6f6d4622b4bd\", \"0xa760f4e7cb9c651332be66fc7afb1acf4779efdd5c1373b921ebd64588f8e24b\", \"0xaa01ac805c5d417b37c80d2207027b8ac4b7a0881744bf139ddf384ec146ddd5\", \"0xf7f6ea16c18971eb949fe5596af3b35258f4b5a0414c040486a8e84a639074f2\", \"0x439906f27b1b50f5c5ce5619a214653e89534d88a6eac8606a24d7b689e839f7\", \"0x97041a8eeb4d37116aeb7b2f861f396e78900415deb81631004130408b7eefe4\", \"0xaaafc70b9621e624247cfa7048784689e808ef0a40db6040eb4f2ec04409b1b8\", \"0xc36018d4f4dfa2be051e6dd5367c82c104a02bffff5e7f95e0ad2c734d09f0f4\", \"0xa147caf72d1b8ff02d1cd81dedf04107f614aa8ca67412601ff5e8b810b34ace\", \"0xa6b4b8908e953771bab148a1e2a8caf91e56bbf51dac10050411b119145e4e28\", \"0x6419aed0307793b161d9665c8fbeaeae8b53909ddb583493c4784ee441ed8236\", \"0x6ec158177af690a8ceb3d9b956c18a47e9241437d360c9616277500a5af8fc44\", \"0x78908d90c3e4ae734f1f4ce49802a0e2895b67cda59ddd8bd40047499aa14d1a\", \"0xab02171baf834ef0062163463c7d00fac566a63b101eff0fc70beefb43764e3d\", \"0xb847e390245f18a4bcef901bd917c19f030e082caf46512e1c235e4569379bee\", \"0xbd0290b1d4a7c91ad2a3555c64a764dc1767f71a2b88d57242a76b43fe97f17c\", \"0xa8c58489629970072d2caf2a270fc995c910822fa2db1ebb6d989a526d74054b\", \"0x7243366d456b70da72e6e160cd1fafb1fe27d7999a91ca7d1286b43e43e10dac\" ], \"transactionsRoot\": \"0x6e0c6664563ccae34c773a9cc8b91aff1b9c7f70fb0bfa5546945ebc39fa5cc2\", \"uncles\": [], \"withdrawals\": [ { \"address\": \"0xc6e2459991bfe27cca6d86722f35da23a1e4cb97\", \"amount\": \"0x3909e91\", \"index\": \"0x8a99959\", \"validatorIndex\": \"0x10000000007\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a9995a\", \"validatorIndex\": \"0x52d\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3802b\", \"index\": \"0x8a9995b\", \"validatorIndex\": \"0x52e\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a9995c\", \"validatorIndex\": \"0x52f\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a9995d\", \"validatorIndex\": \"0x530\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a9995e\", \"validatorIndex\": \"0x531\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a9995f\", \"validatorIndex\": \"0x532\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a99960\", \"validatorIndex\": \"0x533\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a99961\", \"validatorIndex\": \"0x534\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a99962\", \"validatorIndex\": \"0x535\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3802b\", \"index\": \"0x8a99963\", \"validatorIndex\": \"0x536\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a99964\", \"validatorIndex\": \"0x537\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3802b\", \"index\": \"0x8a99965\", \"validatorIndex\": \"0x538\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a99966\", \"validatorIndex\": \"0x539\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3802b\", \"index\": \"0x8a99967\", \"validatorIndex\": \"0x53a\" }, { \"address\": \"0x89bb1332db257b983ada216746903be808938da1\", \"amount\": \"0x3574e\", \"index\": \"0x8a99968\", \"validatorIndex\": \"0x53b\" } ], \"withdrawalsRoot\": \"0x8db0f01b5f86a95119a17d65181dd601798c198485fcc1ceebf938ff95551b9b\" }"
+  - heading "Transport activity" [level=2]
+  - paragraph: Readiness and worker diagnostics
+  - text: "01 Direct bootstrap: Nox specifier eth_call 02 Direct bootstrap: Nox specifier eth_call 03 nox-worker boot.start 04 nox-worker boot.snapshot {\"chainId\":421614,\"block\":316207920,\"members\":10,\"kpsMembers\":3,\"anchors\":3,\"discovery\":\"chain\",\"gateways\":0,\"bridges\":0} 05 nox-worker boot.wasm 06 nox-worker boot.tls {\"mode\":\"required\",\"session\":\"per-call\",\"roots\":121} 07 nox-worker boot.learned {\"anchors\":0,\"firstSeen\":0} 08 nox-worker anchor.dial {\"anchor\":\"uEiCStd3rfGT…\"} 09 nox-worker anchor.dial {\"anchor\":\"uEiBVDwIs40b…\"} 10 nox-worker anchor.dial {\"anchor\":\"uEiDGVPDwsQ9…\"} 11 nox-worker kps.dial.ok {\"entry\":\"uEiCStd3rfGT…\",\"lane\":\"primary\",\"ms\":651} 12 nox-worker kps.dial.ok {\"entry\":\"uEiBVDwIs40b…\",\"lane\":\"primary\",\"ms\":599} 13 nox-worker topology.accepted {\"sources\":2,\"members\":10,\"removed\":0,\"ignoredAdditions\":0,\"relocated\":0,\"removalQuorum\":true} 14 nox-worker kps.connected {\"entry\":\"uEiCStd3rfGT…\",\"members\":10,\"powDifficulty\":1,\"discovery\":\"chain\"} 15 nox-worker ready 16 nox-worker kps.dial.ok {\"entry\":\"uEiDGVPDwsQ9…\",\"lane\":\"primary\",\"ms\":628} 17 nox-worker claim.relay {\"entry\":\"uEiCStd3rfGT…\",\"claimV2\":true,\"waitMaxMs\":20000} 18 nox-worker claim.relay {\"entry\":\"uEiBVDwIs40b…\",\"claimV2\":true,\"waitMaxMs\":20000} 19 nox-worker tls.call {\"path\":\"inline\",\"openMs\":658,\"exchangeMs\":557,\"retries\":0,\"ok\":true} 20 Nox ready; destination chain verified through worker 21 nox-worker request.timing {\"totalMs\":735,\"replyBytes\":2448,\"claims\":1,\"uploadMs\":252,\"waitMs\":0,\"claimMs\":653,\"downloadMs\":43,\"decodeMs\":19,\"claimBytes\":32346,\"format\":\"binary\"} 22 nox-worker request.timing {\"totalMs\":465,\"replyBytes\":12616,\"claims\":1,\"uploadMs\":153,\"waitMs\":0,\"claimMs\":416,\"downloadMs\":1,\"decodeMs\":15,\"claimBytes\":32346,\"format\":\"binary\"} 23 nox-worker request.timing {\"totalMs\":632,\"replyBytes\":12670,\"claims\":1,\"uploadMs\":286,\"waitMs\":0,\"claimMs\":563,\"downloadMs\":40,\"decodeMs\":10,\"claimBytes\":32346,\"format\":\"binary\"} 24 nox-worker request.timing {\"totalMs\":388,\"replyBytes\":2861,\"claims\":1,\"uploadMs\":195,\"waitMs\":0,\"claimMs\":350,\"downloadMs\":7,\"decodeMs\":14,\"claimBytes\":32346,\"format\":\"binary\"} 25 nox-worker tls.call {\"path\":\"inline\",\"openMs\":460,\"exchangeMs\":605,\"retries\":0,\"ok\":true} 26 nox-worker tls.call {\"path\":\"inline\",\"openMs\":392,\"exchangeMs\":481,\"retries\":0,\"ok\":true} 27 eth_getBlockByNumber completed via anonymous 28 nox-worker request.timing {\"totalMs\":526,\"replyBytes\":2915,\"claims\":1,\"uploadMs\":222,\"waitMs\":0,\"claimMs\":482,\"downloadMs\":15,\"decodeMs\":15,\"claimBytes\":64689,\"format\":\"binary\"} 29 nox-worker discovery.verified {\"block\":326565264,\"members\":10,\"added\":0,\"removed\":0,\"moved\":0,\"probation\":0,\"keptByFloor\":0,\"attempts\":1,\"logScan\":false,\"ms\":1948}"
+  - button "Test worker failure"
+  - text: Closes Nox and attempts a read. No fallback is allowed. Specifier
+  - code: 0x35133267…1b7A9A
+  - text: Destination RPC
+  - code: ethereum-sepolia-rpc.publicnode.com
+  - text: Fallback policy
+  - strong: Fail closed
+  - heading "What this route protects" [level=2]
+  - paragraph: Privacy boundaries are part of the evidence.
+  - heading "Browser execution reads" [level=3]
+  - paragraph: Headers, receipts, logs, and contract reads use Nox by default. Query contents are still visible to the destination RPC. Worker/network operators remain a trust dependency.
+  - heading "Bootstrap & discovery" [level=3]
+  - paragraph: Specifier discovery, bundle resolution, and relay connections have separate network visibility. The bootstrap provider is trusted for the worker hash.
+  - heading "Rooted observations" [level=3]
+  - paragraph: Dashboard API/SSE requests and server-side collectors are ordinary traffic. Nox does not anonymize them or subsequent uploads. No signing keys are used here.
+  - text: Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

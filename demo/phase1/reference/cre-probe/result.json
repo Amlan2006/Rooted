@@ -1,0 +1,8 @@
+{
+  "status": "blocked",
+  "reason": "cre_authentication_required",
+  "schema": "rooted.phase1-probe-v1",
+  "probe": "cre",
+  "checked_at": "2026-11-06T08:27:22.215335+00:00",
+  "mode": "live_probe_attempt"
+}

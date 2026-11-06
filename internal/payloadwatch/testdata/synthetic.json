@@ -1,0 +1,413 @@
+{
+  "network": "sepolia",
+  "mode": "synthetic",
+  "source_id": "phase3-demo",
+  "policy": {
+    "late_ms": 2000,
+    "missing_ms": 8000,
+    "ptc_size": 8,
+    "ptc_quorum": 6
+  },
+  "sessions": [
+    {
+      "id": "demo",
+      "start": "2026-11-06T08:12:51Z",
+      "through": "2026-11-06T08:13:12Z",
+      "closed": true
+    },
+    {
+      "id": "outage",
+      "start": "2026-11-06T08:12:51Z",
+      "through": "2026-11-06T08:12:53Z",
+      "closed": true
+    }
+  ],
+  "events": [
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "107",
+      "block_root": "0x51ee131e1189b11ca66b12a8e254705dbe76005d43a9f70fd69bd0e985d6f9af",
+      "kind": "ptc",
+      "observed_at": "2026-11-06T08:12:54Z",
+      "session": "demo",
+      "timed": true,
+      "votes": {
+        "bits": "0xff",
+        "payload_present": false,
+        "blob_available": false
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "107",
+      "block_root": "0x51ee131e1189b11ca66b12a8e254705dbe76005d43a9f70fd69bd0e985d6f9af",
+      "kind": "payload_seen",
+      "observed_at": "2026-11-06T08:12:53Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0x5ed261776ddcb1dbf8012cd07a6a0073967df6c886c00efb9a141c13340bb00e",
+      "builder_index": "42"
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "105",
+      "block_root": "0xccd5c4cc01b4833d46de43c591e3ae46d4df4de48d4b9f50ec6a07798deaf96a",
+      "kind": "validation",
+      "observed_at": "2026-11-06T08:12:54Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0xa83ba6f545ae4d78c1e769202bbcb2fcd847859a861f90a30bb59956231bb996",
+      "builder_index": "42",
+      "valid": false
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "105",
+      "block_root": "0xccd5c4cc01b4833d46de43c591e3ae46d4df4de48d4b9f50ec6a07798deaf96a",
+      "kind": "payload_seen",
+      "observed_at": "2026-11-06T08:12:53Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0xa83ba6f545ae4d78c1e769202bbcb2fcd847859a861f90a30bb59956231bb996",
+      "builder_index": "42"
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "104",
+      "block_root": "0xb90cb3e89265f73a5500384ad132f51ec12c3b39f32c5d1f84f433a9c262ad2d",
+      "kind": "payload_seen",
+      "observed_at": "2026-11-06T08:12:53Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0x8810ad581e59f2bc3928b261707a71308f7e139eb04820366dc4d5c18d980225",
+      "builder_index": "42"
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "102",
+      "block_root": "0x75a8c6af063db6afd4be95b8a5157b8b221f970cc894c7cdec2ce435047c014f",
+      "kind": "payload_seen",
+      "observed_at": "2026-11-06T08:12:55Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0x66f719bfeb7e43031a93b7ca6abe841d3d39117d235d7c166787955e3478b3c2",
+      "builder_index": "42"
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "101",
+      "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+      "kind": "ptc",
+      "observed_at": "2026-11-06T08:12:54Z",
+      "session": "demo",
+      "timed": true,
+      "votes": {
+        "bits": "0xff",
+        "payload_present": true,
+        "blob_available": true
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "101",
+      "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+      "kind": "validation",
+      "observed_at": "2026-11-06T08:12:53.200000Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0x91de0c00179a8df047f37ded983e17f568aa76c014e7f308f1395d4aa363b7b5",
+      "builder_index": "42",
+      "valid": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "101",
+      "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+      "kind": "payload_seen",
+      "observed_at": "2026-11-06T08:12:53Z",
+      "session": "demo",
+      "timed": true,
+      "payload_hash": "0x91de0c00179a8df047f37ded983e17f568aa76c014e7f308f1395d4aa363b7b5",
+      "builder_index": "42"
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "107",
+      "block_root": "0x51ee131e1189b11ca66b12a8e254705dbe76005d43a9f70fd69bd0e985d6f9af",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "107",
+      "block_root": "0x51ee131e1189b11ca66b12a8e254705dbe76005d43a9f70fd69bd0e985d6f9af",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "107",
+        "block_root": "0x51ee131e1189b11ca66b12a8e254705dbe76005d43a9f70fd69bd0e985d6f9af",
+        "payload_hash": "0x5ed261776ddcb1dbf8012cd07a6a0073967df6c886c00efb9a141c13340bb00e",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "106",
+      "block_root": "0x4963a298064f32fd9db2b35192c54e885b382965f83923a2b57aaa4b9bdadaeb",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "outage",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "106",
+      "block_root": "0x4963a298064f32fd9db2b35192c54e885b382965f83923a2b57aaa4b9bdadaeb",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "106",
+        "block_root": "0x4963a298064f32fd9db2b35192c54e885b382965f83923a2b57aaa4b9bdadaeb",
+        "payload_hash": "0x1209db818666284a795fc4c0486b800cb841c2d431d4432e05a1e3c744145308",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "105",
+      "block_root": "0xccd5c4cc01b4833d46de43c591e3ae46d4df4de48d4b9f50ec6a07798deaf96a",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "105",
+      "block_root": "0xccd5c4cc01b4833d46de43c591e3ae46d4df4de48d4b9f50ec6a07798deaf96a",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "105",
+        "block_root": "0xccd5c4cc01b4833d46de43c591e3ae46d4df4de48d4b9f50ec6a07798deaf96a",
+        "payload_hash": "0xa83ba6f545ae4d78c1e769202bbcb2fcd847859a861f90a30bb59956231bb996",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "104",
+      "block_root": "0xb90cb3e89265f73a5500384ad132f51ec12c3b39f32c5d1f84f433a9c262ad2d",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "104",
+      "block_root": "0xb90cb3e89265f73a5500384ad132f51ec12c3b39f32c5d1f84f433a9c262ad2d",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "104",
+        "block_root": "0xb90cb3e89265f73a5500384ad132f51ec12c3b39f32c5d1f84f433a9c262ad2d",
+        "payload_hash": "0x689aaae64891b39b67bd566a32d0ad891fa7721e2c573a3b5716d428734cabc7",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "103",
+      "block_root": "0x54cad07b8d92e338d5ce1b9425f7ad5c33a7667f61854c72dc5f6643d0aa8601",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "103",
+      "block_root": "0x54cad07b8d92e338d5ce1b9425f7ad5c33a7667f61854c72dc5f6643d0aa8601",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "103",
+        "block_root": "0x54cad07b8d92e338d5ce1b9425f7ad5c33a7667f61854c72dc5f6643d0aa8601",
+        "payload_hash": "0x0238da588d841a454cebc35322573cde0bb89cda0d8818207230627f1a34b7f9",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "102",
+      "block_root": "0x75a8c6af063db6afd4be95b8a5157b8b221f970cc894c7cdec2ce435047c014f",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "102",
+      "block_root": "0x75a8c6af063db6afd4be95b8a5157b8b221f970cc894c7cdec2ce435047c014f",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "102",
+        "block_root": "0x75a8c6af063db6afd4be95b8a5157b8b221f970cc894c7cdec2ce435047c014f",
+        "payload_hash": "0x66f719bfeb7e43031a93b7ca6abe841d3d39117d235d7c166787955e3478b3c2",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "101",
+      "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+      "kind": "block_seen",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "101",
+      "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "101",
+        "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+        "payload_hash": "0x91de0c00179a8df047f37ded983e17f568aa76c014e7f308f1395d4aa363b7b5",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    },
+    {
+      "network": "sepolia",
+      "mode": "synthetic",
+      "source_id": "phase3-demo",
+      "slot": "101",
+      "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+      "kind": "snapshot",
+      "observed_at": "2026-11-06T08:12:52Z",
+      "session": "demo",
+      "timed": true,
+      "snapshot": {
+        "network": "sepolia",
+        "slot": "101",
+        "block_root": "0x853c34243fbbfd2d914c7f58d0e4315cf33bc0dc7d6f3c995be978844643bba3",
+        "payload_hash": "0x91de0c00179a8df047f37ded983e17f568aa76c014e7f308f1395d4aa363b7b5",
+        "builder_index": "42",
+        "canonical_at_fetch": true,
+        "payload_retrieved": false,
+        "identifiers_matched": false,
+        "included_ptc_attestations": [],
+        "fetched_at": "2026-11-06T08:12:52Z"
+      }
+    }
+  ]
+}

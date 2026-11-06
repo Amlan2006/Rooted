@@ -1,0 +1,2849 @@
+{
+  "schema": "rooted-workload-comparison-v1",
+  "captured_at": "2026-11-06T08:15:25.084596933Z",
+  "fork": {
+    "number": "0xb84138",
+    "hash": "0xa0038510b048ca39b286cdbe59e947d58c8726669ba8536cb3cf59195696e9a3"
+  },
+  "baseline": {
+    "number": "0xb8413e",
+    "hash": "0x5515e33446e7e448655558e31549dc7ff225ec73e583e9dae72a2c971cc1accc"
+  },
+  "settings": {
+    "client": "anvil/v1.9.0",
+    "hardfork": "prague",
+    "order": "fifo",
+    "amount_raw": "1000000000000",
+    "gas": "0x200000",
+    "max_fee": "5000000000",
+    "priority_fee": "1000000000",
+    "opcode_limit": 20000,
+    "timestamp": 1793952906,
+    "accounts": [
+      "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+      "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc"
+    ],
+    "harnesses": [
+      "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+      "0x72ff571b59c2f197365e041045ccdf248c78664f",
+      "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf"
+    ]
+  },
+  "scenarios": [
+    {
+      "coverage_metadata_complete": true,
+      "inputs": [
+        {
+          "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+          "from": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+          "to": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+          "input": "0x0545a7cd0000000000000000000000003289680dd4d6c10bb19b899729cda5eef58aeff1000000000000000000000000000000000000000000000000000000e8d4a510000000000000000000000000000000000000000000000000000000000000000000",
+          "gas": "0x200000",
+          "maxFeePerGas": "0x12a05f200",
+          "maxPriorityFeePerGas": "0x3b9aca00",
+          "nonce": "0xbd48",
+          "value": "0x0"
+        },
+        {
+          "hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+          "from": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+          "to": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+          "input": "0x0545a7cd0000000000000000000000003289680dd4d6c10bb19b899729cda5eef58aeff1000000000000000000000000000000000000000000000000000000e8d4a510000000000000000000000000000000000000000000000000000000000000000000",
+          "gas": "0x200000",
+          "maxFeePerGas": "0x12a05f200",
+          "maxPriorityFeePerGas": "0x3b9aca00",
+          "nonce": "0x8ce0",
+          "value": "0x0"
+        },
+        {
+          "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+          "from": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+          "to": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+          "input": "0x0545a7cd0000000000000000000000003289680dd4d6c10bb19b899729cda5eef58aeff1000000000000000000000000000000000000000000000000000000e8d4a510000000000000000000000000000000000000000000000000000000000000000000",
+          "gas": "0x200000",
+          "maxFeePerGas": "0x12a05f200",
+          "maxPriorityFeePerGas": "0x3b9aca00",
+          "nonce": "0x7a54",
+          "value": "0x0"
+        }
+      ],
+      "name": "Same pool",
+      "routes": [
+        "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+        "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+        "0x3289680dd4d6c10bb19b899729cda5eef58aeff1"
+      ],
+      "transactions": [
+        "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+        "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+        "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f"
+      ],
+      "receipts": [
+        {
+          "transactionHash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+          "blockHash": "0xa22830eb9f15f9c969096f76127e837908d280293c6047f631770dc2d67e216a",
+          "status": "0x1",
+          "transactionIndex": "0x0"
+        },
+        {
+          "transactionHash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+          "blockHash": "0xa22830eb9f15f9c969096f76127e837908d280293c6047f631770dc2d67e216a",
+          "status": "0x1",
+          "transactionIndex": "0x1"
+        },
+        {
+          "transactionHash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+          "blockHash": "0xa22830eb9f15f9c969096f76127e837908d280293c6047f631770dc2d67e216a",
+          "status": "0x1",
+          "transactionIndex": "0x2"
+        }
+      ],
+      "report": {
+        "id": "0x136148b2eaf0835edad04f6023e80afea26212100c8056236936cded3c31bf4f",
+        "network": "sepolia-fork",
+        "mode": "fork",
+        "chain_id": "31337",
+        "created_at": "2026-11-06T08:15:22.850474384Z",
+        "canonical_at_fetch": true,
+        "block": {
+          "hash": "0xa22830eb9f15f9c969096f76127e837908d280293c6047f631770dc2d67e216a",
+          "number": "0xb8413f",
+          "slotNumber": null,
+          "parentHash": "0x5515e33446e7e448655558e31549dc7ff225ec73e583e9dae72a2c971cc1accc",
+          "miner": "0x0000000000000000000000000000000000000000",
+          "blockAccessListHash": null,
+          "transactions": [
+            {
+              "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371"
+            },
+            {
+              "hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e"
+            },
+            {
+              "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f"
+            }
+          ]
+        },
+        "native_bal": null,
+        "graph": {
+          "edges": [
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            }
+          ],
+          "truncated": false,
+          "full_dependency_coverage": false,
+          "storage_read_coverage_complete": true,
+          "observed_dependency_depth": 3,
+          "observed_max_layer_width": 1,
+          "observed_conflict_counts": {
+            "RAW": 12,
+            "WAR": 12,
+            "WAW": 15
+          },
+          "observed_layers": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "theoretical_speedup": null,
+          "coverage": [
+            "observed_evidence_graph_not_a_complete_execution_schedule",
+            "account_existence_authorization_and_client_semantics_not_fully_modeled"
+          ]
+        },
+        "storage_projection": {
+          "edges": [
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            }
+          ],
+          "truncated": false,
+          "full_dependency_coverage": false,
+          "storage_read_coverage_complete": true,
+          "observed_dependency_depth": 3,
+          "observed_max_layer_width": 1,
+          "observed_conflict_counts": {
+            "RAW": 12,
+            "WAR": 12,
+            "WAW": 12
+          },
+          "observed_layers": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "theoretical_speedup": null,
+          "coverage": [
+            "observed_evidence_graph_not_a_complete_execution_schedule",
+            "account_existence_authorization_and_client_semantics_not_fully_modeled",
+            "storage_projection_excludes_balance_nonce_code_and_fee_recipient_dependencies"
+          ]
+        },
+        "coverage": [
+          "trace_only_fork_not_native_bal_evidence",
+          "no_measured_parallel_execution_speedup",
+          "gas_used_is_whole_transaction_not_pool_exclusive"
+        ],
+        "uniswap_storage_labels": {
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x0000000000000000000000000000000000000000000000000000000000000000": "slot0_price_tick_and_lock",
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x0000000000000000000000000000000000000000000000000000000000000002": "fee_growth_global_1",
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x0000000000000000000000000000000000000000000000000000000000000004": "active_liquidity",
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d": "unattributed_storage_key"
+        },
+        "transaction_access": [
+          {
+            "index": 0,
+            "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+            "reads": [
+              {
+                "address": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+                "field": "code",
+                "key": null
+              },
+              {
+                "address": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xe1f53591c483265baceefcddc00cc228e811185f6494db029c39ffc4814e270f"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000004"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d"
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x811a4ae4444c4f6827f6ca82bf173df2ed031cc92a0eec28cc011efdf3e08a91"
+              }
+            ],
+            "writes": [
+              {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xe1f53591c483265baceefcddc00cc228e811185f6494db029c39ffc4814e270f"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x811a4ae4444c4f6827f6ca82bf173df2ed031cc92a0eec28cc011efdf3e08a91"
+              }
+            ],
+            "storage_reads_complete": true,
+            "coverage": [
+              "prestate_keys_are_access_candidates_not_a_complete_read_set",
+              "storage_reads_include_sstore_implicit_reads_and_reverted_frames",
+              "trace_only_no_native_bal"
+            ]
+          },
+          {
+            "index": 1,
+            "hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+            "reads": [
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x15577270e840c35a45d3ee86eb4e628b3cc4156cb39163682c164e170b8b37bb"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000004"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d"
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+                "field": "code",
+                "key": null
+              },
+              {
+                "address": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0xe053e5d26ad3d205f8a5f5fb0778ba18504c41d4c905bee7605f0228a57d8238"
+              }
+            ],
+            "writes": [
+              {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x15577270e840c35a45d3ee86eb4e628b3cc4156cb39163682c164e170b8b37bb"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0xe053e5d26ad3d205f8a5f5fb0778ba18504c41d4c905bee7605f0228a57d8238"
+              }
+            ],
+            "storage_reads_complete": true,
+            "coverage": [
+              "prestate_keys_are_access_candidates_not_a_complete_read_set",
+              "storage_reads_include_sstore_implicit_reads_and_reverted_frames",
+              "trace_only_no_native_bal"
+            ]
+          },
+          {
+            "index": 2,
+            "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+            "reads": [
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x8ba2f586dea6d2b4c43bcb028d58da1b742c18923adfca17f114b9a0a7e691a8"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+                "field": "code",
+                "key": null
+              },
+              {
+                "address": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000004"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d"
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x3ddc3b4e2a861a8b73973e4243acafd57e3481931f212328c39939d5d7225397"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              }
+            ],
+            "writes": [
+              {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x8ba2f586dea6d2b4c43bcb028d58da1b742c18923adfca17f114b9a0a7e691a8"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x3ddc3b4e2a861a8b73973e4243acafd57e3481931f212328c39939d5d7225397"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              }
+            ],
+            "storage_reads_complete": true,
+            "coverage": [
+              "prestate_keys_are_access_candidates_not_a_complete_read_set",
+              "storage_reads_include_sstore_implicit_reads_and_reverted_frames",
+              "trace_only_no_native_bal"
+            ]
+          }
+        ],
+        "analyzed_transactions": [
+          {
+            "transaction": {
+              "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f"
+            },
+            "call_trace_available": true,
+            "state_diff_available": true,
+            "opcode_trace_available": true,
+            "coverage": []
+          },
+          {
+            "transaction": {
+              "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371"
+            },
+            "call_trace_available": true,
+            "state_diff_available": true,
+            "opcode_trace_available": true,
+            "coverage": []
+          },
+          {
+            "transaction": {
+              "hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e"
+            },
+            "call_trace_available": true,
+            "state_diff_available": true,
+            "opcode_trace_available": true,
+            "coverage": []
+          }
+        ],
+        "uniswap_pools": [
+          {
+            "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "token0": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+            "token1": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+            "fee": 500,
+            "verified": true
+          }
+        ],
+        "uniswap_swaps": [
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+            "amount0_raw": "-26160",
+            "amount1_raw": "1000000000000",
+            "tick": 174593,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+            "amount0_raw": "-26160",
+            "amount1_raw": "1000000000000",
+            "tick": 174593,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+            "amount0_raw": "-26160",
+            "amount1_raw": "1000000000000",
+            "tick": 174593,
+            "pool_verified": true
+          }
+        ],
+        "uniswap_swap_calls": [
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+            "committed": true,
+            "transaction_reverted": false,
+            "ancestor_failed": false,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+            "committed": true,
+            "transaction_reverted": false,
+            "ancestor_failed": false,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+            "committed": true,
+            "transaction_reverted": false,
+            "ancestor_failed": false,
+            "pool_verified": true
+          }
+        ],
+        "sources": [
+          {
+            "source_ref": "analysis-source-1",
+            "kind": "eth_chainId",
+            "fetched_at": "2026-11-06T08:15:22.280343059Z"
+          },
+          {
+            "source_ref": "analysis-source-2",
+            "kind": "eth_getBlockByNumber",
+            "fetched_at": "2026-11-06T08:15:22.282624738Z"
+          },
+          {
+            "source_ref": "analysis-source-3",
+            "kind": "eth_getBlockByHash",
+            "fetched_at": "2026-11-06T08:15:22.284072987Z"
+          },
+          {
+            "source_ref": "analysis-source-4",
+            "kind": "eth_chainId",
+            "fetched_at": "2026-11-06T08:15:22.284976587Z"
+          },
+          {
+            "source_ref": "analysis-source-5",
+            "kind": "eth_getBlockByNumber",
+            "fetched_at": "2026-11-06T08:15:22.285710147Z"
+          },
+          {
+            "source_ref": "analysis-source-6",
+            "kind": "eth_getTransactionReceipt",
+            "fetched_at": "2026-11-06T08:15:22.28673136Z"
+          },
+          {
+            "source_ref": "analysis-source-7",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:22.287618139Z"
+          },
+          {
+            "source_ref": "analysis-source-8",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.289706491Z"
+          },
+          {
+            "source_ref": "analysis-source-9",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.293494775Z"
+          },
+          {
+            "source_ref": "analysis-source-10",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.298701793Z"
+          },
+          {
+            "source_ref": "analysis-source-11",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.382414078Z"
+          },
+          {
+            "source_ref": "analysis-source-12",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:22.480128819Z"
+          },
+          {
+            "source_ref": "analysis-source-13",
+            "kind": "eth_getTransactionReceipt",
+            "fetched_at": "2026-11-06T08:15:22.480896548Z"
+          },
+          {
+            "source_ref": "analysis-source-14",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:22.481379964Z"
+          },
+          {
+            "source_ref": "analysis-source-15",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.482435034Z"
+          },
+          {
+            "source_ref": "analysis-source-16",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.485968449Z"
+          },
+          {
+            "source_ref": "analysis-source-17",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.488744762Z"
+          },
+          {
+            "source_ref": "analysis-source-18",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.542437906Z"
+          },
+          {
+            "source_ref": "analysis-source-19",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:22.673106901Z"
+          },
+          {
+            "source_ref": "analysis-source-20",
+            "kind": "eth_getTransactionReceipt",
+            "fetched_at": "2026-11-06T08:15:22.673812364Z"
+          },
+          {
+            "source_ref": "analysis-source-21",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:22.674318411Z"
+          },
+          {
+            "source_ref": "analysis-source-22",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.675417944Z"
+          },
+          {
+            "source_ref": "analysis-source-23",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.679159558Z"
+          },
+          {
+            "source_ref": "analysis-source-24",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.682494225Z"
+          },
+          {
+            "source_ref": "analysis-source-25",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:22.740144515Z"
+          },
+          {
+            "source_ref": "analysis-source-26",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:22.82088201Z"
+          },
+          {
+            "source_ref": "analysis-source-27",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:22.82617298Z"
+          },
+          {
+            "source_ref": "analysis-source-28",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:22.827090084Z"
+          },
+          {
+            "source_ref": "analysis-source-29",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:22.829300917Z"
+          },
+          {
+            "source_ref": "analysis-source-30",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:22.829965514Z"
+          },
+          {
+            "source_ref": "analysis-source-31",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:22.849490426Z"
+          },
+          {
+            "source_ref": "analysis-source-32",
+            "kind": "eth_getBlockByNumber",
+            "fetched_at": "2026-11-06T08:15:22.850108857Z"
+          }
+        ],
+        "network_anchor": {
+          "number": "0xb84138",
+          "hash": "0xa0038510b048ca39b286cdbe59e947d58c8726669ba8536cb3cf59195696e9a3"
+        }
+      }
+    },
+    {
+      "coverage_metadata_complete": true,
+      "inputs": [
+        {
+          "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+          "from": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+          "to": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+          "input": "0x0545a7cd0000000000000000000000003289680dd4d6c10bb19b899729cda5eef58aeff1000000000000000000000000000000000000000000000000000000e8d4a510000000000000000000000000000000000000000000000000000000000000000000",
+          "gas": "0x200000",
+          "maxFeePerGas": "0x12a05f200",
+          "maxPriorityFeePerGas": "0x3b9aca00",
+          "nonce": "0xbd48",
+          "value": "0x0"
+        },
+        {
+          "hash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499",
+          "from": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+          "to": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+          "input": "0x0545a7cd0000000000000000000000006ce0896eae6d4bd668fde41bb784548fb8f59b50000000000000000000000000000000000000000000000000000000e8d4a510000000000000000000000000000000000000000000000000000000000000000000",
+          "gas": "0x200000",
+          "maxFeePerGas": "0x12a05f200",
+          "maxPriorityFeePerGas": "0x3b9aca00",
+          "nonce": "0x8ce0",
+          "value": "0x0"
+        },
+        {
+          "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+          "from": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+          "to": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+          "input": "0x0545a7cd0000000000000000000000003289680dd4d6c10bb19b899729cda5eef58aeff1000000000000000000000000000000000000000000000000000000e8d4a510000000000000000000000000000000000000000000000000000000000000000000",
+          "gas": "0x200000",
+          "maxFeePerGas": "0x12a05f200",
+          "maxPriorityFeePerGas": "0x3b9aca00",
+          "nonce": "0x7a54",
+          "value": "0x0"
+        }
+      ],
+      "name": "Spread pools",
+      "routes": [
+        "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+        "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+        "0x3289680dd4d6c10bb19b899729cda5eef58aeff1"
+      ],
+      "transactions": [
+        "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+        "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499",
+        "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f"
+      ],
+      "receipts": [
+        {
+          "transactionHash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+          "blockHash": "0x1b3b1750367a29aa51ae3a153bc169b3428418cdd2fd1a1084f2249887636c58",
+          "status": "0x1",
+          "transactionIndex": "0x0"
+        },
+        {
+          "transactionHash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499",
+          "blockHash": "0x1b3b1750367a29aa51ae3a153bc169b3428418cdd2fd1a1084f2249887636c58",
+          "status": "0x1",
+          "transactionIndex": "0x1"
+        },
+        {
+          "transactionHash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+          "blockHash": "0x1b3b1750367a29aa51ae3a153bc169b3428418cdd2fd1a1084f2249887636c58",
+          "status": "0x1",
+          "transactionIndex": "0x2"
+        }
+      ],
+      "report": {
+        "id": "0x34000af5d9d49747179ec79caad420e392ff7ece80c17a2e08c3facce1c8cf0f",
+        "network": "sepolia-fork",
+        "mode": "fork",
+        "chain_id": "31337",
+        "created_at": "2026-11-06T08:15:25.084596933Z",
+        "canonical_at_fetch": true,
+        "block": {
+          "hash": "0x1b3b1750367a29aa51ae3a153bc169b3428418cdd2fd1a1084f2249887636c58",
+          "number": "0xb8413f",
+          "slotNumber": null,
+          "parentHash": "0x5515e33446e7e448655558e31549dc7ff225ec73e583e9dae72a2c971cc1accc",
+          "miner": "0x0000000000000000000000000000000000000000",
+          "blockAccessListHash": null,
+          "transactions": [
+            {
+              "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371"
+            },
+            {
+              "hash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499"
+            },
+            {
+              "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f"
+            }
+          ]
+        },
+        "native_bal": null,
+        "graph": {
+          "edges": [
+            {
+              "from": 0,
+              "to": 1,
+              "kind": "WAW",
+              "location": {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            }
+          ],
+          "truncated": false,
+          "full_dependency_coverage": false,
+          "storage_read_coverage_complete": true,
+          "observed_dependency_depth": 3,
+          "observed_max_layer_width": 1,
+          "observed_conflict_counts": {
+            "RAW": 4,
+            "WAR": 4,
+            "WAW": 7
+          },
+          "observed_layers": [
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "theoretical_speedup": null,
+          "coverage": [
+            "observed_evidence_graph_not_a_complete_execution_schedule",
+            "account_existence_authorization_and_client_semantics_not_fully_modeled"
+          ]
+        },
+        "storage_projection": {
+          "edges": [
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "RAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAR",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "kind": "WAW",
+              "location": {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              "basis": "attributed_read_and_committed_change_evidence"
+            }
+          ],
+          "truncated": false,
+          "full_dependency_coverage": false,
+          "storage_read_coverage_complete": true,
+          "observed_dependency_depth": 2,
+          "observed_max_layer_width": 2,
+          "observed_conflict_counts": {
+            "RAW": 4,
+            "WAR": 4,
+            "WAW": 4
+          },
+          "observed_layers": [
+            [
+              0,
+              1
+            ],
+            [
+              2
+            ]
+          ],
+          "theoretical_speedup": null,
+          "coverage": [
+            "observed_evidence_graph_not_a_complete_execution_schedule",
+            "account_existence_authorization_and_client_semantics_not_fully_modeled",
+            "storage_projection_excludes_balance_nonce_code_and_fee_recipient_dependencies"
+          ]
+        },
+        "coverage": [
+          "trace_only_fork_not_native_bal_evidence",
+          "no_measured_parallel_execution_speedup",
+          "gas_used_is_whole_transaction_not_pool_exclusive"
+        ],
+        "uniswap_storage_labels": {
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x0000000000000000000000000000000000000000000000000000000000000000": "slot0_price_tick_and_lock",
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x0000000000000000000000000000000000000000000000000000000000000002": "fee_growth_global_1",
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x0000000000000000000000000000000000000000000000000000000000000004": "active_liquidity",
+          "0x3289680dd4d6c10bb19b899729cda5eef58aeff1:storage:0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d": "unattributed_storage_key",
+          "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50:storage:0x0000000000000000000000000000000000000000000000000000000000000000": "slot0_price_tick_and_lock",
+          "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50:storage:0x0000000000000000000000000000000000000000000000000000000000000002": "fee_growth_global_1",
+          "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50:storage:0x0000000000000000000000000000000000000000000000000000000000000004": "active_liquidity",
+          "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50:storage:0x85291c2e7881182c13e19eca9b58927ebfdc2c5d04882018eeb33d8241d35711": "unattributed_storage_key"
+        },
+        "transaction_access": [
+          {
+            "index": 0,
+            "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+            "reads": [
+              {
+                "address": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+                "field": "code",
+                "key": null
+              },
+              {
+                "address": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xe1f53591c483265baceefcddc00cc228e811185f6494db029c39ffc4814e270f"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000004"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d"
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x811a4ae4444c4f6827f6ca82bf173df2ed031cc92a0eec28cc011efdf3e08a91"
+              }
+            ],
+            "writes": [
+              {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xe1f53591c483265baceefcddc00cc228e811185f6494db029c39ffc4814e270f"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x811a4ae4444c4f6827f6ca82bf173df2ed031cc92a0eec28cc011efdf3e08a91"
+              }
+            ],
+            "storage_reads_complete": true,
+            "coverage": [
+              "prestate_keys_are_access_candidates_not_a_complete_read_set",
+              "storage_reads_include_sstore_implicit_reads_and_reverted_frames",
+              "trace_only_no_native_bal"
+            ]
+          },
+          {
+            "index": 1,
+            "hash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499",
+            "reads": [
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x15577270e840c35a45d3ee86eb4e628b3cc4156cb39163682c164e170b8b37bb"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x2c5cf720a935659418118f8a499143c3cbd35bad1f67a74ddc246d8441b47dfc"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3"
+              },
+              {
+                "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000004"
+              },
+              {
+                "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+                "field": "storage",
+                "key": "0x85291c2e7881182c13e19eca9b58927ebfdc2c5d04882018eeb33d8241d35711"
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+                "field": "code",
+                "key": null
+              },
+              {
+                "address": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0xa78477a768e132ec121e09c84fda84412e6d851bc2a1abaeaade909d438c4c86"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0xe053e5d26ad3d205f8a5f5fb0778ba18504c41d4c905bee7605f0228a57d8238"
+              }
+            ],
+            "writes": [
+              {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x15577270e840c35a45d3ee86eb4e628b3cc4156cb39163682c164e170b8b37bb"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x2c5cf720a935659418118f8a499143c3cbd35bad1f67a74ddc246d8441b47dfc"
+              },
+              {
+                "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0xa78477a768e132ec121e09c84fda84412e6d851bc2a1abaeaade909d438c4c86"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0xe053e5d26ad3d205f8a5f5fb0778ba18504c41d4c905bee7605f0228a57d8238"
+              }
+            ],
+            "storage_reads_complete": true,
+            "coverage": [
+              "prestate_keys_are_access_candidates_not_a_complete_read_set",
+              "storage_reads_include_sstore_implicit_reads_and_reverted_frames",
+              "trace_only_no_native_bal"
+            ]
+          },
+          {
+            "index": 2,
+            "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+            "reads": [
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000001"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x10d6a54a4754c8869d6886b5f5d7fbfa5b4522237ea5c60d11bc4e7a1ff9390b"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x7050c9e0f4ca769c69bd3a8ef740bc37934f8e2c036e5a723fd8ee048ed3f8c3"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x8ba2f586dea6d2b4c43bcb028d58da1b742c18923adfca17f114b9a0a7e691a8"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+                "field": "code",
+                "key": null
+              },
+              {
+                "address": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000004"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x3267b47cf7d636a4acef120d6f6f37fb3cfceb9dee7977493913a663452e671d"
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x3ddc3b4e2a861a8b73973e4243acafd57e3481931f212328c39939d5d7225397"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              }
+            ],
+            "writes": [
+              {
+                "address": "0x0000000000000000000000000000000000000000",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0x8ba2f586dea6d2b4c43bcb028d58da1b742c18923adfca17f114b9a0a7e691a8"
+              },
+              {
+                "address": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+                "field": "storage",
+                "key": "0xa38910b60127e5251be532eb12fb22d805474f0f9c1c6312213a3ae73b4531d7"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              {
+                "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+                "field": "storage",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002"
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "balance",
+                "key": null
+              },
+              {
+                "address": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+                "field": "nonce",
+                "key": null
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x3ddc3b4e2a861a8b73973e4243acafd57e3481931f212328c39939d5d7225397"
+              },
+              {
+                "address": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+                "field": "storage",
+                "key": "0x621ed32f145b61c99f199a418095340a8de179d06aead00e8739fc7ce9e27b2d"
+              }
+            ],
+            "storage_reads_complete": true,
+            "coverage": [
+              "prestate_keys_are_access_candidates_not_a_complete_read_set",
+              "storage_reads_include_sstore_implicit_reads_and_reverted_frames",
+              "trace_only_no_native_bal"
+            ]
+          }
+        ],
+        "analyzed_transactions": [
+          {
+            "transaction": {
+              "hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f"
+            },
+            "call_trace_available": true,
+            "state_diff_available": true,
+            "opcode_trace_available": true,
+            "coverage": []
+          },
+          {
+            "transaction": {
+              "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371"
+            },
+            "call_trace_available": true,
+            "state_diff_available": true,
+            "opcode_trace_available": true,
+            "coverage": []
+          },
+          {
+            "transaction": {
+              "hash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499"
+            },
+            "call_trace_available": true,
+            "state_diff_available": true,
+            "opcode_trace_available": true,
+            "coverage": []
+          }
+        ],
+        "uniswap_pools": [
+          {
+            "address": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "token0": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+            "token1": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+            "fee": 500,
+            "verified": true
+          },
+          {
+            "address": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+            "token0": "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+            "token1": "0xfff9976782d46cc05630d1f6ebab18b2324d6b14",
+            "fee": 3000,
+            "verified": true
+          }
+        ],
+        "uniswap_swaps": [
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+            "amount0_raw": "-26160",
+            "amount1_raw": "1000000000000",
+            "tick": 174593,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+            "amount0_raw": "-26160",
+            "amount1_raw": "1000000000000",
+            "tick": 174593,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+            "transaction_hash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499",
+            "amount0_raw": "-26108",
+            "amount1_raw": "1000000000000",
+            "tick": 174588,
+            "pool_verified": true
+          }
+        ],
+        "uniswap_swap_calls": [
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x301f086edb6df47c3f376c9a8f00f937c72ff0e7639aacf821656accbb686a5f",
+            "committed": true,
+            "transaction_reverted": false,
+            "ancestor_failed": false,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+            "transaction_hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+            "committed": true,
+            "transaction_reverted": false,
+            "ancestor_failed": false,
+            "pool_verified": true
+          },
+          {
+            "pool": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+            "transaction_hash": "0x5b0c036a1244ee4842e280796efcfb5e21771213b5f3598e4c0650a0f66f2499",
+            "committed": true,
+            "transaction_reverted": false,
+            "ancestor_failed": false,
+            "pool_verified": true
+          }
+        ],
+        "sources": [
+          {
+            "source_ref": "analysis-source-1",
+            "kind": "eth_chainId",
+            "fetched_at": "2026-11-06T08:15:24.487945688Z"
+          },
+          {
+            "source_ref": "analysis-source-2",
+            "kind": "eth_getBlockByNumber",
+            "fetched_at": "2026-11-06T08:15:24.489896914Z"
+          },
+          {
+            "source_ref": "analysis-source-3",
+            "kind": "eth_getBlockByHash",
+            "fetched_at": "2026-11-06T08:15:24.492702779Z"
+          },
+          {
+            "source_ref": "analysis-source-4",
+            "kind": "eth_chainId",
+            "fetched_at": "2026-11-06T08:15:24.494189676Z"
+          },
+          {
+            "source_ref": "analysis-source-5",
+            "kind": "eth_getBlockByNumber",
+            "fetched_at": "2026-11-06T08:15:24.49573521Z"
+          },
+          {
+            "source_ref": "analysis-source-6",
+            "kind": "eth_getTransactionReceipt",
+            "fetched_at": "2026-11-06T08:15:24.49749332Z"
+          },
+          {
+            "source_ref": "analysis-source-7",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:24.499302816Z"
+          },
+          {
+            "source_ref": "analysis-source-8",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.500929334Z"
+          },
+          {
+            "source_ref": "analysis-source-9",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.503661265Z"
+          },
+          {
+            "source_ref": "analysis-source-10",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.506782068Z"
+          },
+          {
+            "source_ref": "analysis-source-11",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.574127059Z"
+          },
+          {
+            "source_ref": "analysis-source-12",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:24.6772025Z"
+          },
+          {
+            "source_ref": "analysis-source-13",
+            "kind": "eth_getTransactionReceipt",
+            "fetched_at": "2026-11-06T08:15:24.678232422Z"
+          },
+          {
+            "source_ref": "analysis-source-14",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:24.679056052Z"
+          },
+          {
+            "source_ref": "analysis-source-15",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.681164591Z"
+          },
+          {
+            "source_ref": "analysis-source-16",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.683261599Z"
+          },
+          {
+            "source_ref": "analysis-source-17",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.687031903Z"
+          },
+          {
+            "source_ref": "analysis-source-18",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.752941528Z"
+          },
+          {
+            "source_ref": "analysis-source-19",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:24.8629425Z"
+          },
+          {
+            "source_ref": "analysis-source-20",
+            "kind": "eth_getTransactionReceipt",
+            "fetched_at": "2026-11-06T08:15:24.864054296Z"
+          },
+          {
+            "source_ref": "analysis-source-21",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:24.864689568Z"
+          },
+          {
+            "source_ref": "analysis-source-22",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.866078194Z"
+          },
+          {
+            "source_ref": "analysis-source-23",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.867819604Z"
+          },
+          {
+            "source_ref": "analysis-source-24",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.870747941Z"
+          },
+          {
+            "source_ref": "analysis-source-25",
+            "kind": "debug_traceTransaction",
+            "fetched_at": "2026-11-06T08:15:24.951433294Z"
+          },
+          {
+            "source_ref": "analysis-source-26",
+            "kind": "eth_getTransactionByHash",
+            "fetched_at": "2026-11-06T08:15:25.058056848Z"
+          },
+          {
+            "source_ref": "analysis-source-27",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.059434792Z"
+          },
+          {
+            "source_ref": "analysis-source-28",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.060136727Z"
+          },
+          {
+            "source_ref": "analysis-source-29",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.060993898Z"
+          },
+          {
+            "source_ref": "analysis-source-30",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.061926444Z"
+          },
+          {
+            "source_ref": "analysis-source-31",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.072275338Z"
+          },
+          {
+            "source_ref": "analysis-source-32",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.073740036Z"
+          },
+          {
+            "source_ref": "analysis-source-33",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.075403939Z"
+          },
+          {
+            "source_ref": "analysis-source-34",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.077008412Z"
+          },
+          {
+            "source_ref": "analysis-source-35",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.078153664Z"
+          },
+          {
+            "source_ref": "analysis-source-36",
+            "kind": "eth_call",
+            "fetched_at": "2026-11-06T08:15:25.083039583Z"
+          },
+          {
+            "source_ref": "analysis-source-37",
+            "kind": "eth_getBlockByNumber",
+            "fetched_at": "2026-11-06T08:15:25.083909708Z"
+          }
+        ],
+        "network_anchor": {
+          "number": "0xb84138",
+          "hash": "0xa0038510b048ca39b286cdbe59e947d58c8726669ba8536cb3cf59195696e9a3"
+        }
+      }
+    }
+  ]
+}

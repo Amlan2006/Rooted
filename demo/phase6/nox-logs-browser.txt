@@ -1,0 +1,86 @@
+# Rooted dashboard accessibility snapshot: nox-logs
+# captured_at_utc: 2026-11-06T08:35:12.017Z
+# url: http://127.0.0.1:3000/?view=privacy
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: Private RPC
+  - text: API stream connected Sepolia 11155111
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "Private RPC." [level=1]
+  - paragraph: Inspect execution state through Anon-RPC.
+  - text: READ-ONLY INVESTIGATION ANON-RPC / EXECUTION READS
+  - heading "Investigate with a private route." [level=2]
+  - paragraph: Nox carries supported execution reads through a sandboxed Sphinx mixnet worker. Backend observations use a separate connection.
+  - text: Transport
+  - strong: Nox
+  - text: Default · anonymizing worker Worker
+  - strong: ready
+  - text: "Ready time: 3,284 ms Last RPC duration"
+  - strong: 837 ms
+  - text: Browser transport time only Completed reads
+  - strong: "5"
+  - text: 2 direct specifier reads
+  - heading "RPC investigation" [level=2]
+  - paragraph: "Destination: Sepolia · chain 11155111"
+  - text: ready
+  - button "Anonymous · Nox"
+  - button "Direct · exposes IP"
+  - text: Execution read
+  - combobox "Execution read":
+    - option "Latest block header"
+    - option "Network identity"
+    - option "Transaction receipt"
+    - option "Uniswap v3 pool · slot0"
+    - option "Uniswap Swap logs · last 64 blocks" [selected]
+  - button "Run read"
+  - button "Connect"
+  - button "Disconnect worker"
+  - paragraph: "A direct bootstrap discovers the worker before the mixnet is available. The harness verifies the bundle against the specifier’s hash. Destination chain: Sepolia verified."
+  - text: "anonymous result 837 ms [ { \"address\": \"0x3289680dd4d6c10bb19b899729cda5eef58aeff1\", \"topics\": [ \"0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67\", \"0x0000000000000000000000003bfa4769fb09eefc5a80d6e87c3b9c650f7ae48e\", \"0x000000000000000000000000b68a7c088ec9c6e8dcf05545698e7e966a090d0f\" ], \"data\": \"0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffff38692e0000000000000000000000000000000000000000000000000001c6bf526340000000000000000000000000000000000000001825259736aa85516f706d298e050000000000000000000000000000000000000000000000000038e5b51a7f10cc000000000000000000000000000000000000000000000000000000000002aa01\", \"blockHash\": \"0x4182f5031028fe934963c1252fdfe92915c788fdfb06ffb47bae00715f34cc71\", \"blockNumber\": \"0xb84172\", \"blockTimestamp\": \"0x6aed8f3c\", \"transactionHash\": \"0x4a32623f9cc2e432e77e3d0ec267d64b87fc21a0ee38960563881844389cc72f\", \"transactionIndex\": \"0x52\", \"logIndex\": \"0xea\", \"removed\": false } ]"
+  - heading "Transport activity" [level=2]
+  - paragraph: Readiness and worker diagnostics
+  - text: "01 Direct bootstrap: Nox specifier eth_call 02 Direct bootstrap: Nox specifier eth_call 03 nox-worker boot.start 04 nox-worker boot.snapshot {\"chainId\":421614,\"block\":316207920,\"members\":10,\"kpsMembers\":3,\"anchors\":3,\"discovery\":\"chain\",\"gateways\":0,\"bridges\":0} 05 nox-worker boot.wasm 06 nox-worker boot.tls {\"mode\":\"required\",\"session\":\"per-call\",\"roots\":121} 07 nox-worker boot.learned {\"anchors\":0,\"firstSeen\":0} 08 nox-worker anchor.dial {\"anchor\":\"uEiCStd3rfGT…\"} 09 nox-worker anchor.dial {\"anchor\":\"uEiBVDwIs40b…\"} 10 nox-worker anchor.dial {\"anchor\":\"uEiDGVPDwsQ9…\"} 11 nox-worker kps.dial.ok {\"entry\":\"uEiCStd3rfGT…\",\"lane\":\"primary\",\"ms\":651} 12 nox-worker kps.dial.ok {\"entry\":\"uEiBVDwIs40b…\",\"lane\":\"primary\",\"ms\":599} 13 nox-worker topology.accepted {\"sources\":2,\"members\":10,\"removed\":0,\"ignoredAdditions\":0,\"relocated\":0,\"removalQuorum\":true} 14 nox-worker kps.connected {\"entry\":\"uEiCStd3rfGT…\",\"members\":10,\"powDifficulty\":1,\"discovery\":\"chain\"} 15 nox-worker ready 16 nox-worker kps.dial.ok {\"entry\":\"uEiDGVPDwsQ9…\",\"lane\":\"primary\",\"ms\":628} 17 nox-worker claim.relay {\"entry\":\"uEiCStd3rfGT…\",\"claimV2\":true,\"waitMaxMs\":20000} 18 nox-worker claim.relay {\"entry\":\"uEiBVDwIs40b…\",\"claimV2\":true,\"waitMaxMs\":20000} 19 nox-worker tls.call {\"path\":\"inline\",\"openMs\":658,\"exchangeMs\":557,\"retries\":0,\"ok\":true} 20 Nox ready; destination chain verified through worker 21 nox-worker request.timing {\"totalMs\":735,\"replyBytes\":2448,\"claims\":1,\"uploadMs\":252,\"waitMs\":0,\"claimMs\":653,\"downloadMs\":43,\"decodeMs\":19,\"claimBytes\":32346,\"format\":\"binary\"} 22 nox-worker request.timing {\"totalMs\":465,\"replyBytes\":12616,\"claims\":1,\"uploadMs\":153,\"waitMs\":0,\"claimMs\":416,\"downloadMs\":1,\"decodeMs\":15,\"claimBytes\":32346,\"format\":\"binary\"} 23 nox-worker request.timing {\"totalMs\":632,\"replyBytes\":12670,\"claims\":1,\"uploadMs\":286,\"waitMs\":0,\"claimMs\":563,\"downloadMs\":40,\"decodeMs\":10,\"claimBytes\":32346,\"format\":\"binary\"} 24 nox-worker request.timing {\"totalMs\":388,\"replyBytes\":2861,\"claims\":1,\"uploadMs\":195,\"waitMs\":0,\"claimMs\":350,\"downloadMs\":7,\"decodeMs\":14,\"claimBytes\":32346,\"format\":\"binary\"} 25 nox-worker tls.call {\"path\":\"inline\",\"openMs\":460,\"exchangeMs\":605,\"retries\":0,\"ok\":true} 26 nox-worker tls.call {\"path\":\"inline\",\"openMs\":392,\"exchangeMs\":481,\"retries\":0,\"ok\":true} 27 eth_getBlockByNumber completed via anonymous 28 nox-worker request.timing {\"totalMs\":526,\"replyBytes\":2915,\"claims\":1,\"uploadMs\":222,\"waitMs\":0,\"claimMs\":482,\"downloadMs\":15,\"decodeMs\":15,\"claimBytes\":64689,\"format\":\"binary\"} 29 nox-worker discovery.verified {\"block\":326565264,\"members\":10,\"added\":0,\"removed\":0,\"moved\":0,\"probation\":0,\"keptByFloor\":0,\"attempts\":1,\"logScan\":false,\"ms\":1948} 30 nox-worker tls.call {\"path\":\"spare\",\"openMs\":0,\"spareAgeMs\":1141,\"exchangeMs\":374,\"retries\":0,\"ok\":true} 31 eth_getTransactionReceipt completed via anonymous 32 nox-worker tls.call {\"path\":\"spare\",\"openMs\":0,\"spareAgeMs\":2391,\"exchangeMs\":383,\"retries\":0,\"ok\":true} 33 eth_call completed via anonymous 34 nox-worker claim.mode {\"entry\":\"uEiBVDwIs40b…\",\"longPoll\":true,\"v2\":true} 35 nox-worker tls.call {\"path\":\"spare\",\"openMs\":0,\"spareAgeMs\":2054,\"exchangeMs\":290,\"retries\":0,\"ok\":true} 36 eth_blockNumber completed via anonymous 37 nox-worker tls.call {\"path\":\"inline\",\"openMs\":363,\"exchangeMs\":462,\"retries\":0,\"ok\":true} 38 eth_getLogs completed via anonymous 39 nox-worker claim.mode {\"entry\":\"uEiCStd3rfGT…\",\"longPoll\":true,\"v2\":true}"
+  - button "Test worker failure"
+  - text: Closes Nox and attempts a read. No fallback is allowed. Specifier
+  - code: 0x35133267…1b7A9A
+  - text: Destination RPC
+  - code: ethereum-sepolia-rpc.publicnode.com
+  - text: Fallback policy
+  - strong: Fail closed
+  - heading "What this route protects" [level=2]
+  - paragraph: Privacy boundaries are part of the evidence.
+  - heading "Browser execution reads" [level=3]
+  - paragraph: Headers, receipts, logs, and contract reads use Nox by default. Query contents are still visible to the destination RPC. Worker/network operators remain a trust dependency.
+  - heading "Bootstrap & discovery" [level=3]
+  - paragraph: Specifier discovery, bundle resolution, and relay connections have separate network visibility. The bootstrap provider is trusted for the worker hash.
+  - heading "Rooted observations" [level=3]
+  - paragraph: Dashboard API/SSE requests and server-side collectors are ordinary traffic. Nox does not anonymize them or subsequent uploads. No signing keys are used here.
+  - text: Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data
+- alert

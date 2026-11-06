@@ -1,0 +1,14 @@
+{
+  "started_at_utc": "2026-11-06T08:16:08.224323+00:00",
+  "source_origin": "https://altmempool.forshtat.com",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "skandha_explorer_info",
+    "params": []
+  },
+  "http_status": "200",
+  "curl_exit": 0,
+  "body": "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"protocolVersion\":1,\"chainId\":1337,\"version\":\"v4.1.1\",\"commit\":\"\",\"bundlingMode\":\"auto\",\"p2pEnabled\":true,\"latestSeq\":145,\"oldestSeq\":1,\"historyCapacity\":10000,\"bootId\":\"bb2fdf74c0a68783\",\"minInclusionDenominator\":10,\"throttlingSlack\":10,\"banSlack\":50}}",
+  "mode": "live_probe_attempt"
+}

@@ -1,0 +1,14 @@
+{
+  "started_at_utc": "2026-11-06T08:14:48.728903+00:00",
+  "source_origin": "http://127.0.0.1",
+  "request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "eth_chainId",
+    "params": []
+  },
+  "http_status": "200",
+  "curl_exit": 0,
+  "body": "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":\"0xaa36a7\"}",
+  "mode": "live_probe_attempt"
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "rooted.phase3-status-v1",
+  "assessed_at": "2026-11-06T08:19:44Z",
+  "implementation": "ready",
+  "acceptance": "database_http_sse_and_live_node_verified",
+  "features": [
+    "polling_and_independent_verified_stream",
+    "durable_journal_and_scoped_projection",
+    "checkpoint_restart_and_reorg_recovery",
+    "same_session_receipt_timing",
+    "coverage_aware_delivery_alerts",
+    "ptc_union_and_conflict_exclusion",
+    "canonical_builder_statistics",
+    "live_only_prometheus_metrics",
+    "scoped_rest_and_resumable_sse",
+    "bounded_replay_and_synthetic_demo"
+  ],
+  "verification": {
+    "command": "TEST_DATABASE_URL=<rooted_w5> go test -race -count=1 -v ./internal/payloadwatch/... ./internal/api/...",
+    "packages": {
+      "rooted/internal/payloadwatch": {
+        "passed_test_results": 38,
+        "failed": 0,
+        "skipped": [
+          "TestLiveVerifiedStreamStartup (opt-in; run separately below)"
+        ]
+      },
+      "rooted/internal/api": {
+        "passed_test_results": 50,
+        "failed": 0,
+        "skipped": []
+      }
+    },
+    "rerun": {
+      "at": "2026-11-06T08:52:56Z",
+      "database": "rooted_w6",
+      "reason": "TestRecordedSlotPostgresRoundTrip now reads its slot and root from internal/ingest/testdata (slot 11518268); the same command was run again and both packages passed"
+    },
+    "live_stream_startup_test": {
+      "command": "ROOTED_TEST_LIVE_STREAM=1 go test -count=1 -run TestLiveVerifiedStreamStartup ./internal/payloadwatch/",
+      "result": "passed",
+      "detail": "verified Nimbus SSE subscription connected and persisted events in an isolated schema"
+    },
+    "go_vet_payloadwatch": "passed",
+    "fresh_generator": "passed",
+    "overwrite_refusal": "passed",
+    "replay_cli_import": {
+      "source": "phase3-demo-20261106-w5",
+      "first_import": {
+        "inserted": 23,
+        "duplicates": 1
+      },
+      "repeat_import": {
+        "inserted": 0,
+        "duplicates": 24
+      }
+    },
+    "smoke_phase3": {
+      "status": "passed",
+      "synthetic_states": 7,
+      "live_source": "sepolia-nimbus-geth-1",
+      "evidence": ".tools/phase3-smoke/20261106T081652Z-9084070a"
+    },
+    "smoke_phase2": {
+      "status": "passed",
+      "slot": "11518281",
+      "block_root": "0x134b9a5bbd51b7e39dfa74cd242cda1f63d225dc7caedfc3fb059a2bcaabdde0",
+      "repeat_ingestion_matched": true,
+      "restart_persistence_verified": true,
+      "evidence": ".tools/phase2-smoke/20261106T081652Z-5be5ddea/restart-103df9f0"
+    }
+  },
+  "offline_fixture": {
+    "path": "internal/payloadwatch/testdata/synthetic.json",
+    "generated_by": "scripts/make_payloadwatch_replay.py --source phase3-demo",
+    "mode": "synthetic",
+    "verification": "offline_reducer_only",
+    "states": 7,
+    "unique_events": 23,
+    "duplicates": 1,
+    "timed_samples": 4,
+    "persistence_verified_by": "TestSyntheticFixture and TestPayloadWatchRoutesAndSSE against PostgreSQL"
+  },
+  "live_serve": {
+    "network": "sepolia",
+    "source": "sepolia-nimbus-geth-1",
+    "beacon": "Nimbus/v26.10.2 via 127.0.0.1:15052",
+    "execution": "Geth/v1.17.10 via 127.0.0.1:18545",
+    "runs": [
+      {
+        "started_at": "2026-11-06T08:14:45Z",
+        "collector": {
+          "last_slot": "11518284",
+          "last_success": "2026-11-06T08:16:48.88089Z",
+          "stream_status": "connected",
+          "poll_status": "ok"
+        },
+        "first_stream_session": {
+          "last_activity": "2026-11-06T08:17:18Z",
+          "closed": true
+        },
+        "stopped_by": "SIGTERM"
+      },
+      {
+        "started_at": "2026-11-06T08:17:32Z",
+        "collector": {
+          "last_slot": "11518296",
+          "last_success": "2026-11-06T08:19:13.416729Z",
+          "stream_status": "connected",
+          "poll_status": "ok"
+        },
+        "note": "restart after SIGTERM; previous stream session recorded closed",
+        "stopped_by": "SIGTERM, about 08:19:40Z"
+      }
+    ],
+    "live_states": 27,
+    "slot_range": [
+      "11518270",
+      "11518297"
+    ],
+    "comparable_reveal_latency_samples": 22,
+    "reveal_latency_ms_range": [
+      67,
+      425
+    ],
+    "status_counts": {
+      "pending/revealed": 26,
+      "pending/unknown": 1
+    },
+    "alerts": 0,
+    "ptc_quorum": 0,
+    "note": "Health stays pending because PTC quorum is zero by configuration; latency is collector receipt interval, not builder publication time"
+  },
+  "runtime": {
+    "postgresql_durability_verified": true,
+    "http_sse_smoke_verified": true,
+    "fresh_live_node_verified": true,
+    "public_beacon_event_stream": "HTTP 501 (method not allowed) on 2026-11-06"
+  },
+  "local_test_evidence": ".tools/phase3/20261106"
+}

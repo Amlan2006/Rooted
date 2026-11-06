@@ -1,0 +1,197 @@
+# Rooted dashboard accessibility snapshot: backend-outage
+# captured_at_utc: 2026-11-06T08:37:24.831Z
+# url: http://127.0.0.1:3000/?view=overview
+# viewport: 1280x720
+# method: playwright-core 1.65.0 locator('body').ariaSnapshot() in chrome-headless-shell (ms-playwright build 1243)
+# dashboard: next start (production build) on 127.0.0.1:3000; backend rooted serve on 127.0.0.1:8080
+# note: Overview loaded with the backend up; the Go backend process was then stopped (SIGTERM) for ~78 s and Refresh observations clicked.
+
+- complementary:
+  - link "Rooted home":
+    - /url: /
+    - text: Rooted ETHEREUM OBSERVATORY
+  - text: WORKSPACE 01
+  - navigation "Main navigation":
+    - button "Overview"
+    - button "Investigate"
+    - button "PayloadWatch"
+    - button "Builders"
+    - button "Frame mempool"
+    - button "BAL analyzer"
+    - button "Compare workloads"
+    - button "RPC providers"
+    - button "Execution profiler"
+    - button "Incidents"
+    - button "Private RPC"
+  - text: Sepolia testnet Execution + consensus
+  - link "Traffic & privacy":
+    - /url: "?view=privacy"
+  - text: ROOTED / PHASE 06
+- banner:
+  - text: Workspace /
+  - strong: Overview
+  - text: API stream reconnecting Sepolia 11155111
+  - button "Refresh observations"
+- main:
+  - text: OBSERVE / UNDERSTAND / INVESTIGATE
+  - heading "Network overview." [level=1]
+  - paragraph: A clear view of the block pipeline.
+  - text: Payload evidence
+  - combobox "Payload evidence mode":
+    - option "Sepolia · live · sepolia-nimbus-geth-1" [selected]
+    - option "Synthetic lifecycle demo"
+  - strong: Know what the data can tell you.
+  - paragraph: Beacon stream connected. Timing is reported only where comparable source observations exist.
+  - text: Collector stale Latest collected slot
+  - strong: "11518380"
+  - text: "Collector success: 1m ago Observed commitments"
+  - strong: "47"
+  - text: Live · builder window 1h Comparable timing samples
+  - strong: "44"
+  - text: Only evidence with comparable timestamps Active payload incidents
+  - strong: "0"
+  - text: Within the latest 50 returned alerts
+  - heading "Payload activity" [level=2]
+  - paragraph: Recent slots · real persisted observations
+  - text: LIVE
+  - alert:
+    - text: Rooted backend is unavailable. Check the Go service and database. Showing the last successful response.
+    - button "Retry"
+  - 'button "Open slot 11518341: pending"'
+  - 'button "Open slot 11518342: pending"'
+  - 'button "Open slot 11518343: pending"'
+  - 'button "Open slot 11518344: pending"'
+  - 'button "Open slot 11518345: pending"'
+  - 'button "Open slot 11518346: pending"'
+  - 'button "Open slot 11518347: pending"'
+  - 'button "Open slot 11518348: pending"'
+  - 'button "Open slot 11518349: pending"'
+  - 'button "Open slot 11518350: pending"'
+  - 'button "Open slot 11518351: pending"'
+  - 'button "Open slot 11518352: pending"'
+  - 'button "Open slot 11518353: pending"'
+  - 'button "Open slot 11518354: pending"'
+  - 'button "Open slot 11518355: pending"'
+  - 'button "Open slot 11518356: pending"'
+  - 'button "Open slot 11518357: pending"'
+  - 'button "Open slot 11518358: pending"'
+  - 'button "Open slot 11518359: pending"'
+  - 'button "Open slot 11518360: pending"'
+  - 'button "Open slot 11518361: pending"'
+  - 'button "Open slot 11518362: pending"'
+  - 'button "Open slot 11518363: pending"'
+  - 'button "Open slot 11518364: pending"'
+  - 'button "Open slot 11518365: pending"'
+  - 'button "Open slot 11518366: pending"'
+  - 'button "Open slot 11518367: pending"'
+  - 'button "Open slot 11518368: pending"'
+  - 'button "Open slot 11518369: pending"'
+  - 'button "Open slot 11518370: pending"'
+  - 'button "Open slot 11518371: pending"'
+  - 'button "Open slot 11518372: pending"'
+  - 'button "Open slot 11518373: pending"'
+  - 'button "Open slot 11518374: pending"'
+  - 'button "Open slot 11518375: pending"'
+  - 'button "Open slot 11518376: pending"'
+  - 'button "Open slot 11518377: pending"'
+  - 'button "Open slot 11518378: pending"'
+  - 'button "Open slot 11518379: pending"'
+  - 'button "Open slot 11518380: pending"'
+  - text: 11518341 50-slot response · oldest → newest 11518380 Healthy Warning Failed Partial / pending
+  - group: Coverage & provenance 5 notes
+  - heading "Collector connections" [level=2]
+  - paragraph: Source health is separate from chain health
+  - alert:
+    - text: Rooted backend is unavailable. Check the Go service and database. Showing the last successful response.
+    - button "Retry"
+  - text: Beacon polling Stale Beacon event source connected Frame gateway connected Browser RPC
+  - button "Inspect with Nox"
+  - paragraph: "Backend API stream: reconnecting. This is distinct from the upstream Beacon stream."
+  - heading "Recent payload observations" [level=2]
+  - paragraph: Select a slot to inspect its lifecycle
+  - button "View all"
+  - alert:
+    - text: Rooted backend is unavailable. Check the Go service and database. Showing the last successful response.
+    - button "Retry"
+  - table:
+    - rowgroup:
+      - row "Slot / block root Builder Payload delivery Reveal latency Evidence":
+        - columnheader "Slot / block root"
+        - columnheader "Builder"
+        - columnheader "Payload delivery"
+        - columnheader "Reveal latency"
+        - columnheader "Evidence"
+        - columnheader
+    - rowgroup:
+      - row "11518380 0xea13cfad…ef2eb5 9 revealed 429 ms 50 events pending Inspect slot 11518380":
+        - cell "11518380 0xea13cfad…ef2eb5":
+          - button "11518380"
+          - code: 0xea13cfad…ef2eb5
+        - cell "9"
+        - cell "revealed"
+        - cell "429 ms"
+        - cell "50 events pending"
+        - cell "Inspect slot 11518380":
+          - button "Inspect slot 11518380"
+      - row "11518379 0xb0912b52…81b985 1 revealed 222 ms 63 events pending Inspect slot 11518379":
+        - cell "11518379 0xb0912b52…81b985":
+          - button "11518379"
+          - code: 0xb0912b52…81b985
+        - cell "1"
+        - cell "revealed"
+        - cell "222 ms"
+        - cell "63 events pending"
+        - cell "Inspect slot 11518379":
+          - button "Inspect slot 11518379"
+      - row "11518378 0xccdc9d22…74bb9f 7 revealed 187 ms 65 events pending Inspect slot 11518378":
+        - cell "11518378 0xccdc9d22…74bb9f":
+          - button "11518378"
+          - code: 0xccdc9d22…74bb9f
+        - cell "7"
+        - cell "revealed"
+        - cell "187 ms"
+        - cell "65 events pending"
+        - cell "Inspect slot 11518378":
+          - button "Inspect slot 11518378"
+      - row "11518377 0xb88999e7…2fbf6b 7 revealed 253 ms 62 events pending Inspect slot 11518377":
+        - cell "11518377 0xb88999e7…2fbf6b":
+          - button "11518377"
+          - code: 0xb88999e7…2fbf6b
+        - cell "7"
+        - cell "revealed"
+        - cell "253 ms"
+        - cell "62 events pending"
+        - cell "Inspect slot 11518377":
+          - button "Inspect slot 11518377"
+      - row "11518376 0x9a47df6d…5404a2 12 revealed 184 ms 64 events pending Inspect slot 11518376":
+        - cell "11518376 0x9a47df6d…5404a2":
+          - button "11518376"
+          - code: 0x9a47df6d…5404a2
+        - cell "12"
+        - cell "revealed"
+        - cell "184 ms"
+        - cell "64 events pending"
+        - cell "Inspect slot 11518376":
+          - button "Inspect slot 11518376"
+      - row "11518375 0xc88c287a…9630d7 Self-build revealed 76 ms 64 events pending Inspect slot 11518375":
+        - cell "11518375 0xc88c287a…9630d7":
+          - button "11518375"
+          - code: 0xc88c287a…9630d7
+        - cell "Self-build"
+        - cell "revealed"
+        - cell "76 ms"
+        - cell "64 events pending"
+        - cell "Inspect slot 11518375":
+          - button "Inspect slot 11518375"
+      - row "11518374 0x929e8127…f20a1c 7 revealed 190 ms 63 events pending Inspect slot 11518374":
+        - cell "11518374 0x929e8127…f20a1c":
+          - button "11518374"
+          - code: 0x929e8127…f20a1c
+        - cell "7"
+        - cell "revealed"
+        - cell "190 ms"
+        - cell "63 events pending"
+        - cell "Inspect slot 11518374":
+          - button "Inspect slot 11518374"
+  - text: "Update failed · 1m ago Network: Sepolia · Source: sepolia-nimbus-geth-1 Rooted Ethereum, with evidence. Sepolia / frame-devnet / explicitly labeled fork data"
+- alert

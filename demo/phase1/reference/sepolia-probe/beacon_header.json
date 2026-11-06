@@ -1,0 +1,9 @@
+{
+  "started_at_utc": "2026-11-06T08:14:38.307231+00:00",
+  "source_origin": "http://127.0.0.1",
+  "request": null,
+  "http_status": "200",
+  "curl_exit": 0,
+  "body": "{\"execution_optimistic\":false,\"finalized\":false,\"data\":{\"root\":\"0x5e9489b8e11d5a0fa33c111f6ec40f87cfa120b9ddf372590b29f23154865dff\",\"canonical\":true,\"header\":{\"message\":{\"slot\":\"11518273\",\"proposer_index\":\"1919\",\"parent_root\":\"0x3306325cd5b65c774f454633a2f060279841f1bafbfe47dec8a72f7d55c2dc91\",\"state_root\":\"0xb2ea8fe0f9225d6804eb1e08ca80b9f2418a054aac0f4a605b9443418aca5498\",\"body_root\":\"0x1479805cd1706e8f0b1a2f0c3586bbf468413540636a452b408c465e8580c736\"},\"signature\":\"0xaa7a357da71a7a7901fceb8e30ac0771cbbbd83382c0e5438673c8fc23601781671ca3362e23912902838e12bb45704d15e4f5a50c6b06a552f449a17804ed98c57bb6308fe8a7ec3fa420e4bb058e5174e2ebbd4f9f1eba1f2edcc2adcb007d\"}}}",
+  "mode": "live_probe_attempt"
+}

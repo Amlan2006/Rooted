@@ -1,0 +1,61 @@
+{
+  "schema": "rooted.phase4-status-v1",
+  "assessed_at": "2026-11-06T08:22:33+00:00",
+  "implementation": "ready",
+  "acceptance": "live_collection_and_unfunded_rejection_verified_funded_submission_open",
+  "features": [
+    "frame_node_identity_verification",
+    "bounded_admission_polling_and_history_rotation",
+    "durable_boot_scoped_event_archive",
+    "websocket_resume_ping_and_reconnect",
+    "receipt_and_frame_receipt_separation",
+    "canonical_type_0x6_receipt_proof",
+    "submission_acknowledgment_separation",
+    "rejection_replacement_drop_and_reorg_states",
+    "raw_evidence_digest_and_pagination",
+    "frame_rest_read_apis",
+    "explicit_cli_sync_and_submit",
+    "recorded_state_regression_comparison"
+  ],
+  "verification": {
+    "go_framemempool_tests": {
+      "command": "go test -count=1 ./internal/framemempool/... (TEST_DATABASE_URL set)",
+      "passed_test_results": 25,
+      "failed": 0,
+      "skipped": 0
+    },
+    "database_backed_frame_tests": "passed",
+    "python_frame_regressions": "passed",
+    "python_codec_regressions": "passed",
+    "offline_captured_reducer": "passed",
+    "live_frame_probe": "passed",
+    "live_frame_stream_probe": "passed",
+    "live_rooted_serve_poll_and_stream": "passed",
+    "live_rooted_api_smoke": "passed",
+    "cli_frame_sync": "passed",
+    "cli_frame_submit_unfunded_rejection": "rpc_rejected_as_expected"
+  },
+  "live_capture": {
+    "captured_at": "2026-11-06T08:18:55Z",
+    "network": "frame-devnet",
+    "chain_id": "1337",
+    "genesis_hash": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+    "gateway_boot_id": "9c7ea46a50c67b59",
+    "miner_boot_id": "bb2fdf74c0a68783",
+    "existing_included_hash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+    "own_rejection_hash": "0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7",
+    "funded_own_submission_verified": false
+  },
+  "offline_fixture": {
+    "mode": "captured_plus_synthetic",
+    "captured_states": 2,
+    "captured_included": 1,
+    "captured_rejected": 1,
+    "synthetic_acknowledgment_status": "unknown"
+  },
+  "open_checks": [
+    "funded_rooted_submission_and_canonical_inclusion",
+    "postgresql_restart_of_running_service"
+  ],
+  "provenance": "demo/phase4/reference (identical copy in demo/phase1/reference/frame-phase4) and demo/phase1/reference/frame-probe"
+}

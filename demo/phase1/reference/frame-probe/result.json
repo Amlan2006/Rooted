@@ -1,0 +1,40 @@
+{
+  "status": "passed",
+  "result": {
+    "network": "frame-devnet",
+    "chain_id": "1337",
+    "genesis_hash": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+    "nodes": {
+      "gateway": {
+        "status": "available",
+        "protocol_version": 1,
+        "client_version": "v4.1.1",
+        "boot_id": "9c7ea46a50c67b59",
+        "retained_admissions": 5
+      },
+      "miner": {
+        "status": "available",
+        "protocol_version": 1,
+        "client_version": "v4.1.1",
+        "boot_id": "bb2fdf74c0a68783",
+        "retained_admissions": 5
+      }
+    },
+    "source_reported_inclusion": {
+      "status": "observed",
+      "node": "gateway",
+      "tx_hash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+      "detail": "available",
+      "execution_receipt": "available",
+      "frame_receipt": "available",
+      "receipt_type": "0x6",
+      "receipt_hash_matches": true
+    },
+    "funded_own_submission": "not_attempted_requires_funding",
+    "canonical_inclusion_proof": "not_attempted_in_discovery_probe"
+  },
+  "schema": "rooted.phase1-probe-v1",
+  "probe": "frame",
+  "checked_at": "2026-11-06T08:16:10.533536+00:00",
+  "mode": "live_probe_attempt"
+}

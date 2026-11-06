@@ -1,0 +1,51 @@
+{
+  "network": "sepolia-fork",
+  "mode": "fork",
+  "chain_id": 31337,
+  "client": "anvil/v1.9.0",
+  "upstream_network": "sepolia",
+  "fork_parent_hash": "0x8640c4a49b3397ac92d6fb9d029ea7a30b829698da91e032193301fc46571532",
+  "fork_parent_number": 12075317,
+  "block_hash": "0x9328ccf305e791d718545b1e10351bcb403a463d0e746f8c34ce68c17cc3243a",
+  "block_number": 12075326,
+  "native_bal": false,
+  "funds": "simulated local Anvil balances only",
+  "cases": [
+    {
+      "case": "same_pool_first",
+      "hash": "0x52702d0365ebcd601d942cf8cfb031695e6f58d5956cfddc058bd6f2259c6371",
+      "sender": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "harness": "0x173c86033f20ea871e5eba81c1c9e631491bd9cf",
+      "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+      "expected_status": "0x1",
+      "transaction_index": 0
+    },
+    {
+      "case": "same_pool_second",
+      "hash": "0xbdbec2e262294b5b36f7b5baa323650a13ba4f87c5c718b02eb54308fd5d874e",
+      "sender": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+      "harness": "0x72ff571b59c2f197365e041045ccdf248c78664f",
+      "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+      "expected_status": "0x1",
+      "transaction_index": 1
+    },
+    {
+      "case": "different_pool",
+      "hash": "0x3eb353ac2d5d3dc80d04d782790efad5f6652915cacb4f0217d409323a6de4b8",
+      "sender": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+      "harness": "0x2ded86153b0dbf3ca159e42d347a6a3902af47cf",
+      "pool": "0x6ce0896eae6d4bd668fde41bb784548fb8f59b50",
+      "expected_status": "0x1",
+      "transaction_index": 2
+    },
+    {
+      "case": "reverted_after_swap",
+      "hash": "0xa3fc51a51dcc84211c2e77b26c8343d3901955e03dc62e6a0d967cdd0eb7073d",
+      "sender": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+      "harness": "0xa64e9acbbb097751548ba78640ac6284561dbbe7",
+      "pool": "0x3289680dd4d6c10bb19b899729cda5eef58aeff1",
+      "expected_status": "0x0",
+      "transaction_index": 3
+    }
+  ]
+}

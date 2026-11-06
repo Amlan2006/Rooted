@@ -1,0 +1,69 @@
+{
+  "schema": "rooted.phase2-status-v1",
+  "assessed_at": "2026-11-06T08:18:30+00:00",
+  "implementation": "ready",
+  "acceptance": "passed_for_checks_listed",
+  "features": [
+    "go_cli_and_http_service",
+    "configuration_validation",
+    "network_identity_checks",
+    "immutable_slot_payload_execution_correlation",
+    "fork_aware_postgresql_storage",
+    "atomic_raw_evidence_deduplication",
+    "embedded_migrations",
+    "scoped_slot_rest_api",
+    "restart_smoke_tooling"
+  ],
+  "environment": {
+    "beacon": "Nimbus/v26.10.2 (local, Sepolia, gloas)",
+    "execution": "Geth/v1.17.10 (local, Sepolia)",
+    "database": "PostgreSQL 127.0.0.1:54330, dedicated database rooted_w1",
+    "listen_addr": "127.0.0.1:8081",
+    "background_workers": "disabled for this check (ROOTED_WATCH_ENABLED, ROOTED_STREAM_ENABLED, ROOTED_FRAME_ENABLED, ROOTED_FRAME_STREAM_ENABLED=false)"
+  },
+  "verification": {
+    "build": "passed",
+    "go_vet": "passed (internal/ingest, internal/bal)",
+    "gofmt": "passed (internal/ingest, internal/bal)",
+    "go_race_tests": {
+      "packages": ["rooted/internal/ingest", "rooted/internal/bal"],
+      "passed_test_results": 36,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cli_help": "passed",
+    "cli_invalid_input": "passed",
+    "unavailable_database_startup": "passed (exit 1, sanitized error)",
+    "live_smoke": {
+      "command": "python3 scripts/smoke_phase2.py --base http://127.0.0.1:8081 --slot 11518287",
+      "status": "passed",
+      "run_id": "20261106T081804Z-4afae4af",
+      "slot": "11518287",
+      "block_root": "0x11326d8ad6aacd34ac4a720282dae6da98b1d9ca6af3118a698925c02ee4e9db",
+      "payload_hash": "0x588a1e02c6742d48a72ae2666eaa17294ea4cbd2f95048c2025aa32e597a3a90",
+      "stored_status": "observed",
+      "identifiers_matched": true,
+      "repeat_ingestion_matched": true,
+      "stored_rows": {"observations": 1, "raw_observations": 6}
+    },
+    "restart_smoke": {
+      "command": "python3 scripts/smoke_phase2.py --verify-restart 20261106T081804Z-4afae4af",
+      "status": "passed"
+    }
+  },
+  "database_tests_rerun": {
+    "at": "2026-11-06T08:53Z",
+    "database": "rooted_w6",
+    "rooted/internal/storage/TestPostgresPersistence": "passed",
+    "rooted/internal/api/TestRecordedSlotPostgresRoundTrip": "passed (slot and root read from internal/ingest/testdata, slot 11518268)"
+  },
+  "not_run_in_this_assessment": [
+    "go tests outside internal/ingest, internal/bal, internal/storage and internal/api",
+    "python regression suites",
+    "compose config"
+  ],
+  "blockers": [],
+  "restart_persistence_verified": true,
+  "fresh_live_slot_verified": true,
+  "local_evidence_directory": ".tools/phase2-smoke/20261106T081804Z-4afae4af"
+}

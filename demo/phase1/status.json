@@ -1,0 +1,215 @@
+{
+  "schema": "rooted.phase1-status-v1",
+  "assessed_at": "2026-11-06T08:34:46.013974+00:00",
+  "assessment": "archive_verified_live_gates_passed_cre_blocked",
+  "evidence_mode": "recorded_capture",
+  "archive_files_verified": 63,
+  "local_tests": {
+    "python": {
+      "passed": 18,
+      "failed": 0
+    },
+    "anon_rpc_transport": {
+      "passed": 6,
+      "failed": 0
+    }
+  },
+  "recorded_verification": {
+    "schema": "rooted.phase1-recorded-v1",
+    "mode": "recorded_capture",
+    "verified_at": "2026-11-06T08:34:46.013890+00:00",
+    "status": "passed",
+    "checks": {
+      "archive_integrity": {
+        "status": "passed",
+        "result": {
+          "files": 63,
+          "generated_at": "2026-11-06T08:32:25.876225+00:00"
+        }
+      },
+      "sepolia": {
+        "status": "passed",
+        "result": {
+          "slot": "11518273",
+          "payload_hash": "0xd0c1ebdf40a22ff4e79f632ad7dc1de980be0f770628b92c975f1b3433a9a5b1",
+          "builder_index": "7",
+          "identifiers_matched": true,
+          "beacon_root_checked_against_header": true,
+          "execution_number": "0xb84137",
+          "bal_commitment": "0x5582149e5e4759e6a998c7f09e5f432bf08b0916f97fc3aa7c1131bf009f3185",
+          "reveal_latency_ms": null,
+          "ptc_timely": null,
+          "blob_available": null,
+          "independent_execution_validity": null,
+          "beacon_root": "0x5e9489b8e11d5a0fa33c111f6ec40f87cfa120b9ddf372590b29f23154865dff",
+          "genesis_validators_root": "0xd8ea171f3c94aea21ebc42a1ed61052acf3f9209c00e4efbaaddac09ed9b8078",
+          "captured_at": "2026-11-06T08:14:48.629926+00:00",
+          "native_bal_getter": "rpc_unsupported",
+          "stream_event_types": [
+            "block",
+            "execution_payload",
+            "execution_payload_available",
+            "execution_payload_gossip",
+            "payload_attestation_message"
+          ],
+          "envelope_commitment_verified": true,
+          "ptc_note": "Included PTC votes retain their own slot/root; no target-slot quorum verdict inferred."
+        }
+      },
+      "uniswap": {
+        "status": "passed",
+        "result": {
+          "swap_samples": 4,
+          "pools": 2,
+          "pinned_head": "0xb84138",
+          "captured_at": "2026-11-06T08:14:49.475601+00:00",
+          "complete_dependency_coverage": false,
+          "new_swaps_submitted": false
+        }
+      },
+      "controlled_workload": {
+        "status": "passed",
+        "result": {
+          "cases": [
+            "same_pool_first",
+            "same_pool_second",
+            "different_pool",
+            "reverted_after_swap"
+          ],
+          "chain_id": "31337",
+          "mode": "fork",
+          "fork_parent_number": 12075317,
+          "native_bal": null,
+          "executed_by_verifier": false
+        }
+      },
+      "frame": {
+        "status": "passed",
+        "result": {
+          "genesis_hash": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+          "probe_inclusion": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+          "stream_replayed_events": 20,
+          "third_party_inclusion": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+          "receipt_check_at": "2026-11-06T08:18:31.105307229Z",
+          "canonicality_rechecked_now": false,
+          "own_funded_submission": "not_attempted",
+          "own_rejection": "0xbfa4f1855f410cad0b8ed67fd792ab3752f3aaf0bd55aeba0d1faf6bf93a25c7"
+        }
+      },
+      "anon_rpc": {
+        "status": "passed",
+        "result": {
+          "worker": "Nox",
+          "surface": "dashboard Private RPC view",
+          "successful_read": "eth_getBlockByNumber",
+          "captured_at": "2026-11-06T08:29:47.060Z",
+          "controlled_endpoint_source_visibility_verified": false
+        }
+      },
+      "cre": {
+        "status": "not_recorded",
+        "reason": "cre_authentication_required (attempted 2026-11-06T08:27:22.215335+00:00)"
+      }
+    }
+  },
+  "fresh_checks": {
+    "sepolia": {
+      "status": "passed",
+      "checked_at": "2026-11-06T08:33:40.645534+00:00",
+      "slot": "11518367",
+      "payload_hash": "0x1cb6a5e2a504db088726850a841610830699258c48e7b4a4f5eb426d7756514a",
+      "envelope_commitment_verified": true,
+      "native_bal_getter": "rpc_unsupported"
+    },
+    "uniswap": {
+      "status": "passed",
+      "checked_at": "2026-11-06T08:33:41.231334+00:00",
+      "swap_samples": 4,
+      "call_trace": "unavailable"
+    },
+    "frame": {
+      "status": "passed",
+      "checked_at": "2026-11-06T08:33:48.582253+00:00",
+      "genesis_hash": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+      "source_reported_inclusion": "0x5a3c6dcaf5eea5f6867690d24e0dfdf4711352df31e8dc7cf14bfb31267f5001"
+    },
+    "frame_stream": {
+      "status": "passed",
+      "reason": "bounded_20_events",
+      "checked_at": "2026-11-06T08:33:51.309Z",
+      "replayed_events": 20
+    },
+    "cre": {
+      "status": "blocked",
+      "reason": "cre_authentication_required",
+      "checked_at": "2026-11-06T08:33:49.346876+00:00"
+    },
+    "anon_rpc_browser": {
+      "status": "passed",
+      "checked_at": "2026-11-06T08:29:47.060Z",
+      "surface": "dashboard Private RPC view",
+      "basis": "Headless capture of the dashboard Private RPC view (anon-rpc-probe/capture.mjs); run separately from run_phase1.py."
+    },
+    "frame_funded_submission": {
+      "status": "not_run",
+      "reason": "requires_devnet_funding_and_separate_submission_step",
+      "checked_at": null
+    }
+  },
+  "local_tool_versions": {
+    "python3": {
+      "status": "available",
+      "version": "Python 3.12.3"
+    },
+    "curl": {
+      "status": "available",
+      "version": "curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openss"
+    },
+    "node": {
+      "status": "available",
+      "version": "v24.18.0"
+    },
+    "npm": {
+      "status": "available",
+      "version": "11.16.0"
+    },
+    "go": {
+      "status": "available",
+      "version": "go version go1.27.2 linux/amd64"
+    },
+    "cast": {
+      "status": "available",
+      "version": "cast Version: 1.9.0"
+    },
+    "forge": {
+      "status": "available",
+      "version": "forge Version: 1.9.0"
+    },
+    "anvil": {
+      "status": "available",
+      "version": "anvil Version: 1.9.0"
+    },
+    "docker": {
+      "status": "available",
+      "version": "Docker version 29.6.2, build dfc4efb"
+    },
+    "bun": {
+      "status": "available",
+      "version": "1.4.2"
+    },
+    "cre": {
+      "status": "available",
+      "version": "CRE CLI version v1.39.0"
+    }
+  },
+  "local_evidence_directories": {
+    "live": ".tools/phase1/20261106T083329Z-06d6b5d9",
+    "offline": ".tools/phase1/20261106T083424Z-e3642583"
+  },
+  "notes": [
+    "All archive files were captured on 2026-11-06; the manifest pins their digests.",
+    "The CRE CLI (v1.39.0) requires cre login or CRE_API_KEY even for simulation; no login was performed, so no CRE result is recorded.",
+    "The live Uniswap call trace was unavailable because the sampled swap blocks were outside the node state window; the archived probe run has an available call trace.",
+    "No new swaps, funded frame transactions, contract deployments, or CRE workflows were run."
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "rooted.phase6-status-v1",
+  "assessed_at": "2026-11-06T08:40:00Z",
+  "implementation": "dashboard_and_private_transport_complete",
+  "acceptance": "build_tests_proxy_smoke_and_browser_captures_passed",
+  "features": [
+    "complete_nextjs_view_tree",
+    "responsive_dashboard_layout",
+    "scoped_source_and_mode_selection",
+    "freshness_loading_empty_and_error_states",
+    "payloadwatch_sse_reconnect",
+    "restricted_same_origin_backend_proxy",
+    "analysis_ingestion_proxy",
+    "provider_and_profiler_mutation_boundaries",
+    "report_downloads",
+    "nox_worker_transport",
+    "worker_chain_identity_verification",
+    "fail_closed_worker_failure_drill",
+    "explicit_direct_mode_warning"
+  ],
+  "verification": {
+    "node_typecheck": "passed",
+    "frontend_tests": "passed_52_of_52",
+    "production_build": "passed",
+    "dashboard_proxy_smoke": "passed",
+    "browser_view_captures": "passed",
+    "fresh_browser_nox_worker": "passed",
+    "worker_close_failure_drill": "passed",
+    "backend_outage_drill": "passed",
+    "guided_investigation_latest_report": "passed"
+  },
+  "runtime": {
+    "node": "v24.18.0",
+    "next": "16.4.3",
+    "anon_rpc_browser_harness": "0.3.3",
+    "browser": "chrome-headless-shell (ms-playwright build 1243) via playwright-core 1.65.0, installed outside the repository",
+    "backend": "rooted serve on 127.0.0.1:8080 with Sepolia watch, Beacon stream and frame workers enabled",
+    "sepolia_source": "sepolia-nimbus-geth-1 (local Nimbus v26.10.2 / Geth v1.17.10)",
+    "frame_network": "frame-devnet chain 1337, genesis 0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a"
+  },
+  "captured_evidence": [
+    "demo/phase6/api-proxy-check.json",
+    "demo/phase6/transport-check.json",
+    "demo/phase6/overview-browser.txt",
+    "demo/phase6/builders-browser.txt",
+    "demo/phase6/synthetic-timeline-browser.txt",
+    "demo/phase6/frame-browser.txt",
+    "demo/phase6/fork-graph-browser.txt",
+    "demo/phase6/investigate-browser.txt",
+    "demo/phase6/nox-header-browser.txt",
+    "demo/phase6/nox-receipt-browser.txt",
+    "demo/phase6/nox-contract-browser.txt",
+    "demo/phase6/nox-logs-browser.txt",
+    "demo/phase6/nox-failure-browser.txt",
+    "demo/phase6/backend-outage-browser.txt",
+    "demo/phase6/overview-desktop.png",
+    "demo/phase6/private-rpc-mobile.png"
+  ],
+  "traffic_boundaries": {
+    "dashboard_backend_proxy": "ordinary_same_origin_server_proxy",
+    "nox_execution_reads": "browser_worker_mixnet_default",
+    "bootstrap_specifier": "direct_restricted_eth_call",
+    "direct_mode": "explicit_user_selection_source_ip_exposed",
+    "server_collectors": "ordinary_server_side_provider_traffic"
+  },
+  "open_checks": [
+    "controlled_public_source_ip_comparison",
+    "production_hosting_and_access_controls",
+    "manual_keyboard_and_screen_reader_review"
+  ]
+}

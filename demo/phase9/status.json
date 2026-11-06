@@ -1,0 +1,81 @@
+{
+  "assessed_at": "2026-11-06T08:20:16.151459+00:00",
+  "cre_phase_7": "deferred_by_user",
+  "schema": "rooted.phase9-status-v1",
+  "implementation": "native_replay_baseline_built_and_measured",
+  "acceptance": "native_replay_live_capture_rerun_and_postgresql_roundtrip_verified_production_expansion_open",
+  "features": [
+    "geth_1_17_10_separate_native_replay_module",
+    "verified_bound_block_receipts_prestates_and_ancestors",
+    "two_warmup_pairs_seven_alternating_measured_control_pairs",
+    "disjoint_apply_evm_state_finalize_timing_boundaries",
+    "bounded_runner_input_and_output",
+    "immutable_digest_bound_capture_storage",
+    "saved_capture_remeasurement",
+    "exact_hash_bal_and_payload_correlations",
+    "control_gas_throughput",
+    "explicit_assumed_budget_view"
+  ],
+  "verification": {
+    "native_runner_build": "passed",
+    "native_replay_tests": {
+      "module": "workloads/profiler",
+      "passed": 4,
+      "failed": 0
+    },
+    "backend_race_tests": {
+      "packages": [
+        "rooted/internal/profiler"
+      ],
+      "result": "passed",
+      "skipped": 0,
+      "test_database": "scratch_postgresql"
+    },
+    "saved_capture_digest_and_identity_guards": "passed_with_specific_error_assertions",
+    "frontend_tests": {
+      "files": [
+        "dashboard/tests/profiler.test.ts"
+      ],
+      "passed": 4,
+      "failed": 0
+    },
+    "fresh_native_replay": {
+      "block_hash": "0x5003b43a843799fd3043275a52cfc9f1d16907e685e0781b0cb13aa21a326cdc",
+      "block_number": "0xb8412f",
+      "transactions": 85,
+      "capture_mode": "live_rpc_capture",
+      "capture_digest": "faf104824a06b7feaf26e20dd38c667c008bc5a30bbda47067448cf9e266e11a",
+      "replay_host": "linux/amd64, 8 logical CPUs, Intel Xeon (Skylake), go1.27.2"
+    },
+    "saved_capture_rerun": "passed_twice_same_digest",
+    "exact_hash_bal_correlation": "linked_one_live_analysis",
+    "payloadwatch_correlation": "none_available_for_slot",
+    "captured_metrics_are_fresh_measurements": true,
+    "not_run": [
+      "frontend_typecheck",
+      "frontend_production_build",
+      "browser_flow"
+    ]
+  },
+  "native_dependency": {
+    "module": "github.com/ethereum/go-ethereum",
+    "version": "v1.17.10",
+    "older_version_substituted": false
+  },
+  "unknown_measurements": [
+    "physical_disk_io",
+    "full_production_block_import",
+    "full_state_root_processing",
+    "dedicated_bal_processing",
+    "exclusive_evm_compute",
+    "protocol_deadline_margin",
+    "parallel_speedup"
+  ],
+  "open_checks": [
+    "compatible_node_side_production_instrumentation"
+  ],
+  "evidence": [
+    "demo/profiler/profile.json",
+    "demo/profiler/replay-input.json.gz"
+  ]
+}

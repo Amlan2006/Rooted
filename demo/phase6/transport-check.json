@@ -1,0 +1,45 @@
+{
+  "kind": "derived_from_browser_session",
+  "derived_from": [
+    "demo/phase6/nox-header-browser.txt",
+    "demo/phase6/nox-receipt-browser.txt",
+    "demo/phase6/nox-contract-browser.txt",
+    "demo/phase6/nox-logs-browser.txt",
+    "demo/phase6/nox-failure-browser.txt"
+  ],
+  "session_started_at_utc": "2026-11-06T08:35:01.265Z",
+  "session_finished_at_utc": "2026-11-06T08:35:13.161Z",
+  "browser": "chrome-headless-shell (ms-playwright build 1243) driven by playwright-core 1.65.0",
+  "dashboard": "next start production build, 127.0.0.1:3000",
+  "anonymous_worker": "Nox",
+  "harness_version": "0.3.3",
+  "specifier": "0x35133267A8F7EC35046a83DCA0f4Ca8A6e1b7A9A",
+  "destination_chain_id": "11155111",
+  "destination_chain_verified_through_worker": true,
+  "direct_bootstrap_calls_per_verified_session": 2,
+  "anonymous_methods_verified": [
+    "eth_chainId",
+    "eth_getBlockByNumber",
+    "eth_getTransactionReceipt",
+    "eth_call",
+    "eth_blockNumber",
+    "eth_getLogs"
+  ],
+  "ready_including_destination_verification_ms": 3284,
+  "first_header_block_hash": "0x59bbfb9e59becdf5be3520ddb9f291623a452eeda23016f895b2980fa38b1e29",
+  "first_header_block_number": "0xb8419c",
+  "latency_ms": {
+    "latest_header": 882,
+    "receipt": 384,
+    "pool_slot0_call": 394,
+    "swap_logs_last_64_blocks": 837
+  },
+  "receipt_transaction": "0x4a32623f9cc2e432e77e3d0ec267d64b87fc21a0ee38960563881844389cc72f",
+  "actual_worker_close_failure_visible": true,
+  "failure_message": "worker closed No automatic direct fallback.",
+  "transport_after_failure": "Nox",
+  "reconnect_control_visible": true,
+  "automatic_direct_fallback": false,
+  "controlled_destination_ip_comparison": "not performed; no controlled public endpoint",
+  "note": "Latencies are single browser observations including mixnet overhead, not performance promises."
+}

@@ -1,0 +1,13 @@
+{
+  "result": "passed",
+  "checked_at_utc": "2026-11-06T08:30:55+00:00",
+  "live_slots": 22,
+  "synthetic_slots": 7,
+  "frame_states": 50,
+  "native_analysis": "0xd384d6c001b20a907159076dd2910f4d8bdbbab6d0c5151c874b5a960597a364",
+  "fork_analysis": "0xbd5c1185510db7de4d588f70383123d2cd754135d29d6c9f046eb0745514ab4e",
+  "sse_proxy_resume": true,
+  "network_mode_separation": true,
+  "unsupported_proxy_routes_rejected": true,
+  "note": "Nox proof is captured separately from the actual dashboard browser session."
+}

@@ -1,0 +1,26 @@
+{
+  "network": "frame-devnet",
+  "mode": "live",
+  "node": "gateway",
+  "chain_id": "1337",
+  "genesis_hash": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+  "info": {
+    "source_origin": "https://altmempoolgateway.forshtat.com",
+    "protocolVersion": 1,
+    "chainId": 1337,
+    "version": "v4.1.1",
+    "commit": "",
+    "bootId": "9c7ea46a50c67b59",
+    "latestSeq": 64,
+    "oldestSeq": 1,
+    "historyCapacity": 10000,
+    "bundlingMode": "manual",
+    "p2pEnabled": true,
+    "faucetEnabled": true
+  },
+  "updated_at": "2026-11-06T08:18:24.84944Z",
+  "poll_status": "ok",
+  "stream_status": "connected",
+  "scan_cursor": null,
+  "stream_seq": 66
+}
