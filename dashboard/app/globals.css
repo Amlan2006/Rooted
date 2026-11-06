@@ -72,16 +72,20 @@ button:hover {
 }
 button:disabled {
   opacity: 0.45;
-  cursor: wait;
+  cursor: not-allowed;
+}
+[aria-busy="true"] button:disabled {
+  cursor: progress;
 }
 .primary {
   background: var(--fg);
   border-color: var(--fg);
   color: var(--bg);
 }
-.primary:hover {
-  background: var(--fg-2);
-  border-color: var(--fg-2);
+.primary:hover,
+.analysis-inputs button:hover {
+  background: #e2e4e7;
+  border-color: #e2e4e7;
 }
 button:focus-visible,
 a:focus-visible,
@@ -106,6 +110,25 @@ textarea {
   padding: 8px 11px;
   font-size: 13px;
   max-width: 100%;
+}
+input[type="file"] {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--fg-3);
+  font-size: 12.5px;
+}
+input[type="file"]::file-selector-button {
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--fg);
+  background: var(--fill-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 input::placeholder,
 textarea::placeholder {
@@ -155,6 +178,21 @@ small {
 }
 .small {
   font-size: 12px;
+}
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -40px;
+  z-index: 50;
+  padding: 6px 10px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.skip-link:focus {
+  top: 8px;
 }
 
 /* Shell */
@@ -206,22 +244,25 @@ small {
   white-space: nowrap;
 }
 .brand-mark {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
-  border-radius: 5px;
-  background: var(--fg);
-  color: var(--bg);
   display: grid;
   place-items: center;
 }
 .brand-mark svg {
-  width: 14px;
-  height: 14px;
+  width: 20px;
+  height: 20px;
   fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 1.5;
   stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.brand-mark rect {
+  stroke: var(--fg);
+}
+.brand-mark path {
+  stroke: var(--acc);
 }
 .menu-close {
   display: none;
@@ -276,6 +317,9 @@ small {
   font-variant-numeric: tabular-nums;
   font-size: 11.5px;
   color: var(--fg-3);
+}
+.nav-item.active small {
+  color: var(--fg-2);
 }
 .sidebar-bottom {
   margin-top: auto;
@@ -493,6 +537,7 @@ main {
 
 /* Status */
 .badge {
+  font-family: var(--sans);
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -551,6 +596,7 @@ main {
   font-size: 13px;
   border-radius: 8px;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 .panel .notice {
   margin: 12px var(--pad);
@@ -558,10 +604,25 @@ main {
 .notice > svg {
   flex-shrink: 0;
 }
+.notice.error::before,
+.notice.warning::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--bad);
+}
+.notice.warning::before {
+  background: var(--warn);
+}
+.notice:has(> svg, > .badge)::before {
+  display: none;
+}
 .notice.error {
   color: var(--fg);
   background: rgba(248, 113, 113, 0.06);
-  border-color: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.3);
 }
 .notice.error > svg {
   color: var(--bad);
@@ -653,8 +714,12 @@ main {
   border-radius: 10px;
   box-shadow: var(--highlight);
   min-height: 116px;
-  display: flex;
-  flex-direction: column;
+  /* subgrid: label, value and detail share rows across a .stats row, so values align when a label wraps */
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+  align-content: start;
 }
 .stat > span {
   font-size: 12px;
@@ -678,6 +743,11 @@ main {
 .stat.amber > strong {
   color: var(--warn);
 }
+.stat.word > strong {
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
 .panel {
   background: var(--surface-2);
   border: 1px solid var(--line);
@@ -696,6 +766,10 @@ main {
 }
 .panel-heading > div:first-child {
   min-width: 0;
+}
+#slot-detail .panel-heading {
+  flex-wrap: nowrap;
+  align-items: flex-start;
 }
 .panel-heading p {
   font-size: 12.5px;
@@ -720,6 +794,13 @@ main {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   align-items: start;
+}
+:is(.two-columns, .analyst-grid, .comparison-grid) {
+  margin-bottom: 16px;
+}
+:is(.two-columns, .analyst-grid, .comparison-grid) > .panel,
+.analyst-grid > div > .panel:last-child {
+  margin-bottom: 0;
 }
 .footnote {
   font-size: 12px;
@@ -752,6 +833,9 @@ main {
   background: none;
   color: var(--fg);
 }
+.panel > .text-button {
+  margin: 0 var(--pad) 16px;
+}
 a.text-button {
   text-decoration: underline;
   text-decoration-color: var(--fg-4);
@@ -783,9 +867,13 @@ a.text-button {
   margin-bottom: 6px;
 }
 .fact-grid strong {
-  font-size: 13px;
   font-weight: 500;
-  font-variant-numeric: tabular-nums;
+}
+.fact-grid .success {
+  display: flex;
+  margin: 0;
+  font-size: inherit;
+  color: var(--acc);
 }
 .coverage {
   border-top: 1px solid var(--line);
@@ -843,13 +931,30 @@ th {
   border-bottom: 1px solid var(--line);
 }
 td {
-  padding: 10px var(--pad);
+  padding: 8px var(--pad);
   border-bottom: 1px solid var(--line);
   color: var(--fg-2);
   font-variant-numeric: tabular-nums;
 }
 td.mono {
+  color: var(--fg-2);
+}
+td:first-child,
+td:first-child .slot-link {
   color: var(--fg);
+}
+td > svg {
+  vertical-align: -2px;
+  margin-left: 4px;
+  color: var(--fg-3);
+}
+/* only green, amber and red stay pills in tables */
+td .badge.neutral {
+  background: none;
+  padding-inline: 0;
+  color: var(--fg-3);
+  font-size: 12px;
+  font-weight: 400;
 }
 tbody tr:last-child td {
   border-bottom: 0;
@@ -864,7 +969,7 @@ td code {
   display: block;
   font-size: 11.5px !important;
   color: var(--fg-3);
-  margin-top: 3px;
+  margin-top: 1px;
 }
 .slot-link {
   border: 0;
@@ -885,26 +990,49 @@ td code {
 .evidence-count {
   margin-right: 8px;
   color: var(--fg-3);
+}
+/* hashes, slots and timestamps set in prose */
+.evidence-count,
+.incident-list p,
+.timeline p,
+.analyst-drawer dd,
+.identity-note,
+#slot-detail .panel-heading p,
+.fact-grid strong,
+.provider-check-panel td small {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
 }
-.conformance-divergent td {
-  background: rgba(245, 181, 74, 0.05);
+.conformance-divergent td,
+tbody tr.conformance-divergent:hover td {
+  background: rgba(245, 181, 74, 0.035);
+}
+.conformance-table th,
+.conformance-table td {
+  padding-inline: 10px;
+}
+.conformance-table .subtext {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 34ch;
 }
 
 /* Overview */
 .slot-strip {
   display: flex;
-  gap: 3px;
+  gap: 2px;
   padding: 14px var(--pad) 6px;
-  height: 58px;
+  height: 36px;
 }
 .slot-cell {
   border: 0;
-  border-radius: 2px;
+  border-radius: 1px;
   padding: 0;
   min-width: 3px;
   flex: 1;
-  background: rgba(255, 255, 255, 0.12);
+  /* .34 keeps pending cells at 3:1 against the card */
+  background: rgba(255, 255, 255, 0.34);
 }
 .slot-cell.healthy {
   background: var(--acc);
@@ -947,7 +1075,7 @@ td code {
   height: 8px;
   display: inline-block;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.34);
 }
 .legend.healthy {
   background: var(--acc);
@@ -1149,7 +1277,7 @@ td code {
   width: 16px;
   height: 2px;
   display: inline-block;
-  background: var(--fg-4);
+  background: var(--fg-3);
 }
 .graph-legend i.raw {
   background: var(--fg-2);
@@ -1282,11 +1410,16 @@ td code {
   margin-top: 3px;
   font-variant-numeric: tabular-nums;
 }
+.incident-list > div > div:nth-child(2) {
+  flex: 1 1 220px;
+  min-width: 0;
+}
 .incident-list .badge {
   margin-left: auto;
 }
+/* the text column grows, so these auto margins only act when the row wraps: keep the action right-aligned */
 .incident-list .text-button {
-  margin-left: 10px;
+  margin-left: auto;
 }
 .incident-icon {
   display: grid;
@@ -1343,6 +1476,9 @@ td code {
 .form select,
 .form input {
   width: 100%;
+}
+.form .notice {
+  margin-inline: 0;
 }
 .button-row {
   display: flex;
@@ -1594,9 +1730,6 @@ td code {
   border-color: var(--fg);
   color: var(--bg);
 }
-.analysis-inputs button:hover {
-  background: var(--fg-2);
-}
 .analysis-inputs.transaction-only {
   grid-template-columns: minmax(0, 1fr) auto;
 }
@@ -1608,6 +1741,30 @@ td code {
 }
 .analysis-form .notice {
   margin: 14px 0 0;
+}
+.panel-heading + .analysis-form,
+.panel-heading + .investigation-download,
+.panel-heading + .guided-identities {
+  padding-top: 4px;
+}
+.analysis-form > p:first-child,
+.investigation-download > p:first-child {
+  margin-top: 0;
+}
+.analysis-form > label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--fg-3);
+}
+.analysis-form p + h3 {
+  margin-top: 16px;
+}
+.analysis-form h3 + p {
+  margin-top: 4px;
 }
 .conflict-explanation-body {
   white-space: normal;
@@ -1680,6 +1837,23 @@ td code {
 .contention-categories small {
   color: var(--fg-3);
   font-size: 12px;
+}
+.xray-summary,
+.panel .contention-categories {
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0;
+  margin: 0 var(--pad) var(--pad);
+}
+.xray-summary .stat,
+.panel .contention-categories > div {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--surface-2);
 }
 .contention-categories strong {
   font-family: var(--mono);
@@ -1831,6 +2005,21 @@ meter::-moz-meter-bar {
   font-size: 12px;
   color: var(--fg-3);
 }
+.comparison-controls > a {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--fill);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.comparison-controls > a:hover {
+  background: var(--fill-2);
+}
 .comparison-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1856,6 +2045,9 @@ meter::-moz-meter-bar {
 .provider-check-panel .badge {
   white-space: normal;
   line-height: 1.5;
+}
+.provider-check-panel .panel-heading .badge {
+  white-space: nowrap;
 }
 
 /* Glamsterdam X-ray */
@@ -1942,7 +2134,7 @@ meter::-moz-meter-bar {
   display: block;
   width: 100%;
   max-width: 760px;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 var(--pad) 8px;
 }
 .cores-chart .axis {
@@ -1960,6 +2152,8 @@ meter::-moz-meter-bar {
   gap: 8px;
   overflow-x: auto;
   padding: 4px var(--pad) 14px;
+  scroll-padding-inline: var(--pad);
+  mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
 }
 .xray-chips button {
   flex-direction: column;
@@ -1979,11 +2173,8 @@ meter::-moz-meter-bar {
 .xray-chips small {
   font-size: 11px;
   font-weight: 400;
-  color: var(--fg-3);
+  color: var(--fg-2);
   font-family: var(--mono);
-}
-.xray-summary {
-  margin: 0 var(--pad) 18px;
 }
 
 /* Analyst */
@@ -2264,6 +2455,13 @@ span.analyst-cite {
     grid-template-columns: 1.25fr 1fr;
   }
 }
+@media (min-width: 1101px) {
+  /* keep Ask in reach beside the long brief list; not once a run makes the column taller than the viewport */
+  .analyst-grid > div:first-child:not(:has(.analyst-run)) {
+    position: sticky;
+    top: 64px;
+  }
+}
 @media (max-width: 1100px) {
   .analyst-grid {
     grid-template-columns: 1fr;
@@ -2360,10 +2558,11 @@ span.analyst-cite {
     gap: 16px;
   }
   .analysis-identity {
-    align-items: flex-start;
+    display: block;
   }
   .identity-note {
-    max-width: 140px;
+    text-align: left;
+    margin-top: 12px;
   }
   .incident-list > div {
     flex-wrap: wrap;
@@ -2466,6 +2665,9 @@ span.analyst-cite {
   .panel-heading {
     flex-wrap: wrap;
   }
+  .notice:has(> .badge) {
+    flex-wrap: wrap;
+  }
   .search-box,
   .search-box input {
     width: 100%;
@@ -2491,14 +2693,6 @@ span.analyst-cite {
   }
   .timeline .badge {
     margin-top: 5px;
-  }
-  .analysis-identity {
-    display: block;
-  }
-  .identity-note {
-    max-width: 100%;
-    text-align: left;
-    margin-top: 12px;
   }
   .graph-legend {
     gap: 10px;
@@ -2549,6 +2743,56 @@ span.analyst-cite {
   }
   .analyst-trace li {
     grid-template-columns: 66px minmax(0, 1fr) auto;
+  }
+  /* wide tables: keep the identifier column in view while the rest scrolls; fade the cut edge */
+  .table-scroll,
+  .table-wrap {
+    mask-image: linear-gradient(to left, transparent, #000 16px);
+  }
+  :is(.table-scroll, .table-wrap) :is(th, td) {
+    padding-inline: 12px;
+  }
+  :is(.table-scroll, .table-wrap) :is(th, td):first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--surface-2);
+    box-shadow: 1px 0 0 var(--line);
+  }
+  :is(.table-scroll, .table-wrap) tbody tr:hover td:first-child {
+    background: #191a1d;
+  }
+  .conformance-divergent td:first-child {
+    background: #1a1918;
+  }
+  .conformance-table .subtext {
+    max-width: 22ch;
+  }
+  /* provider observations stack as cards; the profiler's state-method table (no pills) stays a table */
+  .provider-check-panel:has(td .badge) thead {
+    display: none;
+  }
+  .provider-check-panel:has(td .badge) tr {
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .provider-check-panel:has(td .badge) tr:last-child {
+    border-bottom: 0;
+  }
+  .provider-check-panel:has(td .badge) td {
+    display: block;
+    border: 0;
+    padding-block: 6px;
+    box-shadow: none;
+  }
+  .cores-chart .axis {
+    font-size: 20px;
+  }
+  .cores-chart .label {
+    display: none;
+  }
+  .dependency-map {
+    min-width: 900px;
   }
 }
 @media (max-width: 480px) {
