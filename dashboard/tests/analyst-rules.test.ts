@@ -49,6 +49,9 @@ test("nextBlock takes the newest unbriefed anomaly and stops at the hourly cap",
   const full = new Map([[h("a"), now - hour + 1], [h("b"), now - 10]]);
   assert.equal(nextBlock(blocks, full, now, 2), null, "two briefs within the hour use up a cap of two");
   assert.equal(nextBlock(blocks, new Map([[h("a"), now - hour], [h("b"), now - 10]]), now, 2)?.block, blocks[1], "a brief exactly an hour old no longer counts");
+  const gas = quiet({ block_hash: h("4"), block_number: 6, gas_misidentifies_bottleneck: true });
+  assert.equal(nextBlock([gas, ...blocks], new Map(), now, 6)?.block, blocks[1], "a rarer rule beats a newer gas_misleads block");
+  assert.equal(nextBlock([gas, blocks[0]], new Map(), now, 6)?.block, gas, "gas_misleads alone still gets a brief");
 });
 
 test("the briefs feed is a proxied read pinned to Sepolia", async (t) => {

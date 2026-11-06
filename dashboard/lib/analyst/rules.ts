@@ -18,11 +18,9 @@ export function triggers(b: RuleInput): Trigger[] {
 
 // The newest block that trips a rule and is not in done (block hash -> ms it was briefed or attempted), or null when
 // none qualifies or perHour of done fall in the last hour. blocks come newest first, as the X-ray list returns them.
+// gas_misleads fires on most Sepolia blocks, so a block that trips any other rule goes first.
 export function nextBlock(blocks: RuleInput[], done: Map<string, number>, now: number, perHour: number) {
   if ([...done.values()].filter(t => t > now - 3_600_000).length >= perHour) return null;
-  for (const block of blocks) {
-    const fired = done.has(block.block_hash) ? [] : triggers(block);
-    if (fired.length) return { block, triggers: fired };
-  }
-  return null;
+  const fired = blocks.filter(b => !done.has(b.block_hash)).map(block => ({ block, triggers: triggers(block) })).filter(c => c.triggers.length);
+  return fired.find(c => c.triggers.some(t => t !== "gas_misleads")) ?? fired[0] ?? null;
 }

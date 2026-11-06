@@ -1,4 +1,4 @@
-// npm run briefs: every 12 s, write an analyst brief for the newest stored X-ray block that trips an anomaly rule.
+// npm run briefs: every 12 s, write an analyst brief for the newest stored X-ray block that trips a rule (rarer first).
 // Brief mode is read-only (no actions); at most ROOTED_BRIEFS_PER_HOUR briefs (default 6), charged to the
 // analyst's daily ledger. With the x402 agent's HCS env present, each stored brief's hash is also appended there.
 import { createHash } from "node:crypto";
