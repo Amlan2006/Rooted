@@ -1,0 +1,11 @@
+# read:profiler-providers (Read phase)
+
+Task prompt given to one Claude Code agent by the `rooted-repo-context` workflow script on 2026-11-06T06:46:36.690Z (UTC), verbatim.
+
+---
+
+You are mapping the "Rooted" repo at /home/ubuntu/Rooted (Go backend + Next.js dashboard + Python probe/smoke scripts, Ethereum Sepolia/Glamsterdam-era observability: ePBS payloads, BAL (block access lists), frame-transaction mempool devnet, execution profiler, provider comparison). There is no README; docs/ holds per-subsystem docs and PHASEn_VERIFICATION.md files. demo/ holds recorded reference evidence.
+Go toolchain is at ~/sdk/go/bin/go (not on PATH). A .env with the user's real settings exists at /home/ubuntu/Rooted/.env — local Sepolia Nimbus/Geth via SSH tunnels on 127.0.0.1:18545 (EL) and :15052 (beacon), currently NOT listening; fork RPC :8547 also down. Port 54329 is held by an unrelated docker container (parsewave-atlas-db), NOT Rooted's compose postgres.
+Rules: READ-ONLY. Do not edit files, do not run tests, do not make network calls, do not start services. Read code and docs thoroughly (actually open the files, don't guess from names). Be concrete: cite file:line for claims about behavior and risks. Prefer real defects / doc-vs-code mismatches over style nits. List every file you actually read in files_read (repo-relative paths).
+
+Subsystem: execution profiler and provider comparison (phases 8 and 9 — the most recent commit). Read internal/profiler/*, internal/providers/*, internal/api/profiler.go, internal/api/providers.go and their tests, internal/config/providers.go, migrations/006_provider_comparisons.sql, migrations/007_execution_profiles.sql, workloads/profiler/** (go.mod, main.go, state.go, main_test.go — this is the rooted-replay native binary, built separately into .tools/rooted-replay), docs/EXECUTION_PROFILER.md, docs/PROVIDER_COMPARISON.md, docs/PHASE8_VERIFICATION.md, docs/PHASE9_VERIFICATION.md, demo/phase8/status.json, demo/phase9/status.json, demo/profiler/profile.json (shape only), demo/provider-comparison/live-report.json (shape), scripts/smoke_phases8_9.py. Explain what is measured, how replay works and how the binary is invoked (subprocess safety, input validation, timeouts), how primary vs reference providers are compared, persistence, and how to build .tools/rooted-replay (it does not exist yet).

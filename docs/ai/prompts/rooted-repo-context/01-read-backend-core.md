@@ -1,0 +1,11 @@
+# read:backend-core (Read phase)
+
+Task prompt given to one Claude Code agent by the `rooted-repo-context` workflow script on 2026-11-06T06:46:34.008Z (UTC), verbatim.
+
+---
+
+You are mapping the "Rooted" repo at /home/ubuntu/Rooted (Go backend + Next.js dashboard + Python probe/smoke scripts, Ethereum Sepolia/Glamsterdam-era observability: ePBS payloads, BAL (block access lists), frame-transaction mempool devnet, execution profiler, provider comparison). There is no README; docs/ holds per-subsystem docs and PHASEn_VERIFICATION.md files. demo/ holds recorded reference evidence.
+Go toolchain is at ~/sdk/go/bin/go (not on PATH). A .env with the user's real settings exists at /home/ubuntu/Rooted/.env — local Sepolia Nimbus/Geth via SSH tunnels on 127.0.0.1:18545 (EL) and :15052 (beacon), currently NOT listening; fork RPC :8547 also down. Port 54329 is held by an unrelated docker container (parsewave-atlas-db), NOT Rooted's compose postgres.
+Rules: READ-ONLY. Do not edit files, do not run tests, do not make network calls, do not start services. Read code and docs thoroughly (actually open the files, don't guess from names). Be concrete: cite file:line for claims about behavior and risks. Prefer real defects / doc-vs-code mismatches over style nits. List every file you actually read in files_read (repo-relative paths).
+
+Subsystem: backend core and Sepolia ingest. Read cmd/rooted/*, internal/config/*, internal/domain/*, internal/storage/*, internal/remote/*, internal/ingest/* (incl. testdata names), migrations/* (all SQL + embed.go), internal/api/server.go and server_test.go, internal/api/integration_test.go, compose.yaml, .env.example, docs/BACKEND.md, docs/API.md, docs/CAPABILITIES.md, docs/SEPOLIA_NODE.md, docs/PHASE2_VERIFICATION.md, docs/PHASE3_VERIFICATION.md, demo/phase2/status.json, demo/phase3/status.json, scripts/smoke_phase2.py, scripts/smoke_phase3.py. Explain process startup order, how collectors are wired and enabled, network verification (genesis root / chain id), DB schema and migration mechanism (note the missing 005 migration number and whether that matters), every HTTP route registered in server.go, and how the backend would behave right now given the .env (tunnels down, port 54329 owned by another project's DB).
