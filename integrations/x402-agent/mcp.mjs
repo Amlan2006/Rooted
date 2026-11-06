@@ -11,28 +11,32 @@ if (existsSync(envFile)) process.loadEnvFile(envFile);
 const base = () => new URL(process.env.ROOTED_PUBLIC_URL || "http://127.0.0.1:3000");
 const hashSchema = { type: "string", pattern: "^0x[0-9a-f]{64}$", description: "Lowercase 0x-prefixed 32-byte Sepolia execution block hash" };
 const tools = [
-  { name: "recent_xray_blocks", description: "Free. Lists the newest stored Glamsterdam X-ray briefs (per Sepolia block: receipt-gas, execution-gas, validator-with-BAL and builder/no-BAL parallelism ceilings, all upper bounds).",
+  { name: "recent_xray_blocks", description: "Free. Lists the newest stored Glamsterdam X-ray briefs (per Sepolia block: receipt-gas, execution-gas, validator-with-BAL and builder/no-BAL (multi-version and static) parallelism ceilings, all upper bounds).",
     inputSchema: { type: "object", properties: { limit: { type: "integer", minimum: 1, maximum: 30 } } } },
   { name: "buy_xray_report", description: "Paid. Buys the full X-ray report for one block over x402 on Hedera testnet (default price 0.01 HBAR). The agent's spend controls (per-request cap, daily budget, trusted payTo, allowed asset) may refuse. Returns the settled Hedera transaction id, the HashScan link and a one-line finding.",
     inputSchema: { type: "object", properties: { block_hash: hashSchema }, required: ["block_hash"] } },
 ];
 const text = (t, isError = false) => ({ content: [{ type: "text", text: t }], isError });
+let buys = Promise.resolve(); // the purchase queue; each run always resolves, never rejects
 
 async function call(name, args = {}) {
   if (name === "recent_xray_blocks") {
     const limit = Number.isInteger(args.limit) && args.limit >= 1 && args.limit <= 30 ? args.limit : 10;
     const r = await fetch(new URL(`/api/backend/api/v1/xray/blocks?network=sepolia&limit=${limit}`, base()), { signal: AbortSignal.timeout(15000) });
     if (!r.ok) return text(`brief list unavailable: HTTP ${r.status}`, true);
-    const keep = ["block_number", "block_hash", "transaction_count", "gas_weighted", "execution_gas_weighted", "validator_bal_time", "builder_dag_time", "validator_capping_tx_index", "builder_critical_path_length"];
+    const keep = ["block_number", "block_hash", "transaction_count", "gas_weighted", "execution_gas_weighted", "validator_bal_time", "builder_multiversion_time", "builder_dag_time", "validator_capping_tx_index", "builder_critical_path_length"];
     return text(JSON.stringify(((await r.json()).data ?? []).map((b) => Object.fromEntries(keep.map((k) => [k, b[k] ?? null])))));
   }
   if (name === "buy_xray_report") {
     if (typeof args.block_hash !== "string" || !/^0x[0-9a-f]{64}$/.test(args.block_hash)) return text("block_hash must be a lowercase 0x-prefixed 32-byte hash", true);
-    return new Promise((resolve) => execFile(process.execPath, [new URL("agent.mjs", import.meta.url).pathname, args.block_hash], { timeout: 180000 }, (error, stdout, stderr) => {
+    // One purchase at a time, so parallel tool calls cannot each pass the budget check (agent.mjs also locks).
+    const run = buys.then(() => new Promise((resolve) => execFile(process.execPath, [new URL("agent.mjs", import.meta.url).pathname, args.block_hash], { timeout: 180000 }, (error, stdout, stderr) => {
       const code = error ? (typeof error.code === "number" ? error.code : 1) : 0;
       const why = { 1: "error", 2: "configuration", 3: "refused by spend controls" }[code] ?? "error";
       resolve(code === 0 ? text(stdout.trim()) : text(`${why} (exit ${code}): ${(stdout + stderr).trim().slice(0, 2000)}`, true));
-    }));
+    })));
+    buys = run;
+    return run;
   }
   return null;
 }

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // Paying agent: buys one Rooted Glamsterdam X-ray report over x402, settled on Hedera testnet, with no human approval.
 // Usage: node agent.mjs [BLOCK_HASH]   (exit 0 paid, 1 error, 2 config, 3 refused by spend controls)
-import { createHash } from "node:crypto";
-import { appendFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { createHash, randomUUID } from "node:crypto";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { decodePaymentResponseHeader, wrapFetchWithPayment, x402Client, x402HTTPClient } from "@x402/fetch";
 import { ExactHederaScheme } from "@x402/hedera/exact/client";
 import { createClientHederaSigner } from "@x402/hedera";
 import { Client, PrivateKey, TopicMessageSubmitTransaction } from "@hiero-ledger/sdk";
-import { decide, limitsFrom, policy, sessionSpent } from "./spend.mjs";
+import { acquireLock, decide, limitsFrom, policy, sessionSpent } from "./spend.mjs";
 
 const envFile = new URL(".env", import.meta.url);
 if (existsSync(envFile)) process.loadEnvFile(envFile); // shell variables win, so MAX_PER_REQUEST=1 forces a refusal
@@ -24,6 +24,11 @@ try {
 try { key = PrivateKey.fromStringECDSA(env.AGENT_KEY ?? ""); } catch { die(2, "config: AGENT_KEY is not a hex ECDSA private key"); }
 const base = new URL(env.ROOTED_PUBLIC_URL || "http://127.0.0.1:3000");
 const session = env.ROOTED_AGENT_SESSION || new Date().toISOString().slice(0, 10); // default: a daily budget
+mkdirSync(runsDir, { recursive: true });
+const lockFile = new URL("lock", runsDir);
+if (!acquireLock(lockFile)) refuse({ reason: "purchase_in_progress", amount: "", budget_left: "" });
+process.on("exit", () => rmSync(lockFile, { force: true }));
+for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => process.exit(130)); // still releases the lock
 const state = { spent: sessionSpent(existsSync(runsFile) ? readFileSync(runsFile, "utf8") : "", session, limits.asset) };
 
 let hash = process.argv[2];
@@ -37,11 +42,14 @@ if (!/^0x[0-9a-f]{64}$/.test(hash ?? "")) die(2, "usage: node agent.mjs 0x<lower
 // explained. The same decide() is the library policy, so the offer that gets signed is always one it approved;
 // the library allowlist/cap is a second backstop.
 let refusal, signed;
+const runId = randomUUID();
+const log = (row) => appendFileSync(runsFile, JSON.stringify({ at: new Date().toISOString(), session, run_id: runId, block_hash: hash, network: signed.network, asset: signed.asset, amount: signed.amount, pay_to: signed.payTo, ...row }) + "\n");
 const client = new x402Client()
   .register("hedera:testnet", new ExactHederaScheme(createClientHederaSigner(env.AGENT_ID, key, { network: "hedera:testnet" })))
   .setSpendControls({ allowedAssets: [{ network: limits.network, asset: limits.asset, maxAmountPerPayment: limits.maxPerRequest }] })
   .registerPolicy(policy(state, limits))
-  .onAfterPaymentCreation(async ({ paymentPayload }) => { signed = paymentPayload.accepted; });
+  // Reserve before the signed payment leaves: if the reply is lost, the money still counts against the budget.
+  .onAfterPaymentCreation(async ({ paymentPayload }) => { signed = paymentPayload.accepted; log({ settled: false, pending: true }); });
 const http = new x402HTTPClient(client).onPaymentRequired(async ({ paymentRequired }) => {
   const decisions = (paymentRequired.accepts ?? []).map((r) => decide(r, state, limits));
   if (decisions.some((d) => !d.refused)) return;
@@ -55,18 +63,16 @@ try { response = await wrapFetchWithPayment(fetch, http)(url); }
 catch (e) {
   if (refusal) refuse(refusal);
   if (/spendControls|filtered out by policies/.test(e.message)) refuse({ reason: "client_spend_controls", amount: "", budget_left: "" });
-  die(1, `request failed: ${e.message}`);
+  die(1, `request failed: ${e.message}${signed ? " (a signed payment may be in flight; it stays reserved against the budget)" : ""}`);
 }
 const body = await response.text(), header = response.headers.get("PAYMENT-RESPONSE");
 const settle = header ? decodePaymentResponseHeader(header) : null;
 const txId = settle?.transaction ?? "", hashscan = `https://hashscan.io/testnet/transaction/${txId}`;
 const sha = createHash("sha256").update(body).digest("hex");
-if (settle?.success && signed) { // log the spend first: the budget must count money that moved even if anything below fails
-  mkdirSync(runsDir, { recursive: true });
-  appendFileSync(runsFile, JSON.stringify({ at: new Date().toISOString(), session, block_hash: hash, url: url.href, network: signed.network,
-    asset: signed.asset, amount: signed.amount, pay_to: signed.payTo, payer: settle.payer ?? env.AGENT_ID, settled: true, transaction: txId,
-    hashscan, report_sha256: sha }) + "\n");
-}
+// Settle the reservation first, so the log is right even if anything below fails. Release it only when the server
+// proves nothing moved (402 or a failed settlement); any other outcome stays reserved.
+if (signed && settle?.success) log({ url: url.href, payer: settle.payer ?? env.AGENT_ID, settled: true, pending: false, transaction: txId, hashscan, report_sha256: sha });
+else if (signed && (response.status === 402 || settle?.success === false)) log({ settled: false, pending: false, released: response.status });
 if (response.status !== 200 || !settle?.success) die(1, JSON.stringify({ ok: false, status: response.status, settle, body: body.slice(0, 400) }));
 
 const report = JSON.parse(body).data;
@@ -84,7 +90,7 @@ for (let i = 0; i < 10; i++) {
 }
 
 const c = report.ceilings ?? {}, x = (v) => (typeof v === "number" ? `${v.toFixed(2)}x` : "unknown");
-console.log(`finding: receipt gas ${x(c.gas_weighted?.value)} (capped by tx ${c.gas_weighted?.capping_tx_index}), execution gas ${x(c.execution_gas_weighted?.value)}, validator with BAL ${x(c.validator_bal_time?.value)} (tx ${c.validator_bal_time?.capping_tx_index ?? "?"}), builder/no-BAL ${x(c.builder_dag_time?.value)} (critical path ${c.builder_dag_time?.critical_path?.length ?? "?"} txs); all upper bounds`);
+console.log(`finding: receipt gas ${x(c.gas_weighted?.value)} (capped by tx ${c.gas_weighted?.capping_tx_index}), execution gas ${x(c.execution_gas_weighted?.value)}, validator with BAL ${x(c.validator_bal_time?.value)} (tx ${c.validator_bal_time?.capping_tx_index ?? "?"}), builder/no-BAL multi-version ${x(c.builder_multiversion_time?.value)}, static ${x(c.builder_dag_time?.value)} (critical path ${c.builder_dag_time?.critical_path?.length ?? "?"} txs); all upper bounds`);
 
 if (env.ROOTED_AGENT_HCS_TOPIC) { // optional audit log; the payment already happened, so a failure here only warns
   const hedera = Client.forTestnet().setOperator(env.AGENT_ID, key);

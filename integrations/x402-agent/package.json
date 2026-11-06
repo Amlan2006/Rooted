@@ -5,7 +5,7 @@
   "scripts": {
     "setup": "node setup.mjs",
     "agent": "node agent.mjs",
-    "test": "node --test spend.test.mjs mcp.test.mjs",
+    "test": "node --test spend.test.mjs reserve.test.mjs mcp.test.mjs",
     "mcp": "node mcp.mjs"
   },
   "dependencies": {
