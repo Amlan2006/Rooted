@@ -19,7 +19,7 @@ claude mcp add rooted-x402 -- node integrations/x402-agent/mcp.mjs   # let an LL
 | File | Role |
 |---|---|
 | `agent.mjs` | `wrapFetchWithPayment` + `ExactHederaScheme(createClientHederaSigner(...))`. It verifies the report schema and hash, decodes `PAYMENT-RESPONSE`, cross-checks the tx on the public mirror node and appends `.tools/x402-agent/runs.jsonl`. With `ROOTED_AGENT_HCS_TOPIC` set, it also writes an HCS audit message. |
-| `spend.mjs` | Pure `decide(offer, state, limits)`: allowed network and asset, trusted `payTo`, per-request cap, session budget. `policy()` registers the same check as the x402 library's payment policy. |
+| `spend.mjs` | Pure `decide(offer, state, limits)`: allowed network and asset, trusted `payTo`, per-request cap, session budget. `policy()` registers the same check as the x402 library's payment policy. `sessionSpent()` reads the run log; `acquireLock()` allows one purchase at a time. |
 | `mcp.mjs` | MCP server (stdio, no SDK) for LLM agents: `recent_xray_blocks` (free) and `buy_xray_report(block_hash)`, which runs `agent.mjs` with its spend controls and returns the settled tx id and HashScan link. |
 | `setup.mjs` | One-time and idempotent. Prints ids and HashScan links, never keys. |
 
@@ -28,7 +28,8 @@ The spend controls run in an `onPaymentRequired` hook, before anything is signed
 | Reason | When the agent refuses |
 |---|---|
 | `over_per_request_cap` | `amount > MAX_PER_REQUEST` |
-| `session_budget_exceeded` | settled spend this session + `amount > SESSION_BUDGET`. The session spend is the sum of `runs.jsonl` entries for the session and asset; the session defaults to the UTC date. |
+| `session_budget_exceeded` | spend this session + `amount > SESSION_BUDGET`. The session spend is the sum of `runs.jsonl` runs for the session and asset that are settled or still reserved (a signed payment is reserved before it is sent and released only when the server proves nothing moved); the session defaults to the UTC date. |
+| `purchase_in_progress` | another run holds `.tools/x402-agent/lock` (held from reading the budget until the run is logged; the MCP server also queues buys) |
 | `untrusted_pay_to` | `payTo` is not `ROOTED_EXPECTED_PAY_TO` |
 | `asset_not_allowed` | the offer is not on `hedera:testnet`, or uses a different asset |
 | `invalid_amount` | the server sent a non-integer amount |

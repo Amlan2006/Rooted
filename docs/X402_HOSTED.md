@@ -13,11 +13,12 @@ reports instead of serving the paid report one URL over.
 ## What is sold
 
 `GET /api/paid/xray/<block_hash>` returns `{"data": Report}`, where Report is the `rooted-xray-v1` report from
-[`docs/XRAY.md`](XRAY.md). Each report has four ceilings for one Sepolia block, all labelled "upper bound":
+[`docs/XRAY.md`](XRAY.md). Each report has five ceilings for one Sepolia block, all labelled "upper bound":
 
 - receipt gas (execution + EIP-8037 state gas) and execution gas (the EIP-8037 dimension that prices compute);
 - validator with BAL (Amdahl on measured `ApplyMessage` time; with an EIP-7928 BAL, validators can execute every tx in parallel);
-- builder / no-BAL (critical path of the RAW/WAR/WAW conflict DAG).
+- builder / no-BAL, twice: a multi-version executor (conflict DAG without write-after-read edges) and a static
+  scheduler (critical path of the full RAW/WAR/WAW conflict DAG).
 
 The report also includes the hot storage slots, with Uniswap labels where they apply, and the ePBS strip.
 
@@ -118,15 +119,20 @@ USDC (`0.0.429274`, price `10000`) takes three steps:
 `x402HTTPClient.onPaymentRequired` hook, before anything is signed, so every refusal can name its reason:
 
 - `over_per_request_cap`: `amount > MAX_PER_REQUEST` (default 1,000,000).
-- `session_budget_exceeded`: settled spend so far plus `amount` would exceed `SESSION_BUDGET` (default 5,000,000). Settled spend is the sum of `.tools/x402-agent/runs.jsonl` entries for the session and asset. The session defaults to the UTC date, which makes this a daily budget. A corrupt log fails closed.
+- `session_budget_exceeded`: spend so far plus `amount` would exceed `SESSION_BUDGET` (default 5,000,000). Spend so far is the sum of `.tools/x402-agent/runs.jsonl` runs for the session and asset that are settled or still reserved (see below). The session defaults to the UTC date, which makes this a daily budget. A corrupt log fails closed.
+- `purchase_in_progress`: another purchase holds `.tools/x402-agent/lock`. Each run holds it from reading the budget until its run is logged, so overlapping runs cannot each pass the budget check; a lock whose process is gone is taken over.
 - `untrusted_pay_to`: `payTo` is not `ROOTED_EXPECTED_PAY_TO`.
 - `asset_not_allowed`, `invalid_amount`: the offer is on the wrong network or asset, or the amount is not an integer.
 
 A refusal prints one JSON line `{"refused":true,"reason":…,"amount":…,"budget_left":…}` and exits 3.
 The same `decide()` is registered as the x402 library's payment policy (`policy()` in `spend.mjs`), so when a
 402 lists several offers the library can only sign one that `decide()` approved. The library's
-`spendControls.allowedAssets[{network, asset, maxAmountPerPayment}]` cap is a second backstop. The agent logs every settled payment before it validates the
-body, so money that moved always counts against the budget. With `ROOTED_AGENT_HCS_TOPIC` set, each paid call
+`spendControls.allowedAssets[{network, asset, maxAmountPerPayment}]` cap is a second backstop. Right after signing, before the payment is sent, the
+agent logs a `pending` reservation for the signed amount, and it counts against the budget. The run's later
+line replaces it: `settled` once `PAYMENT-RESPONSE` confirms (logged before the body is validated), or
+`released` only when the server proves nothing moved (a 402, or a failed settlement). A lost reply, a dropped
+connection or a kill at the MCP server's 180 s timeout leaves the reservation in place, so a payment that may
+have moved always counts. The MCP server also runs buys one at a time. With `ROOTED_AGENT_HCS_TOPIC` set, each paid call
 also appends `{block_hash, report_sha256, payment_tx, amount, asset}` to an HCS topic that only the agent's key
 can write, which gives a public spend audit log.
 
@@ -157,7 +163,7 @@ left configured off, because it needs a relayer key that this deployment does no
 
 ## Trade-offs
 
-- **Stored reads only.** Hedera transfers have a validity window of at most 180 s, and settlement happens after the handler runs. Live compute (`POST /api/v1/xray/blocks`, profiles, analyses) can take up to 90 s, so it is not sold. In hosted mode those routes return 403 (`ROOTED_HOSTED=1` or `ROOTED_X402_ENABLED=true`, see `dashboard/lib/hosted.ts`). The paid read has a 10 s backend timeout.
+- **Stored reads only.** Hedera transfers have a validity window of at most 180 s, and settlement happens after the handler runs. Live compute (`POST /api/v1/xray/blocks`, profiles, analyses) can take up to 90 s, so it is not sold. In hosted mode those routes return 403 (`ROOTED_HOSTED=1` or `ROOTED_X402_ENABLED=true`, see `dashboard/lib/hosted.ts`), and so do profile reads through the free proxy (`/api/v1/profiles…`), because a profile carries the report's inputs: per-tx timings and the full capture. The paid read has a 10 s backend timeout.
 - **Privacy.** A paid query links the payer account, the facilitator and the block hash on a public ledger, and the HCS log makes that link explicit by design. Self-hosting keeps queries private and costs nothing, which is why the paywall exists only on a hosted instance.
 - **Trust.** The agent trusts the hosted operator's measurement. The report carries `bal.commitment_verified`, the replay runner and CPU, and the coverage list, so a buyer can re-derive the gas view and the BAL commitment independently.
 - **Facilitator dependency.** x402.org is testnet-only. Blocky402 is a drop-in fallback via `ROOTED_X402_FACILITATOR_URL`, and running your own facilitator follows the official `toFacilitatorHederaSigner` example.
