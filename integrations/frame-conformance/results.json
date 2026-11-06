@@ -1,0 +1,453 @@
+{
+  "schema": "rooted-frame-conformance-v1",
+  "run_id": "e34c026699511891",
+  "network": "frame-devnet",
+  "chain_id": 1337,
+  "genesis": "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a",
+  "gateway": "https://altmempoolgateway.forshtat.com/rpc",
+  "node": "miner",
+  "node_url": "https://altmempool.forshtat.com/rpc",
+  "sidecar_version": "v4.1.1",
+  "started_at": "2026-11-06T09:50:33Z",
+  "finished_at": "2026-11-06T09:54:32Z",
+  "sender": "0xa8b7dD4D81236076F3f422Ac05C6e10630A663D7",
+  "sources": {
+    "eip8141": "https://eips.ethereum.org/EIPS/eip-8141",
+    "eip8250": "https://eips.ethereum.org/EIPS/eip-8250",
+    "erc8421_draft": "https://docs.altmempool.wtf/rules/budget/",
+    "sidecar_docs": "https://docs.altmempool.wtf/guides/keyed-nonces/"
+  },
+  "cases": [
+    {
+      "id": "baseline",
+      "group": "baseline",
+      "description": "Default self-relay: VERIFY(30,000) + 1-wei self-transfer (scripts/test_frame_transaction.py)",
+      "overrides": {},
+      "expected": {
+        "eip8141": "accept",
+        "eip8250": "n/a",
+        "erc8421_draft": "accept",
+        "sidecar_docs": "accept"
+      },
+      "expected_basis": {
+        "eip8141": "30,000 + 2,800 is within MAX_VERIFY_GAS; 2 frames",
+        "erc8421_draft": "Within every per-entity budget",
+        "sidecar_docs": "The documented \"Submit a Frame Transaction\" example shape"
+      },
+      "tx_hash": "0x9685176c89c2dd351b8fb5d1b6a25047373ae6aabb54c5c17505e03565d7d20c",
+      "submitted_at": "2026-11-06T09:47:01.675982197Z",
+      "rpc": {
+        "acknowledged": true,
+        "error_code": null,
+        "error_message": null
+      },
+      "admission": {
+        "outcome": "included",
+        "failed_checks": []
+      },
+      "observed": "accept",
+      "observed_rule": null,
+      "rooted_attempt_id": "928488651b55829f2e0a751e5936ee76",
+      "receipt": {
+        "block_number": "0x7bf",
+        "status": "0x1"
+      }
+    },
+    {
+      "id": "keys-zero-mixed",
+      "group": "nonce_keys",
+      "description": "Key 0 mixed with a keyed slot; state gas funds two fresh keys",
+      "overrides": {
+        "nonce_keys": [
+          0,
+          307
+        ],
+        "verify_execution": 60000,
+        "verify_state": 195840
+      },
+      "expected": {
+        "eip8141": "n/a",
+        "eip8250": "accept",
+        "erc8421_draft": "n/a",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8250": "Decoders reject only if len(nonce_keys) > MAX_NONCE_KEYS or nonce_keys is not strictly increasing; [0, 307] is both valid",
+        "sidecar_docs": "\"1 to 16 strictly increasing keys. ... Key 0 is only valid on its own.\""
+      },
+      "tx_hash": "0xa9faae8d33738d9efeabdb5b75a9b9061921d976f6c166e7b9e99de46d99cb48",
+      "submitted_at": "2026-11-06T09:50:44Z",
+      "rpc": {
+        "acknowledged": false,
+        "error_code": -32602,
+        "error_message": "nonce key 0 is only valid as the sole nonce key"
+      },
+      "admission": null,
+      "observed": "reject",
+      "observed_rule": null,
+      "rooted_attempt_id": "96f19e977896951e7dfb6628297fa39e",
+      "receipt": null
+    },
+    {
+      "id": "keys-empty",
+      "group": "nonce_keys",
+      "description": "Empty key list (EIP-8250 legacy nonce form)",
+      "overrides": {
+        "nonce_keys": []
+      },
+      "expected": {
+        "eip8141": "n/a",
+        "eip8250": "accept",
+        "erc8421_draft": "n/a",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8250": "\"nonce_keys == [] selects the legacy account nonce\"",
+        "sidecar_docs": "\"nonceKeys: 1 to 16 strictly increasing keys. [\"0x0\"] is the sender's ordinary account nonce.\""
+      },
+      "tx_hash": "0x3f492898affda92cc5b45ecfe4ead105f3714cf008488a7bdada22b795eea5b4",
+      "submitted_at": "2026-11-06T09:51:20Z",
+      "rpc": {
+        "acknowledged": false,
+        "error_code": -32602,
+        "error_message": "nonceKeys count must be between 1 and 16"
+      },
+      "admission": null,
+      "observed": "reject",
+      "observed_rule": null,
+      "rooted_attempt_id": "e4c1fa5e6382b41eaa1db27352c68944",
+      "receipt": null
+    },
+    {
+      "id": "keys-17",
+      "group": "nonce_keys",
+      "description": "Seventeen keys, one over MAX_NONCE_KEYS",
+      "overrides": {
+        "nonce_keys": [
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117
+        ]
+      },
+      "expected": {
+        "eip8141": "n/a",
+        "eip8250": "reject",
+        "erc8421_draft": "n/a",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8250": "Decoders MUST reject if \"len(nonce_keys) > MAX_NONCE_KEYS\" (16)",
+        "sidecar_docs": "\"1 to 16 strictly increasing keys\""
+      },
+      "tx_hash": "0x5a33879249aa8242e41130fa6d0543933494e7c32c5e616d4d569b3e53c5e598",
+      "submitted_at": "2026-11-06T09:51:57Z",
+      "rpc": {
+        "acknowledged": false,
+        "error_code": -32602,
+        "error_message": "nonceKeys count must be between 1 and 16"
+      },
+      "admission": null,
+      "observed": "reject",
+      "observed_rule": null,
+      "rooted_attempt_id": "82a57e43441183e960060a6c82751706",
+      "receipt": null
+    },
+    {
+      "id": "keys-duplicate",
+      "group": "nonce_keys",
+      "description": "Duplicate key, not strictly increasing",
+      "overrides": {
+        "nonce_keys": [
+          205,
+          205
+        ]
+      },
+      "expected": {
+        "eip8141": "n/a",
+        "eip8250": "reject",
+        "erc8421_draft": "n/a",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8250": "Decoders MUST reject if \"nonce_keys is not strictly increasing by numeric value\"",
+        "sidecar_docs": "\"1 to 16 strictly increasing keys\""
+      },
+      "tx_hash": "0xa33653c901a48d0f37118373125958de906423c8702e36dfdb6e509eb959f4f0",
+      "submitted_at": "2026-11-06T09:52:33Z",
+      "rpc": {
+        "acknowledged": false,
+        "error_code": -32602,
+        "error_message": "nonceKeys must be strictly increasing"
+      },
+      "admission": null,
+      "observed": "reject",
+      "observed_rule": null,
+      "rooted_attempt_id": "22c6389844a5ff2e7248e91e64aaace4",
+      "receipt": null
+    },
+    {
+      "id": "keys-16",
+      "group": "nonce_keys",
+      "description": "Sixteen fresh keys; prefix state budget 16 x 97,920 exceeds 500,000",
+      "overrides": {
+        "nonce_keys": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "verify_execution": 97000,
+        "verify_state": 1566720
+      },
+      "expected": {
+        "eip8141": "reject",
+        "eip8250": "reject",
+        "erc8421_draft": "accept",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8141": "\"the sum of limits.state values across the validation prefix must not exceed MAX_VERIFY_STATE_GAS\" (500,000)",
+        "eip8250": "\"The existing MAX_VERIFY_STATE_GAS cap on the sum of state limits in the validation prefix is unchanged.\"",
+        "erc8421_draft": "\"EIP-8141 caps limits.state at MAX_VERIFY_STATE_GAS across the validation prefix. The standard Alternative Mempool has no such cap.\"",
+        "sidecar_docs": "Spec differences: sidecar \"State gas cap: A per-entity state-gas cap existed in the earlier draft\" (value undocumented)"
+      },
+      "tx_hash": "0xdf774e1186858774e7e92c56492d8a9eb74877d593e5dd9e1740ab52ed3508be",
+      "submitted_at": "2026-11-06T09:53:10Z",
+      "rpc": {
+        "acknowledged": false,
+        "error_code": -32602,
+        "error_message": "validation prefix state gas sum 1566720 exceeds MAX_VERIFY_STATE_GAS 500000"
+      },
+      "admission": {
+        "outcome": "rejected",
+        "failed_checks": [
+          {
+            "rule": "structure",
+            "detail": "validation prefix state gas sum 1566720 exceeds MAX_VERIFY_STATE_GAS 500000",
+            "frameIndex": null,
+            "entity": ""
+          }
+        ]
+      },
+      "observed": "reject",
+      "observed_rule": "structure",
+      "rooted_attempt_id": "51466d397fb41f627bc29216948f37df",
+      "receipt": null
+    },
+    {
+      "id": "verify-99999",
+      "group": "verify_budget",
+      "description": "VERIFY limit 97,199 + SECP256K1 2,800 = 99,999",
+      "overrides": {
+        "verify_execution": 97199
+      },
+      "expected": {
+        "eip8141": "accept",
+        "eip8250": "n/a",
+        "erc8421_draft": "accept",
+        "sidecar_docs": "accept"
+      },
+      "expected_basis": {
+        "eip8141": "\"The sum of limits.execution values across the validation prefix, plus the intrinsic cost of validating tx.signatures, must not exceed MAX_VERIFY_GAS\" (100,000; SECP256K1 = 2800)",
+        "erc8421_draft": "\"For unstaked entities, the sum must not exceed MAX_VERIFY_GAS_PER_ENTITY (100,000 in the draft)\"; \"The intrinsic cost of validating tx.signatures counts toward tx.sender.\"",
+        "sidecar_docs": "Spec differences: sidecar uses \"A single MAX_VERIFY_GAS of 100,000\""
+      },
+      "tx_hash": "0x21ff62ae6e90617cd48270f8e0fddc767e6d90bb6356a59e491be79a2ead1bfb",
+      "submitted_at": "2026-11-06T09:53:13Z",
+      "rpc": {
+        "acknowledged": true,
+        "error_code": null,
+        "error_message": null
+      },
+      "admission": {
+        "outcome": "accepted",
+        "failed_checks": []
+      },
+      "observed": "accept",
+      "observed_rule": null,
+      "rooted_attempt_id": "5d62bbc82231a874e1fe2c3c0e6a57a1",
+      "receipt": {
+        "block_number": "0x7fd",
+        "status": "0x1"
+      }
+    },
+    {
+      "id": "verify-100000",
+      "group": "verify_budget",
+      "description": "VERIFY limit 97,200 + 2,800 = exactly 100,000",
+      "overrides": {
+        "verify_execution": 97200
+      },
+      "expected": {
+        "eip8141": "accept",
+        "eip8250": "n/a",
+        "erc8421_draft": "accept",
+        "sidecar_docs": "accept"
+      },
+      "expected_basis": {
+        "eip8141": "\"must not exceed MAX_VERIFY_GAS\": equality is allowed",
+        "erc8421_draft": "\"must not exceed MAX_VERIFY_GAS_PER_ENTITY\": equality is allowed",
+        "sidecar_docs": "\"A single MAX_VERIFY_GAS of 100,000\""
+      },
+      "tx_hash": "0xced907e13ed867d9197f3a0762d7448a97e13cb54408a555b50efcf343f5e823",
+      "submitted_at": "2026-11-06T09:53:28Z",
+      "rpc": {
+        "acknowledged": true,
+        "error_code": null,
+        "error_message": null
+      },
+      "admission": {
+        "outcome": "accepted",
+        "failed_checks": []
+      },
+      "observed": "accept",
+      "observed_rule": null,
+      "rooted_attempt_id": "89a4cca839d3a2f7699b7565798d1646",
+      "receipt": {
+        "block_number": "0x800",
+        "status": "0x1"
+      }
+    },
+    {
+      "id": "verify-100001",
+      "group": "verify_budget",
+      "description": "VERIFY limit 97,201 + 2,800 = 100,001",
+      "overrides": {
+        "verify_execution": 97201
+      },
+      "expected": {
+        "eip8141": "reject",
+        "eip8250": "n/a",
+        "erc8421_draft": "reject",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8141": "Exceeds MAX_VERIFY_GAS 100,000 by one (signature cost included)",
+        "erc8421_draft": "Exceeds MAX_VERIFY_GAS_PER_ENTITY 100,000 by one (signature cost counts toward tx.sender)",
+        "sidecar_docs": "Exceeds \"A single MAX_VERIFY_GAS of 100,000\" by one"
+      },
+      "tx_hash": "0x0189d4ef069085da70a39bd0b9b7541a227e21a06b6098530752961f6426cde1",
+      "submitted_at": "2026-11-06T09:53:46Z",
+      "rpc": {
+        "acknowledged": true,
+        "error_code": null,
+        "error_message": null
+      },
+      "admission": {
+        "outcome": "accepted",
+        "failed_checks": []
+      },
+      "observed": "accept",
+      "observed_rule": null,
+      "rooted_attempt_id": "eb722decf1d8bca367565f221f227c5b",
+      "receipt": {
+        "block_number": "0x805",
+        "status": "0x1"
+      }
+    },
+    {
+      "id": "frames-64",
+      "group": "frames",
+      "description": "VERIFY + 63 SENDER frames = MAX_FRAMES",
+      "overrides": {
+        "extra_sender_frames": 63
+      },
+      "expected": {
+        "eip8141": "accept",
+        "eip8250": "n/a",
+        "erc8421_draft": "accept",
+        "sidecar_docs": "accept"
+      },
+      "expected_basis": {
+        "eip8141": "\"assert len(tx.frames) > 0 and len(tx.frames) <= MAX_FRAMES\" (64)",
+        "erc8421_draft": "No frame-count rule beyond EIP-8141 validity",
+        "sidecar_docs": "No frame-count rule beyond EIP-8141 validity"
+      },
+      "tx_hash": "0x4d61578102ebdcb3c553d136f8a005b919b35736a1ddc93d868f9772b2a90e3e",
+      "submitted_at": "2026-11-06T09:54:17Z",
+      "rpc": {
+        "acknowledged": true,
+        "error_code": null,
+        "error_message": null
+      },
+      "admission": {
+        "outcome": "accepted",
+        "failed_checks": []
+      },
+      "observed": "accept",
+      "observed_rule": null,
+      "rooted_attempt_id": "dd4480e0dd4e231068cae8a194f0c993",
+      "receipt": {
+        "block_number": "0x807",
+        "status": "0x1"
+      }
+    },
+    {
+      "id": "frames-65",
+      "group": "frames",
+      "description": "VERIFY + 64 SENDER frames, one over MAX_FRAMES",
+      "overrides": {
+        "extra_sender_frames": 64
+      },
+      "expected": {
+        "eip8141": "reject",
+        "eip8250": "n/a",
+        "erc8421_draft": "reject",
+        "sidecar_docs": "reject"
+      },
+      "expected_basis": {
+        "eip8141": "\"assert len(tx.frames) > 0 and len(tx.frames) <= MAX_FRAMES\" (64)",
+        "erc8421_draft": "An invalid EIP-8141 transaction cannot be admitted",
+        "sidecar_docs": "An invalid EIP-8141 transaction cannot be admitted"
+      },
+      "tx_hash": "0x4b3dfc6b1505e415bfeb3bdeb2affcd1ce0c6679d51150b18dbf3fbbfa9b8e4c",
+      "submitted_at": "2026-11-06T09:54:29Z",
+      "rpc": {
+        "acknowledged": false,
+        "error_code": -32500,
+        "error_message": "Frame count must be between 1 and 64"
+      },
+      "admission": {
+        "outcome": "rejected",
+        "failed_checks": [
+          {
+            "rule": "simulation",
+            "detail": "Frame count must be between 1 and 64",
+            "frameIndex": null,
+            "entity": ""
+          }
+        ]
+      },
+      "observed": "reject",
+      "observed_rule": "simulation",
+      "rooted_attempt_id": "0370163e386527819995fac3fa899995",
+      "receipt": null
+    }
+  ]
+}

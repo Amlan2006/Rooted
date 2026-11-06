@@ -93,7 +93,7 @@ func (s *Store) Register(ctx context.Context, scope Scope, info Info, genesis st
 		return NodeState{}, err
 	}
 	chain := strconv.FormatUint(info.ChainID, 10)
-	if oldChain != "" && (oldChain != chain || oldGenesis != genesis) {
+	if oldChain != "" && oldChain != chain {
 		return NodeState{}, errors.New("frame network identity changed; configure a distinct network/node scope")
 	}
 	if oldBoot != "" && at.Before(previous) {
@@ -112,7 +112,13 @@ func (s *Store) Register(ctx context.Context, scope Scope, info Info, genesis st
 		}
 		return s.Node(ctx, scope)
 	}
-	if oldBoot != info.Boot {
+	if oldGenesis != "" && !strings.EqualFold(oldGenesis, genesis) {
+		// A devnet reset starts a new epoch in the same scope; old rows stay archived.
+		seq = 0
+		if err = incident(ctx, tx, scope, info.Boot, "", "devnet_reset", oldGenesis+":"+genesis, at, map[string]any{"previous_genesis": oldGenesis, "current_genesis": genesis, "previous_boot": oldBoot, "current_boot": info.Boot}); err != nil {
+			return NodeState{}, err
+		}
+	} else if oldBoot != info.Boot {
 		seq = 0
 		if oldBoot != "" {
 			if err = incident(ctx, tx, scope, info.Boot, "", "node_restarted", oldBoot+":"+info.Boot, at, map[string]any{"previous_boot": oldBoot, "current_boot": info.Boot, "coverage": "old history may no longer be available"}); err != nil {
@@ -137,8 +143,8 @@ func (s *Store) Register(ctx context.Context, scope Scope, info Info, genesis st
 	}
 	body, _ := json.Marshal(info)
 	_, err = tx.Exec(ctx, `INSERT INTO frame_nodes(network,mode,node_id,chain_id,genesis_hash,boot_id,info,updated_at,stream_seq) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
- ON CONFLICT(network,mode,node_id) DO UPDATE SET boot_id=EXCLUDED.boot_id,info=EXCLUDED.info,updated_at=EXCLUDED.updated_at,stream_seq=EXCLUDED.stream_seq,
- scan_cursor=CASE WHEN frame_nodes.boot_id<>EXCLUDED.boot_id THEN NULL ELSE frame_nodes.scan_cursor END`, scope.Network, scope.Mode, scope.Node, chain, genesis, info.Boot, body, at, seq)
+ ON CONFLICT(network,mode,node_id) DO UPDATE SET boot_id=EXCLUDED.boot_id,genesis_hash=EXCLUDED.genesis_hash,info=EXCLUDED.info,updated_at=EXCLUDED.updated_at,stream_seq=EXCLUDED.stream_seq,
+ scan_cursor=CASE WHEN frame_nodes.boot_id<>EXCLUDED.boot_id OR lower(frame_nodes.genesis_hash)<>lower(EXCLUDED.genesis_hash) THEN NULL ELSE frame_nodes.scan_cursor END`, scope.Network, scope.Mode, scope.Node, chain, genesis, info.Boot, body, at, seq)
 	if err != nil {
 		return NodeState{}, err
 	}

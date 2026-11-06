@@ -80,26 +80,37 @@ func (c *Client) Call(ctx context.Context, method string, params []any, out any)
 	}
 	return raw, nil
 }
+
+// FollowGenesis accepts whatever block-0 hash the devnet serves; a change is
+// journaled as a devnet_reset incident instead of failing every poll.
+const FollowGenesis = "follow"
+
 func Verify(ctx context.Context, node, execution RPC, chain uint64, genesis string) (Info, []Raw, error) {
+	info, _, records, err := verifyIdentity(ctx, node, execution, chain, genesis)
+	return info, records, err
+}
+
+// verifyIdentity also returns the genesis to register: the pinned value, or the live hash when following.
+func verifyIdentity(ctx context.Context, node, execution RPC, chain uint64, genesis string) (Info, string, []Raw, error) {
 	var info Info
 	records := []Raw{}
 	r, err := node.Call(ctx, "skandha_explorer_info", []any{}, &info)
 	records = append(records, r)
 	if err != nil {
-		return info, records, err
+		return info, "", records, err
 	}
 	if info.Protocol != 1 || info.ChainID != chain || info.Boot == "" || info.Latest < 0 || info.Oldest < 0 || info.Oldest > info.Latest || info.Capacity <= 0 {
-		return info, records, errors.New("unsupported or inconsistent frame node identity")
+		return info, "", records, errors.New("unsupported or inconsistent frame node identity")
 	}
 	var chainHex string
 	r, err = execution.Call(ctx, "eth_chainId", []any{}, &chainHex)
 	records = append(records, r)
 	if err != nil {
-		return info, records, err
+		return info, "", records, err
 	}
 	number, err := quantity(chainHex)
 	if err != nil || number != chain {
-		return info, records, errors.New("frame execution chain mismatch")
+		return info, "", records, errors.New("frame execution chain mismatch")
 	}
 	var block struct {
 		Hash string `json:"hash"`
@@ -107,10 +118,13 @@ func Verify(ctx context.Context, node, execution RPC, chain uint64, genesis stri
 	r, err = execution.Call(ctx, "eth_getBlockByNumber", []any{"0x0", false}, &block)
 	records = append(records, r)
 	if err != nil {
-		return info, records, err
+		return info, "", records, err
+	}
+	if genesis == FollowGenesis && ingest.ValidRoot(block.Hash) {
+		return info, block.Hash, records, nil
 	}
 	if !ingest.ValidRoot(genesis) || !strings.EqualFold(block.Hash, genesis) {
-		return info, records, errors.New("frame execution genesis mismatch")
+		return info, "", records, errors.New("frame execution genesis mismatch")
 	}
-	return info, records, nil
+	return info, genesis, records, nil
 }

@@ -41,12 +41,15 @@ func LoadFrame() (FrameConfig, error) {
 	if f.Network == "" || strings.TrimSpace(f.Network) != f.Network || f.Network == env("ROOTED_NETWORK", "sepolia") {
 		return f, fmt.Errorf("frame network must have a distinct explicit identity")
 	}
-	if len(f.Genesis) != 66 || !strings.HasPrefix(f.Genesis, "0x") {
-		return f, fmt.Errorf("invalid frame genesis hash")
-	}
-	for _, v := range f.Genesis[2:] {
-		if !(v >= '0' && v <= '9' || v >= 'a' && v <= 'f' || v >= 'A' && v <= 'F') {
+	// "follow" accepts devnet resets; the collector journals each as a devnet_reset incident.
+	if f.Genesis != "follow" {
+		if len(f.Genesis) != 66 || !strings.HasPrefix(f.Genesis, "0x") {
 			return f, fmt.Errorf("invalid frame genesis hash")
+		}
+		for _, v := range f.Genesis[2:] {
+			if !(v >= '0' && v <= '9' || v >= 'a' && v <= 'f' || v >= 'A' && v <= 'F') {
+				return f, fmt.Errorf("invalid frame genesis hash")
+			}
 		}
 	}
 	for _, endpoint := range []string{f.Gateway, f.Miner, f.Execution} {

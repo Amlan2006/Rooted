@@ -27,7 +27,7 @@ type Collector struct {
 }
 
 func (c *Collector) verify(ctx context.Context) (NodeState, error) {
-	info, records, err := Verify(ctx, c.Node, c.Execution, c.ChainID, c.Genesis)
+	info, genesis, records, err := verifyIdentity(ctx, c.Node, c.Execution, c.ChainID, c.Genesis)
 	if err != nil {
 		return NodeState{}, err
 	}
@@ -35,7 +35,7 @@ func (c *Collector) verify(ctx context.Context) (NodeState, error) {
 		u, _ := url.Parse(client.URL)
 		info.Origin = u.Scheme + "://" + u.Host
 	}
-	return c.Store.Register(ctx, c.Scope, info, c.Genesis, records, records[0].At)
+	return c.Store.Register(ctx, c.Scope, info, genesis, records, records[0].At)
 }
 func (c *Collector) Run(ctx context.Context) {
 	interval := c.Interval
