@@ -1,22 +1,16 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Activity,
   ArrowDownUp,
   ArrowRight,
   Bell,
-  Bot,
-  Boxes,
   Check,
   CircleHelp,
-  Command,
   Eye,
-  GitBranch,
   Globe2,
-  LayoutDashboard,
   Radio,
   RefreshCw,
-  ScanLine,
   Search,
   ShieldCheck,
   Waves,
@@ -74,20 +68,37 @@ type View =
   | "incidents"
   | "privacy";
 const navigation = [
-  { id: "xray", name: "Glamsterdam X-ray", icon: ScanLine },
-  { id: "analyst", name: "Analyst", icon: Bot },
-  { id: "overview", name: "Overview", icon: LayoutDashboard },
-  { id: "investigate", name: "Investigate", icon: Search },
-  { id: "payloadwatch", name: "PayloadWatch", icon: Waves },
-  { id: "builders", name: "Builders", icon: Boxes },
-  { id: "frames", name: "Frame mempool", icon: ArrowDownUp },
-  { id: "bal", name: "BAL analyzer", icon: GitBranch },
-  { id: "compare", name: "Compare workloads", icon: ArrowDownUp },
-  { id: "providers", name: "RPC providers", icon: Globe2 },
-  { id: "profiler", name: "Execution profiler", icon: Activity },
-  { id: "incidents", name: "Incidents", icon: Bell },
-  { id: "privacy", name: "Private RPC", icon: ShieldCheck },
+  { id: "xray", name: "Glamsterdam X-ray", group: "Monitor" },
+  { id: "overview", name: "Overview", group: "Monitor" },
+  { id: "payloadwatch", name: "PayloadWatch", group: "Monitor" },
+  { id: "builders", name: "Builders", group: "Monitor" },
+  { id: "frames", name: "Frame mempool", group: "Monitor" },
+  { id: "incidents", name: "Incidents", group: "Monitor" },
+  { id: "analyst", name: "Analyst", group: "Analyze" },
+  { id: "investigate", name: "Investigate", group: "Analyze" },
+  { id: "bal", name: "BAL analyzer", group: "Analyze" },
+  { id: "compare", name: "Compare workloads", group: "Analyze" },
+  { id: "profiler", name: "Execution profiler", group: "Analyze" },
+  { id: "providers", name: "RPC providers", group: "Network" },
+  { id: "privacy", name: "Private RPC", group: "Network" },
 ] as const;
+const groups = ["Monitor", "Analyze", "Network"] as const;
+// 16px line glyphs, stroked by .nav-item svg
+const glyphs: Record<View, React.ReactNode> = {
+  xray: <><rect x="2" y="2" width="12" height="12" rx="2" /><path d="M5 11V8M8 11V5M11 11V7" /></>,
+  overview: <><rect x="2" y="2" width="5" height="5" rx="1" /><rect x="9" y="2" width="5" height="5" rx="1" /><rect x="2" y="9" width="5" height="5" rx="1" /><rect x="9" y="9" width="5" height="5" rx="1" /></>,
+  payloadwatch: <path d="M1 8h3l2-5 4 10 2-5h3" />,
+  builders: <path d="M8 2l6 3-6 3-6-3zM2 8l6 3 6-3M2 11l6 3 6-3" />,
+  frames: <><rect x="2" y="3" width="12" height="4" rx="1" /><rect x="2" y="9" width="12" height="4" rx="1" /></>,
+  incidents: <path d="M4 11V7a4 4 0 0 1 8 0v4l1.5 1.5h-11zM6.5 14h3" />,
+  analyst: <path d="M2.5 3h11v7.5h-6l-3 2.5v-2.5h-2zM5 6h6M5 8h4" />,
+  investigate: <><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5L14 14" /></>,
+  bal: <path d="M3 4h10M3 8h10M3 12h6" />,
+  compare: <path d="M2 5h12M11 2l3 3-3 3M14 11H2M5 8l-3 3 3 3" />,
+  profiler: <><circle cx="8" cy="8" r="6" /><path d="M8 4v4l3 2" /></>,
+  providers: <path d="M2 5h5M9 5h5M2 11h5M9 11h5" />,
+  privacy: <path d="M8 1.75l5 1.75v4c0 3.2-2.2 5.6-5 6.75-2.8-1.15-5-3.55-5-6.75v-4z" />,
+};
 const titles: Record<View, [string, string]> = {
   xray: ["Glamsterdam X-ray", "Parallelism ceilings per Sepolia block: receipt gas, execution gas, validator with BAL, builder without."],
   analyst: ["Analyst", "Claude investigates Sepolia with Rooted's own evidence and the live node, and briefs unusual blocks on its own."],
@@ -129,6 +140,23 @@ export default function Dashboard() {
   const [tick, setTick] = useState(0);
   const [, clock] = useState(0);
   const [builderWindow, setWindow] = useState("1h");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    document.querySelector<HTMLElement>("#sidebar [aria-current=page]")?.focus();
+    const wide = matchMedia("(min-width: 901px)");
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    const onWide = () => wide.matches && setMenuOpen(false);
+    addEventListener("keydown", onKey);
+    wide.addEventListener("change", onWide);
+    return () => {
+      removeEventListener("keydown", onKey);
+      wide.removeEventListener("change", onWide);
+      // cleanup runs after the commit that lifts inert, so the toggle can take focus back
+      menuButton.current?.focus();
+    };
+  }, [menuOpen]);
   useEffect(() => {
     const id = new URLSearchParams(location.search).get("view");
     if (navigation.some((n) => n.id === id)) setView(id as View);
@@ -152,6 +180,7 @@ export default function Dashboard() {
     setQuery("");
     setSelected(null);
     setSelectedFrame(null);
+    setMenuOpen(false);
     history.replaceState(null, "", "?view=" + next);
     window.scrollTo(0, 0);
   };
@@ -339,35 +368,41 @@ export default function Dashboard() {
     );
   }
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <a className="brand" aria-label="Rooted home" href="/">
-          <div className="brand-mark">
-            <Waves size={24} />
-          </div>
-          <span>
-            Rooted
-            <small>ETHEREUM OBSERVATORY</small>
-          </span>
-        </a>
-        <div className="workspace-label">
-          WORKSPACE <span>01</span>
+    <div className={"app-shell" + (menuOpen ? " menu-open" : "")}>
+      <aside className="sidebar" id="sidebar">
+        <div className="sidebar-head">
+          <a className="brand" aria-label={"Rooted home · " + (liveSource || "Sepolia")} href="/">
+            <span className="brand-mark">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M10 4v6m0 0-4 4.5M10 10l4 4.5M10 10v6" />
+              </svg>
+            </span>
+            <span>{liveSource || "Sepolia"}</span>
+          </a>
+          <button className="menu-close" aria-label="Close navigation" onClick={() => setMenuOpen(false)}>
+            <X size={16} />
+          </button>
         </div>
         <nav aria-label="Main navigation">
-          {navigation.map((item) => (
-            <button
-              key={item.id}
-              aria-label={item.name}
-              aria-current={view === item.id ? "page" : undefined}
-              className={view === item.id ? "nav-item active" : "nav-item"}
-              onClick={() => navigate(item.id)}
-            >
-              <item.icon size={18} />
-              <span>{item.name}</span>
-              {item.id === "incidents" && active.length > 0 && (
-                <small>{active.length}</small>
-              )}
-            </button>
+          {groups.map((group) => (
+            <div key={group} role="group" aria-labelledby={"nav-" + group}>
+              <span className="nav-heading" id={"nav-" + group}>{group}</span>
+              {navigation.filter((item) => item.group === group).map((item) => (
+                <button
+                  key={item.id}
+                  aria-label={item.name}
+                  aria-current={view === item.id ? "page" : undefined}
+                  className={view === item.id ? "nav-item active" : "nav-item"}
+                  onClick={() => navigate(item.id)}
+                >
+                  <svg viewBox="0 0 16 16" aria-hidden="true">{glyphs[item.id]}</svg>
+                  <span>{item.name}</span>
+                  {item.id === "incidents" && active.length > 0 && (
+                    <small>{active.length}</small>
+                  )}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
         <div className="sidebar-bottom">
@@ -388,13 +423,26 @@ export default function Dashboard() {
             Traffic & privacy
             <ArrowRight size={14} />
           </a>
-          <span className="version">ROOTED / GLAMSTERDAM X-RAY</span>
         </div>
       </aside>
-      <div className="workspace">
+      {menuOpen && <div className="sidebar-backdrop" onClick={() => setMenuOpen(false)} />}
+      <div className="workspace" inert={menuOpen}>
         <header className="topbar">
+          <button
+            ref={menuButton}
+            className="menu-toggle"
+            aria-label="Open navigation"
+            aria-controls="sidebar"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+          >
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" />
+            </svg>
+          </button>
           <div className="breadcrumb">
-            Workspace <span>/</span>
+            <em>{navigation.find((n) => n.id === view)?.group}</em>
+            <span>/</span>
             <strong>{navigation.find((n) => n.id === view)?.name}</strong>
           </div>
           <div className="topbar-right">
@@ -406,13 +454,19 @@ export default function Dashboard() {
             )}
             <span
               className={
-                "live-status " + (stream === "connected" ? "" : "disconnected")
+                "live-status " + (stream === "connected" && !sourceStale ? "live" : "disconnected")
               }
+              title={"API stream " + stream + (sourceStale ? " · collector stale" : "")}
             >
               <i />
-              {stream === "connected"
-                ? "API stream connected"
-                : "API stream " + stream}
+              {stream === "connected" && latest?.last_slot ? (
+                <>
+                  <span className="live-label">head slot</span>
+                  <span className="mono">{Number(latest.last_slot).toLocaleString("en-US")}</span>
+                </>
+              ) : (
+                "API stream " + stream
+              )}
             </span>
             <span className="network-pill">
               <Globe2 size={13} />
@@ -446,13 +500,7 @@ export default function Dashboard() {
         <main>
           <div className="page-heading">
             <div>
-              <span className="eyebrow">
-                OBSERVE / UNDERSTAND / INVESTIGATE
-              </span>
-              <h1>
-                {titles[view][0]}
-                <span className="title-dot">.</span>
-              </h1>
+              <h1>{titles[view][0]}</h1>
               <p>{titles[view][1]}</p>
             </div>
             {["overview", "payloadwatch", "builders", "incidents"].includes(
@@ -491,7 +539,7 @@ export default function Dashboard() {
                 </select>
               </div>
             ) : (
-              <Badge tone="blue">{view === "investigate" ? "SCOPED INVESTIGATION" : view === "analyst" ? "CITED EVIDENCE" : "READ-ONLY INVESTIGATION"}</Badge>
+              <Badge tone="blue">{view === "investigate" ? "Scoped investigation" : view === "analyst" ? "Cited evidence" : "Read-only investigation"}</Badge>
             )}
           </div>
           {!demo && ["overview", "payloadwatch", "builders", "incidents"].includes(view) && !watchScope && (
