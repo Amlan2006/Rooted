@@ -1,0 +1,47 @@
+/* A still, scrollable row until the loop copy exists (before JS, and under reduced motion), starting on the content
+   column. Then two identical copies side by side: sliding the track by -50% lands exactly where it started. */
+.viewport {
+  overflow-x: auto;
+  padding-inline: 1.25rem;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+}
+
+.track > :first-child > :first-child {
+  border-left-width: 1px;
+}
+
+.loop {
+  overflow: hidden;
+  padding-inline: 0;
+}
+
+.loop .track {
+  animation: tape var(--tape-duration, 120s) linear infinite;
+  will-change: transform;
+}
+
+.loop .track > :first-child > :first-child {
+  border-left-width: 0;
+}
+
+.loop:hover .track,
+.loop:focus-within .track,
+.paused .track {
+  animation-play-state: paused;
+}
+
+@keyframes tape {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (min-width: 48rem) {
+  .viewport:not(.loop) {
+    padding-inline: max(2rem, calc((100% - 1200px) / 2));
+  }
+}
