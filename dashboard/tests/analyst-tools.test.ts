@@ -144,9 +144,12 @@ test("uniswap_contention: strict limit, the scan route, and an X-ray link on eve
   const pool = { protocol: "uniswap_v3", pool: "0x3289680dd4d6c10bb19b899729cda5eef58aeff1", verified: true, edges: 87, on_critical_path: false, labels: ["token_balance_of_pool", "pool_slot0", "fee_growth_global0", "liquidity", "pool_mapping_or_observation"] };
   const block = (i: number) => ({ block_number: 12076476 - i, block_hash: "0x" + i.toString(16).padStart(64, "0"), uniswap_edges: 87, total_edges: 2751, unlisted_uniswap_edges: 0, critical_path_length: 9, critical_path_uniswap_locations: 0, pools: [pool] });
   const body = (n: number, pools = 1) => ({ data: { reports_scanned: 308, blocks_with_uniswap_edges: n, blocks: Array.from({ length: n }, (_, i) => ({ ...block(i), pools: Array(pools).fill(pool) })) } });
-  t.mock.method(globalThis, "fetch", async (url: URL) => { assert.equal(String(url), "http://127.0.0.1:8080/api/v1/xray/uniswap?network=sepolia&limit=7"); return Response.json(body(7)); });
+  let n = 7;
+  t.mock.method(globalThis, "fetch", async (url: URL) => { assert.equal(String(url), "http://127.0.0.1:8080/api/v1/xray/uniswap?network=sepolia&limit=7"); return Response.json(body(n)); });
   const out = await EXECUTORS.uniswap_contention({ limit: 7 } as never);
-  assert.deepEqual([out.kind, out.label, out.link], ["uniswap", "Uniswap contention in 7 of 308 stored X-rays", "/?view=xray"]);
+  assert.deepEqual([out.kind, out.label, out.link], ["uniswap", "Uniswap contention in 7 of 308 stored X-rays", xrayLink(block(0).block_hash)], "the chip opens the newest block");
+  n = 0;
+  assert.equal((await EXECUTORS.uniswap_contention({ limit: 7 } as never)).link, "/?view=xray");
 
   const few = trim("uniswap_contention", out.data) as { reports_scanned: number; blocks: Record<string, unknown>[] };
   assert.equal(few.reports_scanned, 308);

@@ -111,8 +111,8 @@ export const EXECUTORS: Record<string, Executor> = {
   },
   async uniswap_contention({ limit }: { limit: number }, signal) {
     const r = await backend(`/api/v1/xray/uniswap?${scope.sepolia}&limit=${limit}`, signal);
-    const d = r.data.data as { reports_scanned?: number; blocks_with_uniswap_edges?: number };
-    return { kind: "uniswap", label: `Uniswap contention in ${d?.blocks_with_uniswap_edges ?? 0} of ${d?.reports_scanned ?? 0} stored X-rays`, link: "/?view=xray", ...r };
+    const d = r.data.data as { reports_scanned?: number; blocks_with_uniswap_edges?: number; blocks?: { block_hash: string }[] };
+    return { kind: "uniswap", label: `Uniswap contention in ${d?.blocks_with_uniswap_edges ?? 0} of ${d?.reports_scanned ?? 0} stored X-rays`, link: d?.blocks?.[0] ? xrayLink(d.blocks[0].block_hash) : "/?view=xray", ...r };
   },
   get_block_xray: xrayRead,
   async run_block_xray({ block_hash }: { block_hash: string }, signal) {
