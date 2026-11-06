@@ -115,7 +115,9 @@ func (c *Collector) Capture(ctx context.Context, hash string) (Report, []byte, e
 	if err := c.rpc(ctx, "eth_getBlockReceipts", []any{hash}, &capture.Receipts); err != nil {
 		return report, nil, err
 	}
-	if err := c.rpc(ctx, "debug_traceBlockByHash", []any{hash, map[string]any{"tracer": "prestateTracer", "timeout": "10s"}}, &capture.Traces); err != nil {
+	// includeEmpty keeps accounts that were empty before the tx; without it an account created in this block
+	// first appears in a later trace with its post-creation state, and the replay seeds it as pre-existing.
+	if err := c.rpc(ctx, "debug_traceBlockByHash", []any{hash, map[string]any{"tracer": "prestateTracer", "timeout": "10s", "tracerConfig": map[string]any{"includeEmpty": true}}}, &capture.Traces); err != nil {
 		return report, nil, err
 	}
 	// One bounded batch retrieves the full BLOCKHASH environment, not 256 round trips.
