@@ -188,7 +188,7 @@ export default function DeployPolicy() {
         <div>
           <span className="eyebrow">PHASE 7 / PUBLIC POLICY</span>
           <h1>
-            Review policy deployment<span className="title-dot">.</span>
+            Review policy deployment
           </h1>
           <p>
             One immutable contract on Sepolia. Signing stays inside your wallet.
