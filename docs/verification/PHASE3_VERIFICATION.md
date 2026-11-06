@@ -6,7 +6,7 @@ PayloadWatch is implemented in Rooted: the collector, durable event engine,
 lifecycle projection, builder queries, alerts, metrics, replay tooling,
 configuration, CLI startup, and scoped REST/SSE routes. Every result below was
 produced on this date against a local PostgreSQL 16 database and the Sepolia
-Nimbus/Geth nodes described in [SEPOLIA_NODE.md](SEPOLIA_NODE.md).
+Nimbus/Geth nodes described in [SEPOLIA_NODE.md](../SEPOLIA_NODE.md).
 
 ## Implemented
 

@@ -131,10 +131,10 @@ python3 scripts/smoke_phase2.py --verify-restart RUN_ID
 This compares the saved response before and after a real service restart. Every
 smoke run has a separate evidence directory under `.tools/phase2-smoke/`; it
 never overwrites an earlier run. Run results
-and environment limitations are recorded in [PHASE2_VERIFICATION.md](PHASE2_VERIFICATION.md).
+and environment limitations are recorded in [PHASE2_VERIFICATION.md](verification/PHASE2_VERIFICATION.md).
 
 Phase 4 offline and captured evidence is recorded in
-[PHASE4_VERIFICATION.md](PHASE4_VERIFICATION.md). Database-backed frame
+[PHASE4_VERIFICATION.md](verification/PHASE4_VERIFICATION.md). Database-backed frame
 tests use `TEST_DATABASE_URL` when available; without it they skip explicitly.
 
 Phase 5 adds [BAL and Uniswap analysis](BAL_ANALYZER.md). The live collector
@@ -178,7 +178,7 @@ native runner. Build `.tools/rooted-replay` from `workloads/profiler` before
 requesting a profile. The main backend still builds independently of Geth.
 Startup applies migrations 006 and 007; CRE migration 005 remains deferred.
 
-See [PHASE8_VERIFICATION.md](PHASE8_VERIFICATION.md) and
-[PHASE9_VERIFICATION.md](PHASE9_VERIFICATION.md) for setup, current checks, and
+See [PHASE8_VERIFICATION.md](verification/PHASE8_VERIFICATION.md) and
+[PHASE9_VERIFICATION.md](verification/PHASE9_VERIFICATION.md) for setup, current checks, and
 the native replay runner. Existing node and database settings in the local
 `.env` are preserved.

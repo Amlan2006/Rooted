@@ -32,7 +32,7 @@ live read attribution and complete execution scheduling are still not claimed.
   transaction) and `POST /api/v1/analysis/transactions/{tx}/ingest` both
   returned 200 and resolved to the same report ID.
 
-[Compact report](../demo/phase5/reference/native-summary.json).
+[Compact report](../../demo/phase5/reference/native-summary.json).
 
 ## Controlled Uniswap workload
 
@@ -56,7 +56,7 @@ live read attribution and complete execution scheduling are still not claimed.
   are partial evidence metrics, not a speedup or an execution schedule.
 - `mode=fork`, `native_bal=null`, `full_dependency_coverage=false`.
 
-[Report, raw compressed responses, workload summary, persistence and API checks](../demo/phase5/reference/).
+[Report, raw compressed responses, workload summary, persistence and API checks](../../demo/phase5/reference/).
 
 ## Persistence and API
 
@@ -94,4 +94,4 @@ Run against a dedicated PostgreSQL database and a backend on a loopback port:
 Not rerun in this pass: the dashboard `POST /api/analysis` proxy, browser
 downloads, and the browser comparison view.
 
-See [methodology and reproduction](BAL_ANALYZER.md).
+See [methodology and reproduction](../BAL_ANALYZER.md).

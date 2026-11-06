@@ -66,7 +66,7 @@ The dashboard's server proxy permits only known GET routes on a configured backe
 
 Start the existing Go backend/database, then run `npm install --prefix dashboard` and `npm run dev --prefix dashboard`. Review **Private RPC** to run live reads. Select local-fork analysis to inspect the Phase 5 controlled workload without restarting Anvil; its report is persisted in PostgreSQL.
 
-`npm test --prefix dashboard` verifies method restrictions, anonymous routing, bootstrap restrictions, fail-closed startup/RPC/timeout behavior, explicit direct mode, stale worker cleanup, and proxy route isolation. `python3 scripts/smoke_phase6.py` exercises real backend data and SSE through the dashboard proxy. Real Nox worker reads are checked in the browser. The November 6, 2026 run of all of these, with browser captures, is in [PHASE6_VERIFICATION.md](PHASE6_VERIFICATION.md).
+`npm test --prefix dashboard` verifies method restrictions, anonymous routing, bootstrap restrictions, fail-closed startup/RPC/timeout behavior, explicit direct mode, stale worker cleanup, and proxy route isolation. `python3 scripts/smoke_phase6.py` exercises real backend data and SSE through the dashboard proxy. Real Nox worker reads are checked in the browser. The November 6, 2026 run of all of these, with browser captures, is in [PHASE6_VERIFICATION.md](verification/PHASE6_VERIFICATION.md).
 
 A public controlled destination was not available in this local setup. A local loopback endpoint cannot be reached by mixnet exits, so a source-IP comparison was not performed. No endpoint-observed anonymity guarantee is claimed. Browser logs, hash-verified worker startup, real reads, and failure behavior are the verified evidence.
 

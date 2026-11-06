@@ -54,7 +54,7 @@ database and the live Geth v1.17.10 Sepolia node:
   database returned `passed`, including the saved profile capture digest and
   timer reconciliation.
 
-Measured values are in [EXECUTION_PROFILER.md](EXECUTION_PROFILER.md#recorded-measurements-and-diagnosis).
+Measured values are in [EXECUTION_PROFILER.md](../EXECUTION_PROFILER.md#recorded-measurements-and-diagnosis).
 The dashboard browser flow, the production frontend build, and node-side
 production instrumentation were not exercised.
 
@@ -91,4 +91,4 @@ capture, rerun, report, and download operations.
 TEST_DATABASE_URL="$DATABASE_URL" go test -race -count=1 ./internal/profiler/... ./internal/providers/...
 ```
 
-See [EXECUTION_PROFILER.md](EXECUTION_PROFILER.md) for exact timer boundaries.
+See [EXECUTION_PROFILER.md](../EXECUTION_PROFILER.md) for exact timer boundaries.

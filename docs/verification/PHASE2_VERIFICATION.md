@@ -30,7 +30,7 @@ ingestion, PostgreSQL snapshots, the slot API, and smoke tooling.
 ## Live smoke, November 6, 2026
 
 `rooted serve` ran on `127.0.0.1:8085` against a dedicated database and the
-Sepolia Nimbus/Geth nodes in [SEPOLIA_NODE.md](SEPOLIA_NODE.md), with the
+Sepolia Nimbus/Geth nodes in [SEPOLIA_NODE.md](../SEPOLIA_NODE.md), with the
 PayloadWatch and frame workers at their `.env` defaults.
 
 | Command | Result |
@@ -70,7 +70,7 @@ live smoke run, is recorded in `demo/phase2/status.json`.
 
 ## Reproduce
 
-Follow [BACKEND.md](BACKEND.md) to start PostgreSQL, load `.env`
+Follow [BACKEND.md](../BACKEND.md) to start PostgreSQL, load `.env`
 (`set -a; . ./.env; set +a`), and start `rooted serve`. Then:
 
 ```sh

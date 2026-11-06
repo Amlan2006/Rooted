@@ -1,6 +1,6 @@
 # Execution profiler — native replay baseline
 
-Phase 9 of Rooted: actual native Geth replay measurements of captured Sepolia blocks. It does not claim production block-import timing, physical database performance, full state-root validation, or parallel-execution speedup. See [PHASE9_VERIFICATION.md](PHASE9_VERIFICATION.md) for the checks run on 2026-11-06 and the remaining production-instrumentation limits.
+Phase 9 of Rooted: actual native Geth replay measurements of captured Sepolia blocks. It does not claim production block-import timing, physical database performance, full state-root validation, or parallel-execution speedup. See [PHASE9_VERIFICATION.md](verification/PHASE9_VERIFICATION.md) for the checks run on 2026-11-06 and the remaining production-instrumentation limits.
 
 ## What is measured
 

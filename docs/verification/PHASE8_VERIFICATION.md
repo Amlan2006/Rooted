@@ -40,7 +40,7 @@ tunnel.
   `0x5003b43a843799fd3043275a52cfc9f1d16907e685e0781b0cb13aa21a326cdc`
   saved a **matching block data with observation gaps** report. Its output is
   `demo/provider-comparison/live-report.json`; see
-  [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md#verification).
+  [PROVIDER_COMPARISON.md](../PROVIDER_COMPARISON.md#verification).
 - With `.tools/rooted serve` running on that database,
   `python3 scripts/smoke_phases8_9.py --base http://127.0.0.1:PORT` returned
   `passed`. It found a configured collector source, isolated payload scope, a
@@ -85,6 +85,6 @@ Use the dashboard's **Investigate**, **BAL analyzer**, **Compare workloads**,
 and **RPC providers** views. Policy evidence remains optional and unavailable
 until the deferred CRE integration is configured.
 
-See [GUIDED_INVESTIGATION.md](GUIDED_INVESTIGATION.md),
-[WORKLOAD_COMPARISON.md](WORKLOAD_COMPARISON.md), and
-[PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md) for the detailed boundaries.
+See [GUIDED_INVESTIGATION.md](../GUIDED_INVESTIGATION.md),
+[WORKLOAD_COMPARISON.md](../WORKLOAD_COMPARISON.md), and
+[PROVIDER_COMPARISON.md](../PROVIDER_COMPARISON.md) for the detailed boundaries.

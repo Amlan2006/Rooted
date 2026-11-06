@@ -188,7 +188,7 @@ API routes, and SSE resume. They skip explicitly without `TEST_DATABASE_URL`.
 `ROOTED_TEST_LIVE_STREAM=1` additionally enables the bounded live-node startup
 test. It needs configured endpoints and a test database; it writes only to an
 isolated schema. Local synthetic/reducer results must not be labeled fresh
-network verification. See [PHASE3_VERIFICATION.md](PHASE3_VERIFICATION.md) for
+network verification. See [PHASE3_VERIFICATION.md](verification/PHASE3_VERIFICATION.md) for
 the checks run on November 6, 2026: database-backed tests, the opt-in live
 stream test, a live `serve` with polling `ok` and streaming `connected`, and
 both smoke scripts.

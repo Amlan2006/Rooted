@@ -82,7 +82,7 @@ collector response confirms the connection.
 | `rooted serve` on `127.0.0.1:8085` with a dedicated database, two runs with a restart between them | Collector reported `poll_status=ok` and `stream_status=connected` in both runs |
 | Live lifecycle states (slots 11518270-11518297) | 27 roots, 22 with same-session receipt timing of 67-425 ms, zero alerts |
 
-Details are in [PHASE3_VERIFICATION.md](PHASE3_VERIFICATION.md) and
+Details are in [PHASE3_VERIFICATION.md](verification/PHASE3_VERIFICATION.md) and
 `demo/phase3/status.json`.
 
 ## Node limits

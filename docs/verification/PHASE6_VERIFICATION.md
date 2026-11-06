@@ -39,7 +39,7 @@ the five Nox snapshots it lists, and `status.json` is the written phase status.
 | `npm run typecheck` (Node v24.18.0) | passed |
 | `npm run build` (Next.js 16.4.3) | passed; 8 routes |
 | `npm test` | 52 passed, 0 failed |
-| `python3 scripts/smoke_phase6.py --base http://127.0.0.1:3000` | passed at 08:30:55 UTC ([api-proxy-check.json](../demo/phase6/api-proxy-check.json)) |
+| `python3 scripts/smoke_phase6.py --base http://127.0.0.1:3000` | passed at 08:30:55 UTC ([api-proxy-check.json](../../demo/phase6/api-proxy-check.json)) |
 
 The smoke run read 22 live slots, the 7 synthetic slots, 50 gateway frame
 states, and the native and fork reports above through the proxy. It confirmed
@@ -93,7 +93,7 @@ worker (not passthrough), specifier
   the worker as failed, "worker closed No automatic direct fallback.", and a
   Reconnect button. The transport stayed on Nox.
 
-Summary: [transport-check.json](../demo/phase6/transport-check.json).
+Summary: [transport-check.json](../../demo/phase6/transport-check.json).
 
 ## Not verified
 

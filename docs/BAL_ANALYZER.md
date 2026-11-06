@@ -150,7 +150,7 @@ python3 scripts/smoke_phase5.py --base http://127.0.0.1:8080
 
 The script restricts its RPC to loopback, checks Anvil and chain 31337, deploys four independent harnesses, wraps simulated ETH, and mines all four swaps in one block: two in the fee-500 pool, one in the fee-3000 pool, and a fourth reverted after its pool swap returned. Both pools are existing Sepolia v3 deployments on the fork. Hashes can change when re-running; use the generated summary. Start a fresh fork to reproduce the same starting state. Restarting Anvil removes its in-memory chain; persisted analysis remains available in PostgreSQL.
 
-Offline tests replay the committed fork evidence from that run. See [verification](PHASE5_VERIFICATION.md).
+Offline tests replay the committed fork evidence from that run. See [verification](verification/PHASE5_VERIFICATION.md).
 
 ## API
 

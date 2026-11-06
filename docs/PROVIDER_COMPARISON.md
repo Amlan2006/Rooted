@@ -1,6 +1,6 @@
 # RPC provider comparison
 
-Part of Rooted Phase 8. See [PHASE8_VERIFICATION.md](PHASE8_VERIFICATION.md) for the checks run on 2026-11-06. Execution profiling is Phase 9.
+Part of Rooted Phase 8. See [PHASE8_VERIFICATION.md](verification/PHASE8_VERIFICATION.md) for the checks run on 2026-11-06. Execution profiling is Phase 9.
 
 ## Run a check
 

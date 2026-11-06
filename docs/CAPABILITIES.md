@@ -3,7 +3,7 @@
 Assessed on November 6, 2026 (UTC). Phase 1 checks that Rooted can reach and
 correctly read each external capability it depends on. All results below come
 from runs on that date. The detailed record is in
-[PHASE1_VERIFICATION.md](PHASE1_VERIFICATION.md).
+[PHASE1_VERIFICATION.md](verification/PHASE1_VERIFICATION.md).
 
 | Capability | Result on November 6, 2026 |
 | --- | --- |
@@ -14,7 +14,7 @@ from runs on that date. The detailed record is in
 | Frame HTTP adapter | Passed. Third-party type-0x6 inclusion and Rooted's own unfunded rejection recorded separately. |
 | Frame WebSocket adapter | Passed. Identity gate, subscription acknowledgment and a bounded 20-event replay. |
 | Rooted-funded frame submission | Not attempted. Needs devnet funding and a separate, explicit submission step. |
-| Anon-RPC / Nox | Passed in headless Chromium on the dashboard Private RPC view: worker ready, destination chain verified through the worker, real reads, fail-closed drill ([Phase 6 verification](PHASE6_VERIFICATION.md)). |
+| Anon-RPC / Nox | Passed in headless Chromium on the dashboard Private RPC view: worker ready, destination chain verified through the worker, real reads, fail-closed drill ([Phase 6 verification](verification/PHASE6_VERIFICATION.md)). |
 | CRE HTTP + EVM capability | Blocked. CRE CLI v1.39.0 is installed, but `cre workflow simulate` requires an authenticated login that was not performed. |
 
 ## Run the gates

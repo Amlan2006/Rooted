@@ -1,7 +1,7 @@
 # Guided investigation across modules
 
 Rooted's current implementation and offline checks are recorded in
-[PHASE8_VERIFICATION.md](PHASE8_VERIFICATION.md). CRE integration is deferred;
+[PHASE8_VERIFICATION.md](verification/PHASE8_VERIFICATION.md). CRE integration is deferred;
 unavailable policy evidence does not prevent investigation or export. The
 browser check below was run on November 6, 2026.
 

@@ -132,7 +132,7 @@ frame store returns 503. HTTP exposes no frame mutation route. Use the explicit
 `frame-sync` and `frame-submit` CLI commands for collection and submission.
 
 See [FRAME_MONITOR.md](FRAME_MONITOR.md) for lifecycle status semantics and
-[PHASE4_VERIFICATION.md](PHASE4_VERIFICATION.md) for the evidence boundary.
+[PHASE4_VERIFICATION.md](verification/PHASE4_VERIFICATION.md) for the evidence boundary.
 
 ## Phase 5 — BAL and Uniswap analysis
 
