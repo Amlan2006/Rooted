@@ -1,6 +1,7 @@
 ROOTED_BUILD_PLAN.md
 ROOTED_MAP.md
 .tools/
+.next/
 node_modules/
 __pycache__/
 *.pyc
