@@ -1,0 +1,235 @@
+/*
+ * Hero and tour motion. Plain CSS so the load sequence starts at first paint, before hydration, and runs on the
+ * compositor (transform + opacity). Ease is the site's cubic-bezier(0.22, 1, 0.36, 1). Under reduced motion every
+ * animation here is removed outright (not just shortened), so nothing waits on a delay and the final state shows.
+ */
+
+/* Headline: each line masks its words, which rise from under the baseline. */
+.line {
+  display: block;
+  overflow: hidden;
+  /* Room for descenders inside the mask, given back so the line box is unchanged. */
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+
+.word {
+  display: inline-block;
+  animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fadeUp {
+  animation: fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.windowIn {
+  transform-origin: 50% 0;
+  animation: window-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+}
+
+/* Tour: the active tab's progress line; paused by an inline animation-play-state. */
+.progress {
+  transform-origin: left;
+  animation: grow-x 7s linear both;
+}
+
+/* A view entering the pane. */
+.view {
+  animation: view-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* PayloadWatch: the detail axis replays in --play seconds. --d is an event's offset on that clock. */
+.playhead {
+  animation:
+    sweep var(--play, 2.4s) linear both,
+    fade-out 0.3s ease var(--play, 2.4s) forwards;
+}
+
+.pop {
+  animation: pop 0.4s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) both;
+}
+
+.span {
+  transform-origin: left;
+  animation: grow-x var(--dur, 1s) linear var(--d, 0s) both;
+}
+
+.appear {
+  animation: fade 0.3s ease var(--d, 0s) both;
+}
+
+.tick {
+  animation: tick 0.25s ease var(--d, 0s) both;
+}
+
+/* Charts: one reveal per series (an SVG), not per bar: wiped in left to right while it rises from the axis. */
+.chart {
+  transform-origin: bottom;
+  animation: chart-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.chartDown {
+  transform-origin: top;
+  animation: chart-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.meter {
+  transform-origin: left;
+  animation: grow-x 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0.1s) both;
+}
+
+/* Revealed left to right without stretching what it reveals (the PTC seat pattern). */
+.wipe {
+  animation: wipe 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) both;
+}
+
+/* An item mounting into a growing list (the Analyst replay). */
+.enter {
+  animation: fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Staggered items (analyst bullets, list rows): --i is the item index. */
+.stagger {
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 70ms + 80ms) both;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(105%);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes window-in {
+  from {
+    opacity: 0;
+    transform: perspective(2000px) translateY(40px) rotateX(9deg) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes chart-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+    transform: scaleY(0.35);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes tick {
+  from {
+    background-color: var(--line-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word,
+  .fadeUp,
+  .windowIn,
+  .progress,
+  .view,
+  .playhead,
+  .pop,
+  .span,
+  .appear,
+  .tick,
+  .chart,
+  .chartDown,
+  .meter,
+  .wipe,
+  .enter,
+  .stagger {
+    animation: none !important;
+  }
+
+  .playhead {
+    display: none;
+  }
+}

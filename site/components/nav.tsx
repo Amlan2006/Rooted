@@ -6,28 +6,35 @@ import { cx } from "@/lib/cx";
 import { Button } from "./ui/button";
 import { Container } from "./ui/container";
 import { ArrowUpRight } from "./ui/icons";
+import { LogoMark } from "./ui/logo";
 
 // URLs come in as props: importing lib/data here would ship every data/*.json file to the browser.
 type Links = { github: string; docs: string; dashboard: string | null };
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 const Wordmark = ({ onClick }: { onClick?: () => void }) => (
-  <a href="#" onClick={onClick} aria-label="Rooted, back to top" className="-mx-1 rounded-[4px] px-1 font-mono text-[15px] font-medium tracking-[-0.01em] transition-colors duration-150 hover:text-muted focus-visible:text-muted">
-    rooted
+  <a
+    href="#main"
+    onClick={onClick}
+    aria-label="Rooted, back to top"
+    className="-mx-1.5 flex h-8 items-center gap-2.5 rounded-control px-1.5 text-[15px] font-semibold tracking-[-0.02em] text-fg transition-opacity duration-150 hover:opacity-80"
+  >
+    <LogoMark />
+    Rooted
   </a>
 );
 
 export function Nav({ links }: { links: Links }) {
   const items = [
     { label: "Product", href: "#product" },
-    { label: "How it works", href: "#how-it-works" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Analyst", href: "#analyst" },
+    { label: "Hosted API", href: "#pricing" },
     { label: "Docs", href: links.docs, external: true },
-    ...(links.dashboard ? [{ label: "GitHub", href: links.github, external: true }] : []),
   ];
-  // One primary action per page: the hero's ink Self-host. The nav only goes ink when there is a real app to open.
-  const cta = links.dashboard
-    ? { href: links.dashboard, label: "Open dashboard", variant: "ink" as const }
-    : { href: links.github, label: "GitHub", variant: "outline" as const };
+  // Only a deploy that names a dashboard (NEXT_PUBLIC_DASHBOARD_URL) promises an app. Without one, the white button
+  // goes to the page's own start panel (clone command, docs, quick start), so it is not a second GitHub link.
+  const cta = links.dashboard ? { href: links.dashboard, label: "Open dashboard" } : { href: "#start", label: "Get started" };
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -35,7 +42,7 @@ export function Nav({ links }: { links: Links }) {
   const restoreFocus = useRef(true);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 4);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -74,28 +81,40 @@ export function Nav({ links }: { links: Links }) {
     setOpen(false);
   };
 
+  // The sheet is a sibling of <header>, not a child: once scrolled the header has a backdrop-filter, which would make it
+  // the containing block of the fixed sheet and shrink the menu to the 64 px bar.
   return (
-    <header className={cx("sticky top-0 z-40 bg-paper transition-shadow duration-150", scrolled && "shadow-nav")}>
-      <Container className="flex h-14 items-center justify-between gap-6">
-        <div className="flex items-center gap-10">
-          <Wordmark />
-          <nav aria-label="Primary" className="hidden md:block">
-            <ul className="flex items-center gap-7 text-sm">
-              {items.map((item) => (
-                <li key={item.label}>
-                  <a href={item.href} className="inline-flex items-center gap-1 text-muted transition-colors duration-150 hover:text-ink focus-visible:text-ink">
-                    {item.label}
-                    {item.external && <ArrowUpRight className="opacity-60" />}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-        {/* Wrapped: cx does not merge, so `hidden` on the Button would lose to its own inline-flex. */}
-        <div className="hidden md:block">
-          <Button href={cta.href} variant={cta.variant} size="sm">
-            {cta.label} <ArrowUpRight />
+    <>
+    <header
+      className={cx(
+        "sticky top-0 z-40 border-b transition-[background-color,border-color,backdrop-filter] duration-200 ease-out",
+        scrolled ? "border-line bg-bg/72 backdrop-blur-md" : "border-transparent",
+      )}
+    >
+      <Container className="flex h-16 items-center gap-10">
+        <Wordmark />
+        <nav aria-label="Primary" className="hidden md:block">
+          <ul className="flex items-center gap-1">
+            {items.map((item) => (
+              <li key={item.label}>
+                <a
+                  href={item.href}
+                  className="group/link inline-flex h-8 items-center gap-1 rounded-control px-2.5 text-sm text-fg-2 transition-colors duration-150 hover:bg-fg/[0.04] hover:text-fg focus-visible:text-fg"
+                >
+                  {item.label}
+                  {item.external && <ArrowUpRight className="opacity-50 transition-[translate,opacity] duration-150 group-hover/link:-translate-y-px group-hover/link:translate-x-px group-hover/link:opacity-90" />}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        {/* Wrapped: cx does not merge, so `hidden` on a Button would lose to its own inline-flex. */}
+        <div className="ml-auto hidden items-center gap-2.5 md:flex">
+          <Button href={links.github} variant="ghost" size="sm">
+            GitHub
+          </Button>
+          <Button href={cta.href} size="sm">
+            {cta.label}
           </Button>
         </div>
         <button
@@ -104,11 +123,15 @@ export function Nav({ links }: { links: Links }) {
           onClick={() => setOpen(true)}
           aria-expanded={open}
           aria-haspopup="dialog"
-          className="-mr-2 h-10 rounded-button px-2 font-mono text-label uppercase transition-colors duration-150 hover:bg-paper-2 focus-visible:bg-paper-2 focus-visible:outline-ink md:hidden"
+          aria-label="Open menu"
+          className="-mr-2 ml-auto grid size-10 place-items-center rounded-control text-fg-2 transition-colors duration-150 hover:bg-fg/[0.06] hover:text-fg md:hidden"
         >
-          Menu
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+            <path d="M3 6.5h12M3 11.5h12" />
+          </svg>
         </button>
       </Container>
+    </header>
 
       <AnimatePresence>
         {open && (
@@ -117,38 +140,54 @@ export function Nav({ links }: { links: Links }) {
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
-            className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-paper md:hidden"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-bg md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease }}
           >
-            <Container className="flex h-14 shrink-0 items-center justify-between border-b">
+            <Container className="flex h-16 shrink-0 items-center justify-between border-b border-line">
               <Wordmark onClick={follow} />
-              <button type="button" onClick={() => setOpen(false)} className="-mr-2 h-10 rounded-button px-2 font-mono text-label uppercase transition-colors duration-150 hover:bg-paper-2 focus-visible:bg-paper-2 focus-visible:outline-ink">
-                Close
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+                className="-mr-2 grid size-10 place-items-center rounded-control text-fg-2 transition-colors duration-150 hover:bg-fg/[0.06] hover:text-fg"
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+                  <path d="M4.5 4.5l9 9M13.5 4.5l-9 9" />
+                </svg>
               </button>
             </Container>
             <Container className="flex flex-1 flex-col pb-8">
               <nav aria-label="Primary">
-                <ul>
+                <m.ul initial="hidden" animate="shown" variants={{ shown: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } } }}>
                   {items.map((item) => (
-                    <li key={item.label} className="border-b">
-                      <a href={item.href} onClick={follow} className="flex items-center justify-between py-4 font-serif text-[2rem] leading-10 transition-colors duration-150 hover:text-muted focus-visible:text-muted">
+                    <m.li key={item.label} className="border-b border-line" variants={{ hidden: { opacity: 0, y: -6 }, shown: { opacity: 1, y: 0, transition: { duration: 0.25, ease } } }}>
+                      <a
+                        href={item.href}
+                        onClick={follow}
+                        className="flex items-center justify-between py-4 text-2xl font-semibold tracking-[-0.03em] text-fg transition-colors duration-150 hover:text-fg-2"
+                      >
                         {item.label}
-                        {item.external && <ArrowUpRight className="size-4 text-muted" />}
+                        {item.external && <ArrowUpRight className="size-4 text-fg-3" />}
                       </a>
-                    </li>
+                    </m.li>
                   ))}
-                </ul>
+                </m.ul>
               </nav>
-              <Button href={cta.href} variant={cta.variant} onClick={follow} className="mt-auto w-full">
-                {cta.label} <ArrowUpRight />
-              </Button>
+              <div className="mt-auto grid gap-3 pt-10">
+                <Button href={cta.href} size="lg" onClick={follow} className="w-full">
+                  {cta.label}
+                </Button>
+                <Button href={links.github} variant="ghost" size="lg" onClick={follow} className="w-full">
+                  GitHub
+                </Button>
+              </div>
             </Container>
           </m.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
