@@ -1,20 +1,32 @@
 # Glamsterdam X-ray
 
-For one Sepolia block, the X-ray puts three parallel-execution ceilings next to each other.
+For one Sepolia block, the X-ray puts four parallel-execution ceilings next to each other.
 Every number is an **upper bound** on speedup, not a measured parallel run.
 
 | View | What it assumes | Value |
 |---|---|---|
-| `gas_weighted` | what the gas limit assumes: time is proportional to receipt `gasUsed` | `Σg / max g` |
+| `gas_weighted` | time ∝ receipt `gasUsed` (execution + EIP-8037 state gas, after refunds) | `Σg / max g` |
+| `execution_gas_weighted` | time ∝ EIP-8037 execution gas, the dimension that prices compute | `Σe / max e` |
 | `validator_bal_time` | **validator with an EIP-7928 BAL**: every tx can run in parallel, so Amdahl applies to measured time | `Σt / max t` |
 | `builder_dag_time` | **builder / no BAL**: txs must respect RAW/WAR/WAW conflicts | `Σt / longest time-weighted dependency path` |
 
 Framing rule: with a BAL, validators can execute all transactions in parallel. The conflict DAG
 is the builder (or no-BAL) view. It is never "the validator limit".
 
-`t_i` is the median `apply_ns` of tx `i` over the 7 instrumented samples of the native replay
-(`workloads/profiler`: Geth v1.17.10 `core.ApplyMessage`, warm cache, sequential). Ties resolve to the
-smallest index. `schedules` gives `Σt / makespan` for 1, 2, 4, 8 and 16 cores: LPT for validators,
+Under EIP-8037 the block gas limit applies to execution gas and state gas separately; header gasUsed is
+max(Σ execution, Σ state). Receipt gas adds the two, so contract creations (heavy in state gas) dominate it.
+Neither gas ceiling is "what the gas limit assumes"; execution gas is the fair comparison with time. The replay
+records each tx's execution and state gas as `GasPool.CumulativeExecution()/CumulativeState()` deltas around
+`ApplyMessage`, and `Compute` rejects them unless max(Σ execution, Σ state) equals header gasUsed.
+
+`t_i` is the median `apply_ns` of tx `i` over the 7 **uninstrumented control** samples of the native replay
+(`workloads/profiler`: Geth v1.17.10 `core.ApplyMessage`, warm cache, sequential; `replay.timing:
+"uninstrumented_control"`). The 7 instrumented samples time every state call through a wrapper plus root
+tracer hooks; that costs about 2–2.7× per block and inflates state-heavy txs much more than compute-bound
+ones, which moves the ratios. Reports from profiles that predate per-tx control timings fall back to the
+instrumented samples and say so (`replay.timing: "instrumented"`, coverage `apply_ns_from_instrumented_replay`).
+Time ceilings vary by up to about 25% (max/min) between replays of the same block, so quote them to two
+significant figures or as ranges. Ties resolve to the smallest index. `schedules` gives `Σt / makespan` for 1, 2, 4, 8 and 16 cores: LPT for validators,
 bottom-level list scheduling over the DAG for builders. One core always gives exactly 1.0.
 
 Code: `internal/xray/schedule.go` (ceilings, schedules), `internal/xray/compute.go` (read/write model,
@@ -26,18 +38,30 @@ graph, hot locations), `internal/xray/engine.go` (capture, envelope, store), `in
   (`/eth/v1/beacon/execution_payload_envelopes/{slot}`, RLP) and checked against the header's
   `blockAccessListHash`. Pre- and post-execution entries are ignored.
 - Reads: every prestateTracer storage key, the `code` of every prestate account, and the sender's
-  `balance` and `nonce`. This is a superset of real reads, so the builder ceiling is conservative.
-- Excluded from both: the fee recipient, the 4788/2935/7002/7251 system contracts, `0xff…fe`, and
-  precompiles `0x01`–`0x11` and `0x100`. Otherwise every tx would conflict on the coinbase balance.
-- Edges come from `bal.BuildGraph` (100,000 edge cap; `edge_limit_reached` when hit).
+  `balance` and `nonce`. Storage and code reads are a superset of the real reads, but balance reads of
+  accounts other than the sender (`BALANCE`/`SELFBALANCE` of an account an earlier tx paid) are not
+  modelled, so where those occur the builder ceiling can be optimistic (`non_sender_balance_reads_not_modeled`).
+- Excluded from both: the fee recipient, the 4788 and 2935 system contracts (written only before the
+  transactions), `0xff…fe`, and precompiles `0x01`–`0x11` and `0x100`. Otherwise every tx would conflict on the
+  coinbase balance. The 7002/7251 request contracts are kept: user txs write their queues, so two requests in
+  one block really conflict.
+- Edges come from `bal.BuildGraph` (100,000 edge cap). When the cap is hit (`edge_limit_reached`), dropped
+  edges would shorten the critical path, so the builder ceiling and schedule are reported as unavailable.
 
 The `coverage` array always lists the model's limits: `reads_are_prestate_superset`,
 `non_sender_balance_reads_not_modeled`, `excluded_fee_recipient_system_contracts_precompiles`,
 `replay_is_warm_cache_sequential_apply_message`, `state_root_io_and_bal_processing_excluded`,
-`ceilings_are_upper_bounds`. Conditional entries: `no_replay_metrics`, `bal_commitment_unavailable`,
-`edge_limit_reached`, `epbs_state_unavailable`, `uniswap_v3_pools_unverified`.
+`ceilings_are_upper_bounds`. Conditional entries: `no_replay_metrics`, `apply_ns_from_instrumented_replay`,
+`execution_gas_unavailable`, `bal_commitment_unavailable`, `edge_limit_reached`, `epbs_state_unavailable`,
+`uniswap_v3_pools_unverified`.
 
-Hot locations carry Uniswap v3/v4 labels from `internal/uniswap` (see `docs/UNISWAP.md`).
+Briefs carry strict flags `gas_misidentifies_bottleneck` and `execution_gas_misidentifies_bottleneck`: true
+only when the time-capping tx uses less gas than the gas-capping tx, so equal-gas ties do not count. The
+summary shares use them; briefs stored before they existed fall back to comparing capping indices.
+
+Hot locations carry Uniswap v3/v4 labels from `internal/uniswap` (see `docs/UNISWAP.md`). When the selected
+block has no labelled edge, the dashboard shows the labelled BAL conflicts of block 12,073,969
+(`dashboard/lib/uniswap-contention-example.json`).
 The `epbs` object comes from the live PayloadWatch state for the payload. Without one, it falls back to
 the envelope's builder index and beacon root (`source: "envelope"`).
 
@@ -65,38 +89,60 @@ recent state (about 128 blocks on our node).
 The POST shares one replay gate with profile jobs and the follower. It waits up to 15 s for that gate
 before answering 429, because a follow job holds it for about 10 s of every 12.
 
-## What the live runs showed (2026-11-06, blocks 12,075,736 to 12,075,800)
+## What the live runs showed (2026-11-06 11:00–11:22 UTC, uninstrumented timings)
 
-We took 22 Sepolia blocks with 69–220 transactions (21 live plus the demo capture of 12,019,547).
-All had verified BAL commitments.
+`serve` with the follower, two windows: blocks 12,076,127–12,076,175 and 12,076,193–12,076,230. 81 of 87
+heights were stored, all with verified BAL commitments and 63–297 txs. Five failed the replay's receipt check
+(replayed gas differs from the receipt) and one was not attempted. No block had more than 512 txs; the
+follower skips those (8 of 45 heights in the earlier 12,075,870–914 run).
 
-- The gas-weighted ceiling ranged from **3.07×** to **30.56×**. The measured-time ceiling stayed between
-  **16.7×** and **20.7×**. Gas is a poor proxy for apply time.
-- Large contract creations dominate gas but not time. In block 12,075,748, tx 0 is a 21,105,490-gas
-  creation whose median apply time is 230,675 ns. Tx 13 used 2,491,067 gas and took 31.65 ms.
-  Block 12,075,791 has a 31,730,738-gas creation that applied in 284 µs. Under EIP-8037, receipt
-  gas includes state gas, which is not execution time.
-- In every block, the time bottleneck was a call that uses 2,491,067 gas, writes no storage and takes
-  about 29–37 ms (to `0x4a656861cae32ca04623763a59f708410de73441` in all live blocks). It is
-  independent of every other transaction, so the builder critical path has length 1 and
-  `builder_dag_time == validator_bal_time` in all 22 blocks. On these blocks a BAL does not raise the
-  time ceiling over a perfect conflict-aware builder. One heavy transaction bounds both views.
-- `gas_misidentifies_bottleneck_share` compares capping indices. Several blocks contain more than
-  one of these identical-gas calls. In those blocks the gas view picks the first one and the time view
-  picks the slowest, so the share also counts ties.
+| Ceiling | p10 | median | p90 |
+|---|---|---|---|
+| receipt gas | 5.2× | 9.6× | 27× |
+| execution gas | 15× | 26× | 30× |
+| validator with BAL (time) | 8.1× | 18× | 22× |
+| builder / no BAL (time) | 7.3× | 17× | 21× |
 
-Integration run (2026-11-06 10:07–10:16 UTC, `serve` with the follower, blocks 12,075,870–12,075,914):
-33 blocks stored, all with verified BAL commitments and an ePBS object. Gas-weighted p10/median/p90 was
-4.06× / 9.23× / 26.43×; validator with BAL 17.86× / 19.47× / 20.86×; builder 16.98× / 19.47× / 20.86×.
-The follower skipped 8 blocks with more than 512 txs and 2 whose replay failed receipt validation.
-Two blocks broke the single-tx pattern, so the builder view is not always equal to the validator view:
-- Block 12,075,883 (`0xb0fd451d…939a`, 64 txs, self-build): validator with BAL **18.87×** (capped by tx 38),
-  builder **13.50×**. Txs 8 → 9 → 10 (about 1.41M gas and 15 ms each) are chained through shared state, and
-  that path is longer than any single tx. Gas-weighted is 23.05×, capped by tx 18.
-  This report is the dashboard's offline example (`dashboard/public/examples/xray-report.json`).
-- Block 12,075,870 (`0x81757b22…dcf0`): validator 13.69× vs builder 12.82×. The critical path is tx 18 → tx 67,
-  where tx 67 is a 53.6 ms Multicall3 call. Gas-weighted is 4.99×, capped by tx 47, a 20,211,245-gas creation
-  that applies in 196 µs.
+8-core schedule medians: 8.0× validator, 7.8× builder.
+
+- Execution gas overstates parallelism: its ceiling is above the time ceiling in 80 of 81 blocks. Receipt gas
+  understates it, because the state gas of contract creations (which apply in microseconds) dominates it.
+- Strict misidentification (ties excluded): receipt gas names a different capping tx than time in 59 of 81
+  blocks, execution gas in 11 of 81.
+- One workload dominates: a median of 20 identical 2,491,067-gas calls per block to
+  `0x4a656861cae32ca04623763a59f708410de73441`, about 7 ms each uninstrumented (p10–p90 5.9–9.3 ms), a median 75%
+  of apply time (44–89%). One of them caps the validator view in 53 blocks. Multicall3 (`0xca11…ca11`, 13 blocks)
+  and two other contracts cap the rest, at 17–73 ms.
+- In 61 of 81 blocks the builder critical path is a single tx, so builder = validator. In 17 the builder
+  ceiling is more than 5% lower, with critical paths of 2–16 txs.
+- Uniswap: 94 v3 and 10 v4 swap txs, no labelled conflict edge.
+
+Block 12,076,166 (`0x48cf69b2…75c0`, 159 txs, builder index 0) is the dashboard's offline example
+(`dashboard/public/examples/xray-report.json`, run 3 below). Its builder critical path is 15 txs from 15
+different senders calling Polaris vaults (yspUSD `0x63d0…7f73`, yspGOLD `0xf577…e717`, svpETH `0x7b11…0539` and
+others). They are chained through storage of the pETH Bonding Curve (`0x07ea2ff8…705e`, slot `0xe07a7f10…a6a8`,
+7 writers) and `0x133e6955…0965` (slots 2 and 4). The path takes about 16 ms; the slowest single tx about 9 ms.
+
+| Replay of 12,076,166 | validator | builder | 8 cores (validator / builder) | 16 cores |
+|---|---|---|---|---|
+| follower | 19.8× | 10.4× | 8.0× / 6.5× | n/a |
+| 1 | 20.2× | 11.6× | 8.0× / 6.9× | 16.0× / 11.6× |
+| 2 | 21.5× | 10.8× | 8.0× / 6.5× | 14.8× / 10.8× |
+| 3 | 20.7× | 11.1× | 8.0× / 6.5× | 15.4× / 11.1× |
+| 4 | 17.7× | 11.1× | 8.0× / 6.6× | 16.0× / 11.1× |
+| 5 | 19.0× | 10.7× | 8.0× / 6.6× | 15.5× / 10.7× |
+
+The receipt-gas (30×) and execution-gas (28×) ceilings do not change between replays. Block 12,076,168 shows
+the same pattern (11-tx path; validator 23–27×, builder 18–19× over 5 replays).
+
+Block 12,075,883 (`0xb0fd451d…939a`), the earlier example, re-measured 5 times from a saved capture with
+control timings: validator 16–19×, builder 11–14×, critical path txs 8 → 9 → 10 in every run. That chain is
+three consecutive txs from one sender (`0xf07d1008…74ac`, nonce and balance), not contract-state contention. Its
+stored report from the earlier run (instrumented timings, 18.87× / 13.50×) overstated the precision.
+
+Earlier runs (12,075,736–800 and 12,075,870–914) used instrumented timings and are superseded by the numbers
+above. Their gas observations still hold. For example, block 12,075,748 tx 0 is a 21,105,490-gas creation, and
+block 12,075,870 tx 47 is a 20,211,245-gas creation; both apply in well under a millisecond.
 
 Another verified example of gas versus execution: Sepolia block 12,075,273 has header gasUsed
 92,173,320 and a receipt sum of 155,156,084 (EIP-8037 two-dimensional gas). Its tx 72 is a
@@ -104,6 +150,6 @@ Another verified example of gas versus execution: Sepolia block 12,075,273 has h
 
 ## Limits
 
-These are timings of a warm-cache, sequential `ApplyMessage` replay on one machine
+These are timings of a warm-cache, sequential, uninstrumented `ApplyMessage` replay on one machine
 (Intel Xeon Skylake, 8 logical CPUs). State-root computation, disk IO and BAL processing are excluded.
 Real clients add scheduling overhead, so every number is an upper bound.
