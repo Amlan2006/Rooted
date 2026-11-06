@@ -1891,3 +1891,29 @@ td {
 .provider-check-panel th:first-child { width: 52%; }
 .provider-check-panel td, .provider-check-panel code { white-space: normal; overflow-wrap: anywhere; }
 .provider-check-panel .badge { white-space: normal; line-height: 1.5; }
+/* Glamsterdam X-ray */
+.xray-hero { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xray-hero .stat > span { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.xray-gas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.xray-gas meter { width: 100%; }
+.lane-list { display: flex; flex-direction: column; max-height: 420px; overflow: auto; margin: 0 23px 12px; border: 1px solid #edf0f2; border-radius: 6px; padding: 4px 0; }
+.lane-row { display: grid; grid-template-columns: 48px minmax(0, 1fr) 96px; gap: 10px; align-items: center; width: 100%; flex-shrink: 0; padding: 2px 12px; border: 0; border-radius: 0; background: none; text-align: left; color: #7b8b94; }
+.lane-row .mono, .lane-row small { font-size: 9px; }
+.lane-row small { text-align: right; }
+.lane-row:hover, .lane-row.picked { background: #f1f6f7; }
+.lane-track { height: 8px; background: #f3f5f7; border-radius: 2px; overflow: hidden; }
+.lane-track i { display: block; height: 100%; background: #a9bcc4; border-radius: 0 4px 4px 0; }
+.lane-row.critical .lane-track i, .legend.lane-critical { background: #c26d22; }
+.lane-row.cap .lane-track i, .legend.lane-cap { background: #008aa3; }
+.lane-row.gas-cap .lane-track i { outline: 2px solid #192c37; outline-offset: -2px; }
+.legend.lane-gas { background: #fff; border: 1.5px solid #192c37; }
+.cores-chart { display: block; width: 100%; max-width: 760px; margin: 0 auto; padding: 0 23px 8px; }
+.cores-chart .axis { font-size: 10px; fill: #8e9ca5; font-family: "IBM Plex Mono", monospace; }
+.cores-chart .label { font-size: 11px; fill: #192c37; }
+.xray-chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 23px 16px; }
+.xray-chips button { flex-direction: column; align-items: flex-start; gap: 2px; min-width: 116px; padding: 8px 10px; font-size: 10px; flex-shrink: 0; }
+.xray-chips button[aria-pressed="true"] { border-color: #008aa3; box-shadow: inset 0 0 0 1px #008aa3; }
+.xray-chips small { font-size: 9px; color: #7b8b94; font-family: "IBM Plex Mono", monospace; }
+.xray-summary { margin: 0 23px 20px; }
+.conformance-divergent td { background: #fdf8ef; }
+@media (max-width: 900px) { .xray-hero, .xray-gas { grid-template-columns: 1fr; } }

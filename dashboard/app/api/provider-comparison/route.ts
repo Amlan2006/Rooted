@@ -1,9 +1,11 @@
 import { backendURL } from "@/lib/proxy";
+import { hosted, hostedForbidden } from "@/lib/hosted";
 import { parseProviderRequest } from "@/lib/provider-request";
 export const dynamic = "force-dynamic";
 export const maxDuration = 100;
 const fail = (message: string, status: number) => Response.json({ error: { message } }, { status });
 export async function POST(request: Request) {
+  if (hosted()) return hostedForbidden();
   const requestURL = new URL(request.url);
   // Next's internal URL can use localhost even when the browser used 127.0.0.1.
   // Host is the browser's destination; browsers cannot override it with fetch.

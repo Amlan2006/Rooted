@@ -1,4 +1,5 @@
 import { backendURL } from "@/lib/proxy";
+import { hosted } from "@/lib/hosted";
 export const dynamic = "force-dynamic";
 export async function GET(
   request: Request,
@@ -22,6 +23,18 @@ export async function GET(
       { status: 400 },
     );
   }
+  const paid = path.join("/").match(/^api\/v1\/xray\/blocks\/(0x[0-9a-fA-F]{64})$/);
+  if (paid && hosted())
+    return Response.json(
+      {
+        error: {
+          code: "payment_required",
+          message: "Hosted mode: per-block X-ray reports are sold to agents via x402",
+          paid_url: `/api/paid/xray/${paid[1].toLowerCase()}`,
+        },
+      },
+      { status: 402, headers: { "Cache-Control": "no-store" } },
+    );
   const stream = path.join("/") === "api/v1/live";
   try {
     const response = await fetch(url, {

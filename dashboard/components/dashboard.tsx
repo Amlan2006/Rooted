@@ -15,6 +15,7 @@ import {
   LayoutDashboard,
   Radio,
   RefreshCw,
+  ScanLine,
   Search,
   ShieldCheck,
   Waves,
@@ -53,8 +54,11 @@ import { investigationURL, selectionForRun } from "@/lib/guided-investigation";
 import AnalysisForm from "./analysis-form";
 import RpcInspector from "./rpc-inspector";
 import CREReports from "./cre-reports";
+import Xray from "./xray";
+import FrameConformance from "./frame-conformance";
 import { observationScope } from "@/lib/observation-scope";
 type View =
+  | "xray"
   | "overview"
   | "investigate"
   | "compare"
@@ -67,6 +71,7 @@ type View =
   | "incidents"
   | "privacy";
 const navigation = [
+  { id: "xray", name: "Glamsterdam X-ray", icon: ScanLine },
   { id: "overview", name: "Overview", icon: LayoutDashboard },
   { id: "investigate", name: "Investigate", icon: Search },
   { id: "payloadwatch", name: "PayloadWatch", icon: Waves },
@@ -80,6 +85,7 @@ const navigation = [
   { id: "privacy", name: "Private RPC", icon: ShieldCheck },
 ] as const;
 const titles: Record<View, [string, string]> = {
+  xray: ["Glamsterdam X-ray", "Three parallelism ceilings per Sepolia block: gas-weighted, validator with BAL, builder without."],
   profiler: ["Execution profiler", "Measure native replay processing with explicit timing boundaries."],
   providers: ["RPC provider checks", "Compare immutable evidence and API availability across providers."],
   compare: ["Workload comparison", "Compare shared-state patterns across controlled experiments."],
@@ -106,7 +112,7 @@ const tone = (status: string) =>
 const percent = (n: number | null) =>
   n == null ? "Unknown" : (n * 100).toFixed(1) + "%";
 export default function Dashboard() {
-  const [view, setView] = useState<View>("overview");
+  const [view, setView] = useState<View>("xray");
   const [guideScope, setGuideScope] = useState<{ network: string; chain_id: string } | null>(null);
   const [demo, setDemo] = useState(false);
   const [analysisMode, setAnalysisMode] = useState("live");
@@ -870,7 +876,7 @@ export default function Dashboard() {
                       ? frameData.filter((f) => f.status === "rejected").length
                       : "Unknown"
                   }
-                  detail="Our funded inclusion demo remains blocked"
+                  detail="Failed admission rules in this scope"
                 />
               </div>
               <Panel
@@ -1033,6 +1039,8 @@ export default function Dashboard() {
               )}
             </>
           )}
+          {view === "frames" && <FrameConformance scope={frameScope} />}
+          {view === "xray" && <Xray />}
           {view === "investigate" && <GuidedInvestigation onScope={setGuideScope} />}
           {view === "compare" && <WorkloadComparison />}
           {view === "providers" && <ProviderComparison />}

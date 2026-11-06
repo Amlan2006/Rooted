@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { hosted, hostedForbidden } from "@/lib/hosted";
 export const dynamic = "force-dynamic";
 // Local operator preparation only. No signing key is read and no RPC mutation is exposed.
 export async function GET() {
+  if (hosted()) return hostedForbidden();
   try {
     const raw = await readFile(
       path.resolve(process.cwd(), "../.tools/cre-public-deployment.json"),
