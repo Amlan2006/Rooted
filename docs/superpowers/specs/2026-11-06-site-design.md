@@ -10,7 +10,7 @@ Approved 2026-11-06, visual system revised the same day. A standalone, static la
 
 ## Visual system: dark precision
 
-Approved from the mockup at `/home/ubuntu/rooted-design/mock.html` (screenshot `m1.png`). Product-first, in the spirit of Linear, Vercel, Railway and Resend: the product UI is the hero, type does the rest.
+Approved from a rendered HTML mockup. Product-first, in the spirit of Linear, Vercel, Railway and Resend: the product UI is the hero, type does the rest.
 
 | Token | Value | Use |
 |---|---|---|
