@@ -3,6 +3,7 @@
 const FRAMING = `How to read Rooted's evidence:
 - With a block-level access list (EIP-7928 BAL), a validator knows every transaction's reads and writes before executing, so it can run every transaction in parallel. The validator-with-BAL ceiling is limited only by the slowest single transaction.
 - The conflict DAG (read-after-write, write-after-read and write-after-write edges), the critical path and the builder ceilings (multi-version and static) describe the builder's view: building a block without a BAL, where dependencies have to be discovered and respected. A conflict edge does not slow a validator that has the BAL.
+- A builder gap, in Rooted's rules, is a multi-version builder ceiling below 0.8x or a static builder ceiling below 0.7x of the validator-with-BAL ceiling. A smaller shortfall is not a builder gap.
 - Every parallelism ceiling is an upper bound on speedup under the stated model, not a measured speedup.
 - Gas is not time. Under EIP-8037 receipt gas includes state gas; execution gas prices compute, but neither is wall time. The time-weighted ceilings use measured native replay nanoseconds. When gas and time point at different bottleneck transactions, say so.
 - ePBS separates the proposer's commitment from the builder's payload reveal; PayloadWatch records delivery, reveal latency and PTC timeliness votes where it observed them. A missing observation is unknown, not late.

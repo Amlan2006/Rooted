@@ -2,8 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 import { cost, fileLedger, overBudget } from "../lib/analyst/budget";
 import { addEvidence, citations, txLink, xrayLink } from "../lib/analyst/evidence";
 import { EXECUTORS, TOOLS, toolParams } from "../lib/analyst/tools";
@@ -52,12 +54,13 @@ test("trimming keeps the decision fields of a real X-ray, is deterministic and s
   assert.ok(Array.isArray(a.coverage) && a.epbs && a.speedup);
   assert.equal(a.transactions, undefined, "the per-tx table stays out");
 
-  const briefs = { data: Array.from({ length: 50 }, (_, i) => ({ block_number: 1000 - i, block_hash: "0x" + i.toString(16).padStart(64, "0"), transaction_count: 100, gas_weighted: 3.14159265, validator_bal_time: 12.5, builder_dag_time: 4.25, header_gas_used: 1, extra: "dropped" })) };
+  const briefs = { data: Array.from({ length: 50 }, (_, i) => ({ block_number: 1000 - i, block_hash: "0x" + i.toString(16).padStart(64, "0"), transaction_count: 100, gas_weighted: 3.14159265, validator_bal_time: i === 1 ? null : 12.5, builder_dag_time: 4.25, gas_capping_tx_index: 3, validator_capping_tx_index: 7, gas_misidentifies_bottleneck: true, header_gas_used: 1, extra: "dropped" })) };
   const list = trim("recent_blocks", briefs) as { columns: string[]; rows: unknown[][] };
   assert.ok(JSON.stringify(list).length <= 2 * CAP);
   assert.equal(list.rows.length, 50, "all 50 requested blocks survive");
-  assert.deepEqual(list.columns, ["block_number", "block_hash", "slot", "transaction_count", "commitment_verified", "gas_weighted", "execution_gas_weighted", "validator_bal_time", "builder_multiversion_time", "builder_dag_time", "validator_capping_tx_index", "builder_critical_path_length"]);
-  assert.deepEqual(list.rows[0], [1000, briefs.data[0].block_hash, null, 100, null, 3.142, null, 12.5, null, 4.25, null, null]);
+  assert.deepEqual(list.columns, ["block_number", "block_hash", "slot", "transaction_count", "commitment_verified", "gas_weighted", "execution_gas_weighted", "validator_bal_time", "builder_multiversion_time", "builder_dag_time", "gas_capping_tx_index", "validator_capping_tx_index", "gas_misidentifies_bottleneck", "builder_critical_path_length", "gas_to_validator_ratio"]);
+  assert.deepEqual(list.rows[0], [1000, briefs.data[0].block_hash, null, 100, null, 3.142, null, 12.5, null, 4.25, 3, 7, true, null, 0.251]);
+  assert.equal(list.rows[1].at(-1), null, "no validator ceiling, no ratio");
 
   const flat = { blob: "x".repeat(10000), ...Object.fromEntries(Array.from({ length: 400 }, (_, i) => ["k" + i, "v".repeat(30)])) };
   assert.ok(JSON.stringify(fit(flat)).length <= CAP, "objects without arrays fall back to a cut string");
@@ -131,10 +134,11 @@ test("executors call the fixed backend and node routes and label their evidence"
   } finally { delete process.env.ROOTED_EXECUTION_URL; }
 });
 
+const ask = (body: unknown, headers: Record<string, string> = {}) => POST(new Request("http://localhost:3000/api/analyst", {
+  method: "POST", headers: { host: "127.0.0.1:3000", origin: "http://127.0.0.1:3000", "content-type": "application/json", ...headers }, body: JSON.stringify(body),
+}));
+
 test("the route is disabled without a key and in hosted mode, and checks origin and body", async () => {
-  const ask = (body: unknown, headers: Record<string, string> = {}) => POST(new Request("http://localhost:3000/api/analyst", {
-    method: "POST", headers: { host: "127.0.0.1:3000", origin: "http://127.0.0.1:3000", "content-type": "application/json", ...headers }, body: JSON.stringify(body),
-  }));
   const event = async (r: Response) => { assert.equal(r.headers.get("content-type"), "text/event-stream; charset=utf-8"); return JSON.parse((await r.text()).slice(6)); };
   const saved = { key: process.env.ANTHROPIC_API_KEY, hosted: process.env.ROOTED_HOSTED, pub: process.env.ROOTED_ANALYST_PUBLIC };
   try {
@@ -163,5 +167,32 @@ test("the route is disabled without a key and in hosted mode, and checks origin 
   } finally {
     for (const [k, v] of [["ANTHROPIC_API_KEY", saved.key], ["ROOTED_HOSTED", saved.hosted], ["ROOTED_ANALYST_PUBLIC", saved.pub]] as const)
       if (v === undefined) delete process.env[k]; else process.env[k] = v;
+  }
+});
+
+test("one investigation at a time: a concurrent request gets 429, a cancelled one frees the slot", async () => {
+  let reached!: () => void;
+  const upstream = new Promise<void>(resolve => (reached = resolve));
+  const server = createServer(() => reached()); // a Claude API that never answers
+  await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+  const keys = ["ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL", "ANTHROPIC_AUTH_TOKEN", "ROOTED_HOSTED", "ROOTED_X402_ENABLED", "ROOTED_ANALYST_DAILY_USD"] as const;
+  const saved = keys.map(k => process.env[k]);
+  Object.assign(process.env, { ANTHROPIC_API_KEY: "sk-test-not-a-real-key", ANTHROPIC_BASE_URL: `http://127.0.0.1:${(server.address() as { port: number }).port}`, ROOTED_ANALYST_DAILY_USD: "1000000" });
+  for (const k of keys.slice(2, 5)) delete process.env[k];
+  try {
+    const both = await Promise.all([ask({ question: "a" }), ask({ question: "b" })]);
+    assert.deepEqual(both.map(r => r.status).sort(), [200, 429], "the second request loses even when both arrive together");
+    const [running, busy] = both[0].status === 200 ? both : [both[1], both[0]];
+    assert.match(await busy.text(), /Another investigation is running/);
+    await upstream;
+    await running.body!.cancel();
+    let next = await ask({ question: "c" });
+    for (let i = 0; next.status === 429 && i < 100; i++) { await sleep(20); next = await ask({ question: "c" }); }
+    assert.equal(next.status, 200, "cancelling the first investigation releases the slot");
+    await next.body!.cancel();
+  } finally {
+    keys.forEach((k, i) => { if (saved[i] === undefined) delete process.env[k]; else process.env[k] = saved[i]; });
+    server.closeAllConnections();
+    server.close();
   }
 });

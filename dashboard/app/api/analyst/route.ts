@@ -43,10 +43,11 @@ export async function POST(request: Request) {
     input = parsed.data;
   } catch { return fail("bad_request", "Invalid JSON.", 400); }
   if (busy) return fail("bad_request", "Another investigation is running. Retry when it finishes.", 429);
+  busy = true; // before any await, so two requests cannot both pass the check
   const ledger = fileLedger();
-  if (await overBudget(ledger, new Date())) return fail("budget", "The analyst's daily budget is spent. It resets at 00:00 UTC.", 429);
+  const over = await overBudget(ledger, new Date()).catch(error => { busy = false; throw error; });
+  if (over) { busy = false; return fail("budget", "The analyst's daily budget is spent. It resets at 00:00 UTC.", 429); }
 
-  busy = true;
   const session = sessionFor(input.session_id), stop = new AbortController(), encoder = new TextEncoder();
   const question = input.question;
   const body = new ReadableStream<Uint8Array>({

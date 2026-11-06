@@ -18,13 +18,15 @@ const thinking = (text: string) => ({ type: "thinking", thinking: text, signatur
 const text = (t: string) => ({ type: "text", text: t });
 
 // Fake Anthropic client: replays scripted messages, streams their thinking and text, records every request body.
-function fake(script: (BetaMessage | Error)[] | ((n: number) => BetaMessage)) {
+// An Error with a partial message rejects after that snapshot streamed, like an abort mid-turn.
+function fake(script: (BetaMessage | (Error & { partial?: BetaMessage }))[] | ((n: number) => BetaMessage)) {
   const bodies: BetaMessageStreamParams[] = [];
   const client: AnalystDeps["client"] = { beta: { messages: { stream(body) {
     bodies.push(structuredClone(body));
     const next = typeof script === "function" ? script(bodies.length) : script[bodies.length - 1];
     const listeners: Record<string, ((d: string) => void)[]> = {};
     return {
+      currentMessage: next instanceof Error ? next.partial : undefined,
       on(event, listener) { (listeners[event] ??= []).push(listener); return this; },
       async finalMessage() {
         if (next instanceof Error) throw next;
@@ -163,9 +165,18 @@ test("budget is checked before each call; refusals and API errors end with an er
   assert.equal(session.messages.length, 1, "a refused partial is not echoed back");
 
   const failing = fake([new Anthropic.BadRequestError(400, { type: "error", error: { type: "invalid_request_error", message: "bad thinking" } }, "bad thinking", new Headers())]);
-  const e = await runAnalyst("q", newSession(), () => {}, deps(failing.client, {}).d);
+  const failed = deps(failing.client, {});
+  const e = await runAnalyst("q", newSession(), () => {}, failed.d);
   assert.equal(e.type === "error" && e.code, "upstream");
   assert.match(e.type === "error" ? e.message : "", /bad thinking/);
+  assert.equal(failed.rows.length, 0, "nothing streamed, nothing charged");
+
+  const partial = msg([thinking("half")], "", { usage: { input_tokens: 3000, output_tokens: 1, cache_read_input_tokens: 9000, cache_creation_input_tokens: 0 } });
+  const aborted = fake([Object.assign(new Anthropic.APIUserAbortError(), { partial })]);
+  const charged = deps(aborted.client, {});
+  const a = await runAnalyst("q", newSession(), () => {}, charged.d);
+  assert.equal(a.type === "error" && a.code, "upstream");
+  assert.deepEqual(charged.rows, [{ at: "2026-11-06T10:00:00.000Z", mode: "investigate", input: 3000, output: 1, cache_read: 9000, cache_write: 0, usd: 0.01382 }], "an aborted turn is charged for what streamed");
 });
 
 test("after a mid-output fallback the declined model's thinking and tool calls are neither run nor echoed", async () => {

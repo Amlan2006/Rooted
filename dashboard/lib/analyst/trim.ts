@@ -1,5 +1,6 @@
 // Shrinks tool results to the fields a decision needs, deterministically, under CAP characters of JSON.
-import type { Brief, Report } from "../xray";
+import type { Report } from "../xray";
+import type { RuleInput } from "./rules";
 
 export const CAP = 6000;
 const record = (v: unknown) => (v && typeof v === "object" && !Array.isArray(v) ? v : {}) as Record<string, unknown>;
@@ -29,11 +30,15 @@ function xray(body: unknown) {
   };
 }
 
-const briefKeys = ["block_number", "block_hash", "slot", "transaction_count", "commitment_verified", "gas_weighted", "execution_gas_weighted", "validator_bal_time", "builder_multiversion_time", "builder_dag_time", "validator_capping_tx_index", "builder_critical_path_length"] as const;
+const briefKeys = ["block_number", "block_hash", "slot", "transaction_count", "commitment_verified", "gas_weighted", "execution_gas_weighted", "validator_bal_time", "builder_multiversion_time", "builder_dag_time", "gas_capping_tx_index", "validator_capping_tx_index", "gas_misidentifies_bottleneck", "builder_critical_path_length"] as const;
 // Columns once, then one array per block: a live run lost 35 of 50 requested blocks to the cap as keyed objects.
+// The gas / validator ratio is precomputed: a live answer ranked blocks wrongly by its own arithmetic.
 const blocks = (body: unknown) => {
   const rows = record(body).data;
-  return Array.isArray(rows) ? { columns: briefKeys, rows: rows.map((b: Brief) => briefKeys.map(k => b[k] ?? null)) } : body;
+  return Array.isArray(rows) ? {
+    columns: [...briefKeys, "gas_to_validator_ratio"],
+    rows: rows.map((b: RuleInput) => [...briefKeys.map(k => b[k] ?? null), b.gas_weighted != null && b.validator_bal_time ? b.gas_weighted / b.validator_bal_time : null]),
+  } : body;
 };
 
 // Deep copy with ratios rounded to 3 decimals and long strings cut, so small float noise never changes the output.

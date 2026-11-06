@@ -16,7 +16,7 @@ const rpcMethods = ["eth_blockNumber", "eth_getBlockByNumber", "eth_getTransacti
 
 export const TOOLS: ToolSpec[] = [
   { name: "recent_blocks", action: false, input: z.strictObject({ limit: z.number().int().min(1).max(50).describe("How many of the newest blocks") }),
-    description: "Lists the newest blocks Rooted has X-rayed (number, hash, slot, tx count, BAL commitment check, and the gas, execution-gas, validator-with-BAL and builder ceilings). Call this first to find recent blocks, block hashes, or blocks that match a pattern." },
+    description: "Lists the newest blocks Rooted has X-rayed (number, hash, slot, tx count, BAL commitment check, the gas, execution-gas, validator-with-BAL and builder ceilings, the gas and validator capping txs, whether gas misidentifies the bottleneck, and the gas / validator ceiling ratio). Call this first to find recent blocks, block hashes, or blocks that match a pattern." },
   { name: "xray_summary", action: false, input: none,
     description: "Distribution of the ceilings over all stored X-rays (p10, median, p90), the share of blocks bound by a single transaction, how often gas picks the wrong bottleneck, and the BAL commitment success rate. Call this for questions about typical blocks or trends." },
   { name: "get_block_xray", action: false, input: blockHash,

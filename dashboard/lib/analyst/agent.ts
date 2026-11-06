@@ -21,6 +21,7 @@ const PARAMS = { investigate: toolParams(MODES.investigate.specs), brief: toolPa
 type Stream = {
   on(event: "thinking" | "text", listener: (delta: string) => void): unknown;
   finalMessage(): Promise<BetaMessage>;
+  readonly currentMessage: BetaMessage | undefined;
 };
 export interface AnalystDeps {
   client: { beta: { messages: { stream(body: BetaMessageStreamParams, options?: { signal?: AbortSignal }): Stream } } };
@@ -51,15 +52,24 @@ export async function runAnalyst(question: string, session: Session, emit: (even
   const finish = (event: AnalystEvent) => { emit(event); return event; };
   let actionsUsed = 0, buys = 0;
   session.messages.push({ role: "user", content: question });
+  // shortcut: top-level usage only covers the attempt that answered, priced at Opus 5.5 rates; a refused attempt
+  // or a fallback model's rates are not counted. Read usage.iterations if fallbacks become common.
+  const charge = async (u: BetaMessage["usage"], at: Date) => {
+    const spent = { input: u.input_tokens, output: u.output_tokens, cache_read: u.cache_read_input_tokens ?? 0, cache_write: u.cache_creation_input_tokens ?? 0 };
+    const usd = cost(spent);
+    for (const k of ["input", "output", "cache_read", "cache_write"] as const) usage[k] += spent[k];
+    usage.usd += usd;
+    await deps.ledger.add({ at: at.toISOString(), mode, ...spent, usd });
+  };
 
   for (let step = 1; step <= steps; step++) {
     const now = deps.now();
     if (await deps.ledger.spent(now.toISOString().slice(0, 10)) >= dailyLimit())
       return finish({ type: "error", code: "budget", message: `The analyst's daily budget of $${dailyLimit()} is spent. It resets at 00:00 UTC.` });
 
-    let message: BetaMessage;
+    let message: BetaMessage, stream: Stream | undefined;
     try {
-      const stream = deps.client.beta.messages.stream({
+      stream = deps.client.beta.messages.stream({
         model: MODEL, max_tokens: 32000,
         betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
         thinking: { type: "adaptive", display: "summarized" }, output_config: { effort: effort() },
@@ -72,16 +82,14 @@ export async function runAnalyst(question: string, session: Session, emit: (even
       stream.on("text", delta => emit({ type: "text", delta }));
       message = await stream.finalMessage();
     } catch (error) {
+      // An aborted or broken stream is still billed: input and cache counts arrive with message_start, output with
+      // the last message_delta. shortcut: output after that delta is not counted; estimate it if aborts become common.
+      const partial = stream?.currentMessage?.usage;
+      if (partial) await charge(partial, now);
       return finish({ type: "error", code: "upstream", message: error instanceof Anthropic.APIError ? error.message : "The Claude API call did not complete." });
     }
 
-    // shortcut: top-level usage only covers the attempt that answered, priced at Opus 5.5 rates; a refused attempt
-    // or a fallback model's rates are not counted. Read usage.iterations if fallbacks become common.
-    const u = message.usage, spent = { input: u.input_tokens, output: u.output_tokens, cache_read: u.cache_read_input_tokens ?? 0, cache_write: u.cache_creation_input_tokens ?? 0 };
-    const usd = cost(spent);
-    for (const k of ["input", "output", "cache_read", "cache_write"] as const) usage[k] += spent[k];
-    usage.usd += usd;
-    await deps.ledger.add({ at: now.toISOString(), mode, ...spent, usd });
+    await charge(message.usage, now);
 
     if (message.stop_reason === "refusal") {
       const d = message.stop_details;
