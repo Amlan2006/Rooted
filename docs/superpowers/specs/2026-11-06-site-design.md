@@ -1,6 +1,6 @@
 # Rooted marketing site: design
 
-Approved 2026-11-06. A standalone, static landing site for Rooted in `site/`, separate from the operator dashboard in `dashboard/`.
+Approved 2026-11-06, visual system revised the same day. A standalone, static landing site for Rooted in `site/`, separate from the operator dashboard in `dashboard/`.
 
 ## Intent
 
@@ -8,38 +8,52 @@ Approved 2026-11-06. A standalone, static landing site for Rooted in `site/`, se
 - **Job:** in under 30 seconds, show what Rooted checks (ePBS payloads, block access lists, native replay, frame mempool) and prove it with real data. Then send people to the dashboard, the docs or GitHub.
 - **Success:** it looks like a YC-backed devtool (Resend, Linear, Mintlify, Vercel changelog), every figure is real and sourced, and it holds up at 375, 768 and 1440 px.
 
-## Visual system: editorial mono
+## Visual system: dark precision
 
-| Token | Value |
-|---|---|
-| `--paper` | `#FAFAF7` (page) |
-| `--paper-2` | `#F3F2EE` (inset panels) |
-| `--ink` | `#0F0F0E` (text, primary buttons) |
-| `--muted` | `#6B6B66` (secondary text; AA on paper) |
-| `--line` | `#E7E6E1` (1px hairlines, grid guides) |
-| `--signal` | `#FF5A1F` (the only accent: at most one use per viewport, e.g. the capping tx, one italic word, focus ring) |
+Approved from the mockup at `/home/ubuntu/rooted-design/mock.html` (screenshot `m1.png`). Product-first, in the spirit of Linear, Vercel, Railway and Resend: the product UI is the hero, type does the rest.
 
-- **Type:**
-  - Display: Instrument Serif. Regular, plus italic for one accent word per headline.
-  - Body and UI: Geist.
-  - Numbers, labels, code, eyebrows: Geist Mono with `font-variant-numeric: tabular-nums`.
-  - Load all three with `next/font/google`.
-- **Scale:**
-  - Display 56/64 to 88/92 px (clamp), tracking -0.02em.
-  - h2 40 to 56 px serif.
-  - Body 16–18 px / 1.6.
-  - Mono labels 12 px uppercase, tracking 0.08em.
-- **Layout:**
-  - Max width 1200 px and a 12-column grid. Faint 1px column guides show only in the hero.
-  - Sections are separated by full-bleed hairlines.
-  - Content is left-aligned, editorial: not centered stacks.
-  - Section eyebrows read `01 / Promises` in mono.
-- **Surfaces:** flat. Radius 6 px on buttons, 8 px on panels. Borders, not shadows. A single shadow token is allowed only on the floating nav after scroll: `0 1px 0 var(--line)`.
+| Token | Value | Use |
+|---|---|---|
+| `--bg` | `#08090A` | page |
+| `--surface-1` | `#0D0E10` | app window, raised panels |
+| `--surface-2` | `#121316` | cards inside windows |
+| `--line` | `rgba(255,255,255,.07)` | 1px hairlines, grid |
+| `--line-strong` | `rgba(255,255,255,.11)` | control and window borders |
+| `--fg` | `#F4F5F6` | text, primary buttons (black text on white) |
+| `--fg-2` | `#9BA1A9` | secondary text |
+| `--fg-3` | `#7D838C` | small muted labels (AA on `--bg`) |
+| `--fg-4` | `#5B6068` | large text only: the second, dimmed line of two-tone headlines |
+| `--acc` | `#4BE38F` | the only accent: "verified / live / selected". Live dots, verified marks, the one highlighted data element per figure, eyebrows, focus rings. Never a big fill or a button. |
+| `--warn` / `--bad` | `#F5B54A` / `#F87171` | status only (dashboard) |
+
+- **Type:** Geist for everything, Geist Mono (`tabular-nums`) for numbers, hashes, code and data labels. No serif anywhere.
+  - Display 72 to 88 px, weight 600, line-height 0.98, tracking -0.05em. Two-tone headlines: the second line in `--fg-4`.
+  - h2 44 to 52 px, weight 600, tracking -0.04em, same two-tone trick.
+  - Body 16 to 19 px, line-height 1.5, `--fg-2`, with key terms in `--fg` weight 500.
+  - Eyebrows: 13 px Geist weight 500 in `--acc`, sentence case. No `01 /` numbering, no uppercase-tracked labels everywhere.
+- **Layout:** 1120 px content width. Left-aligned hero and section heads. Sections separated by space (140 px), not rules.
+- **Surfaces:** 1px borders. Radius 8 px for buttons and inputs, 10 px for cards, 14 px for windows and bento grids.
+  - Raised panels get `inset 0 1px 0 rgba(255,255,255,.05)`.
+  - Only the hero app window gets a deep shadow.
+  - Bento grids use 1px gaps on a `--line` background.
+- **Atmosphere:** a faint 80 px line grid behind the hero, radially masked so it fades out. The sticky nav may use `rgba(8,9,10,.72)` with `backdrop-filter: blur(12px)`. Nothing else is translucent.
 - **Banned** (reviewers reject on sight):
-  - Visual: gradients of any kind (text, background, border or radial glow), glassmorphism or `backdrop-blur`, glowing blobs, noise textures, emoji, sparkle or magic icons, purple/indigo, generic icon-in-a-coloured-circle feature cards, rounded-3xl cards with large drop shadows, stock 3D.
-  - Fake content: logo walls, testimonials, user counts, "trusted by", lorem ipsum, made-up numbers.
-  - Copy: marketing filler such as revolutionize, unleash, supercharge, seamless, cutting-edge, leverage, game-changing, next-gen, "in today's world".
-  - Clever, fast copy is fine. Clichés are not.
+  - Visual:
+    - gradient text, or coloured gradient backgrounds, borders or glows;
+    - purple, indigo or blue;
+    - blobs, noise, glass cards;
+    - emoji, and sparkle or "AI magic" icons;
+    - icon-in-a-coloured-circle feature cards;
+    - serif display type, and uppercase-tracked mono labels used as decoration;
+    - centered hero stacks, stock 3D.
+  - Fake content: logo walls, testimonials, user counts, made-up numbers.
+  - Copy: marketing filler such as revolutionize, unleash, supercharge, seamless, cutting-edge, leverage, next-gen, AI-powered.
+- **Quality reference:** every component should survive a side-by-side with linear.app and vercel.com. Check each one for:
+  - aligned baselines;
+  - consistent 4/8 spacing;
+  - optical alignment of icons;
+  - no orphan words in headlines;
+  - real UI density inside windows, not empty boxes.
 
 ## Honesty rule
 
@@ -61,25 +75,22 @@ Every number, hash, slot, block, timing and price on the page comes from `site/d
 
 ## Page structure (single page `/`)
 
-| # | Section | Component file | Content |
+| # | Section | File | Content |
 |---|---|---|---|
-| — | Nav | `components/nav.tsx` | `rooted` wordmark in Geist Mono; links Product · How it works · Pricing · Docs · GitHub; ink "Open dashboard" button. Paper background; the hairline appears after scroll. Mobile: a sheet menu with a focus trap. |
-| 0 | Hero | `components/sections/hero.tsx` | Mono eyebrow "Ethereum Sepolia · Glamsterdam". Headline "Every Ethereum block, *checked.*" One-line sub: verifies ePBS payloads, access lists and execution against your own node. CTAs Self-host (ink) and Read the docs (outline). Right or below: `BlockXray`. |
-| 1 | Proof strip | `components/sections/proof.tsx` | Four mono figures with count-up: header gas, receipt gas, tx count, largest single tx; plus a short serif line "Gas stopped measuring time." and an EIP-8037 link. |
-| 2 | Two promises | `components/sections/promises.tsx` | (a) ePBS: horizontal slot timeline built from `epbs.json` (slot start → block → payload → PTC), offsets in mono. (b) Access lists: a compact lanes view of the same hero block. Each has a 2-line plain explanation. |
-| 3 | Product | `components/sections/product.tsx` | Six cells in a hairline grid: PayloadWatch, Block X-ray, BAL analyzer, Frame mempool, Execution profiler, Provider comparison. Each has a small hand-built mono/SVG micro-illustration (no stock icons) and a one-sentence description. |
-| 4 | Block tape | `components/sections/tape.tsx` | Horizontally scrolling strip of `blocks.json`: number, txs, gas bar, builder, PTC votes. Pauses on hover; with reduced motion it becomes a static scrollable row. |
-| 5 | How it works | `components/sections/how.tsx` | Four steps: Node → Verify (roots, payload hashes, BAL commitments) → Store (replayable captures) → Explain. A hairline progress line draws as you scroll. |
-| 6 | Use it | `components/sections/terminal.tsx` | Tabs CLI / API / Agent with a sliding underline (motion `layoutId`). Real commands from the repo docs (`rooted serve`, `rooted ingest`, `curl /api/v1/...`; the agent tab shows the x402 flow). Copy button with a check transition. |
-| 7 | Pricing | `components/sections/pricing.tsx` | Two plans. **Self-host**: Free, MIT, everything included. **Hosted API**: pay per block hash via x402 on Hedera testnet, labelled "testnet", price from `pricing.json`. No fake tiers. |
-| 8 | Open source + FAQ | `components/sections/faq.tsx` | One-line OSS band with GitHub link; 4 honest Q&As (what's verified vs not, why your own node, what x402 is for, what's measured vs estimated). Accessible accordion with animated height. |
-| — | Footer | `components/footer.tsx` | Wordmark, links, "Built at ETHGlobal Mumbai 2026", MIT. |
+| — | Nav | `components/nav.tsx` | Logo mark (rounded square with a root glyph in `--acc`) and "Rooted". Links: Product · Analyst · Hosted API · Docs ↗. Right side: GitHub (ghost) and Open dashboard (white). Sticky and blurred after scroll. Mobile sheet with a focus trap. |
+| 1 | Hero | `components/sections/hero.tsx` + `components/app-window/*` | Pill "Running on Sepolia · ePBS and block access lists live", headline "See inside every / Ethereum block." (two-tone), sub with **bold** feature terms, CTAs Open dashboard (white) and `$ rooted serve` (copyable ghost). Below: a segmented **tour** (PayloadWatch · Block X-ray · Access lists · Analyst). It auto-advances every 7 s with a progress fill on the active tab, pauses on hover or focus, and is keyboard-operable. Under it sits the **AppWindow**: a faithful miniature of the dashboard (sidebar, top bar, cards) whose main pane switches with the tour. All views use snapshot data. The window footer or top bar says "snapshot · captured {date}" in `--fg-3`. Never claim it is live. |
+| 2 | Metrics | `components/sections/metrics.tsx` | Four large mono figures (header gas, receipt gas, payload-available offset, PTC votes) in a hairline row, each with a one-line label and source. Then the EIP-8037 line from the old proof strip. |
+| 3 | Bento | `components/sections/bento.tsx` | "Built for Glamsterdam" / "Every new rule in the fork, checked on a real chain." A 6-cell asymmetric bento: ePBS slot lifecycle (wide), access lists, Block X-ray, frame mempool (devnet badge), execution profiler, provider comparison (wide). Each cell holds a small, dense, real-data mini-UI, a title and one sentence. On hover the border brightens and the mini-UI does one subtle thing. |
+| 4 | Analyst | `components/sections/analyst.tsx` | Left: eyebrow "Rooted Analyst", h2 "Ask a block anything. / It shows its work.", three short facts (tools it calls, paying for reports over x402 on Hedera, evidence-cited briefs on HCS). Right: a chat window that plays a REAL brief or run from `site/data/analyst.json`: the question, tool steps appearing one by one with mono args, the x402 payment step with a Hedera receipt chip linking to HashScan, then the answer with `[E1]` evidence chips. |
+| 5 | Tape | `components/sections/tape.tsx` | Dark marquee of `blocks.json` (number, txs, gas bar, builder, PTC). Pauses on hover; static row with reduced motion. |
+| 6 | How | `components/sections/how.tsx` | Architecture in 4 steps on one connected line: your node → verify (roots, payload hashes, BAL commitments) → store (replayable captures) → explain (dashboard, API, Analyst, x402). |
+| 7 | Developers | `components/sections/terminal.tsx` | Tabs CLI / API / Agent in a terminal window, with the real commands and x402 exchange from the current site. Copy button. |
+| 8 | Pricing | `components/sections/pricing.tsx` | Two cards: Self-host (free, MIT) and Hosted API (x402 on Hedera testnet, price from `pricing.json`). No fake tiers. |
+| 9 | FAQ | `components/sections/faq.tsx` | Same honest Q&As, as a dark accordion. |
+| 10 | Final CTA | `components/sections/cta.tsx` | Big two-tone h2 "Run it against / your own node." with both CTAs, over the faint grid. |
+| — | Footer | `components/footer.tsx` | Logo, link columns (Product, Developers, Project), "Built at ETHGlobal Mumbai 2026 · MIT". |
 
-**Signature visual: `components/block-xray.tsx`.**
-- An SVG dot-matrix of `hero-block.json`: one lane per tx, sorted by index. Dots per lane are proportional to `gas_used` on a fixed grid, with ink dots at 80% opacity.
-- The capping tx lane is drawn in `--signal`, with a mono callout: "tx 72 · contract creation · 55.72M gas".
-- Lanes draw in with a stagger on first view. Hovering or focusing a lane shows a tooltip with index, gas and hash.
-- It must stay legible at 375 px: wrap the lanes into a compact grid there.
+Extra data file: `site/data/analyst.json` holds one real Analyst brief or run (question or trigger, tool steps, x402 payment with Hedera tx id, answer text with evidence ids, block). It comes from the live `/api/analyst/briefs` endpoint or the Rooted database, with `source` and `captured_at`. Nothing is invented and no Claude calls are made to produce it.
 
 ## Motion
 
@@ -107,7 +118,7 @@ Other motion: button and link hover at 150 ms, the tab underline uses `layoutId`
 ## Quality bar
 
 - No horizontal scroll or overlap at 375, 768 or 1440 px. CLS ≈ 0, with fonts using `display: swap` and size-adjust from next/font.
-- WCAG AA contrast, visible `--signal` focus rings, semantic landmarks, a skip link, labelled controls, a keyboard-operable tabs and accordion (WAI-ARIA patterns).
+- WCAG AA contrast, visible `--acc` focus rings, semantic landmarks, a skip link, labelled controls, a keyboard-operable tabs and accordion (WAI-ARIA patterns).
 - Lighthouse 95+ (performance, a11y, best practices, SEO) on the static build. No layout libraries beyond the above.
 - `site/tests/data.test.mjs` asserts:
   - every data file has `source` and `captured_at`;
