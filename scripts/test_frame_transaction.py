@@ -103,7 +103,7 @@ def main():
     if int(chain, 16) != 1337:
         raise RuntimeError('Unexpected chain; refusing to fund or submit')
     genesis = rpc('genesis', 'eth_getBlockByNumber', ['0x0', False], EXECUTION)
-    if genesis.get('hash') != '0x196a1589ac71e2f305b1fbc7bfd23e55367f9fd6eb9da97e2f572c2791e17bbc':
+    if genesis.get('hash') != os.environ.get('ROOTED_FRAME_GENESIS_HASH', '0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a'):
         raise RuntimeError('Unexpected genesis; refusing to fund or submit')
     key = '0x' + secrets.token_hex(32)
     address = cast('wallet', 'address', '--private-key', key)

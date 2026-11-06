@@ -21,7 +21,7 @@ func LoadFrame() (FrameConfig, error) {
 		Gateway:   env("ROOTED_FRAME_GATEWAY_URL", "https://altmempoolgateway.forshtat.com/rpc"),
 		Miner:     env("ROOTED_FRAME_MINER_URL", "https://altmempool.forshtat.com/rpc"),
 		Execution: env("ROOTED_FRAME_EXECUTION_URL", "https://altmempool.forshtat.com"),
-		Genesis:   env("ROOTED_FRAME_GENESIS_HASH", "0x196a1589ac71e2f305b1fbc7bfd23e55367f9fd6eb9da97e2f572c2791e17bbc")}
+		Genesis:   env("ROOTED_FRAME_GENESIS_HASH", "0x2ad3f67b059fbde111ad7af27cfb4955d997351579612237ca0318937a5bae7a")}
 	var err error
 	if f.Enabled, err = strconv.ParseBool(env("ROOTED_FRAME_ENABLED", "true")); err != nil {
 		return f, fmt.Errorf("invalid frame enabled setting")
