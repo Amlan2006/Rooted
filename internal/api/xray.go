@@ -107,6 +107,21 @@ func (s *Server) xraySummary(w http.ResponseWriter, r *http.Request) {
 	}
 	write(w, 200, map[string]any{"data": xray.Summarize(briefs)})
 }
+func (s *Server) xrayUniswap(w http.ResponseWriter, r *http.Request) {
+	if !s.xrayScope(w, r) {
+		return
+	}
+	limit, ok := xrayLimit(w, r, 50, 200)
+	if !ok {
+		return
+	}
+	scan, err := s.Xray.Uniswap(r.Context(), limit)
+	if err != nil {
+		failure(w, 500, "storage_error", "unable to read X-rays")
+		return
+	}
+	write(w, 200, map[string]any{"data": scan})
+}
 func (s *Server) xrayCreate(w http.ResponseWriter, r *http.Request) {
 	if !s.xrayScope(w, r) {
 		return

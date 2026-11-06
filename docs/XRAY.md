@@ -97,6 +97,7 @@ recent state (about 128 blocks on our node).
 | `GET /api/v1/xray/blocks/{hash}` | 200 report, 404 `not_found` |
 | `GET /api/v1/xray/blocks?limit=1..200` | 200 briefs, newest block first |
 | `GET /api/v1/xray/summary?limit=1..10000` | 200 p10/median/p90 of each ceiling and shares |
+| `GET /api/v1/xray/uniswap?limit=1..200` | 200 blocks with Uniswap-labelled edges, newest first, grouped by pool from stored hot locations |
 | `POST /api/v1/xray/blocks/{hash}` | 201 report, 429 `busy`, 422 `xray_unavailable` |
 
 The POST shares one replay gate with profile jobs and the follower. It waits up to 15 s for that gate

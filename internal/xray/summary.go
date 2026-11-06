@@ -2,6 +2,7 @@ package xray
 
 import (
 	"math"
+	"slices"
 	"sort"
 )
 
@@ -82,6 +83,39 @@ func Summarize(briefs []Brief) Summary {
 		s.Speedup8.Builder = &p.Median
 	}
 	return s
+}
+
+// UniswapOf groups the report's Uniswap-labelled hot locations by pool, most edges first.
+func UniswapOf(r Report) UniswapBlock {
+	u := UniswapBlock{BlockNumber: r.Block.Number, BlockHash: r.Block.Hash, UniswapEdges: r.Uniswap.LabeledEdges, TotalEdges: r.Edges.Total, UnlistedEdges: r.Uniswap.LabeledEdges, Pools: []UniswapPool{}}
+	onPath, index := 0, map[[2]string]int{}
+	for _, h := range r.HotLocations {
+		if h.Label == nil {
+			continue
+		}
+		id := [2]string{h.Label.Protocol, h.Label.Pool}
+		i, ok := index[id]
+		if !ok {
+			i, index[id] = len(u.Pools), len(u.Pools)
+			u.Pools = append(u.Pools, UniswapPool{Protocol: h.Label.Protocol, Pool: h.Label.Pool, Labels: []string{}})
+		}
+		p := &u.Pools[i]
+		p.Verified, p.Edges, p.OnCriticalPath = p.Verified || h.Label.Verified, p.Edges+h.Edges, p.OnCriticalPath || h.OnCriticalPath
+		if !slices.Contains(p.Labels, h.Label.Name) {
+			p.Labels = append(p.Labels, h.Label.Name)
+		}
+		u.UnlistedEdges -= h.Edges
+		if h.OnCriticalPath {
+			onPath++
+		}
+	}
+	u.UnlistedEdges = max(u.UnlistedEdges, 0)
+	sort.SliceStable(u.Pools, func(i, j int) bool { return u.Pools[i].Edges > u.Pools[j].Edges })
+	if r.Ceilings.Builder.Value != nil {
+		n := len(r.Ceilings.Builder.CriticalPath)
+		u.CriticalPathLength, u.CriticalPathUniswapLocations = &n, &onPath
+	}
+	return u
 }
 
 func add(list []float64, v *float64) []float64 {

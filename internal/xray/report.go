@@ -126,6 +126,33 @@ type UniswapCounts struct {
 	V4Swaps      int `json:"v4_swap_transactions"`
 	LabeledEdges int `json:"labeled_edges"`
 }
+
+// UniswapBlock is one stored report's Uniswap contention, read from its hot locations (no recompute).
+type UniswapBlock struct {
+	BlockNumber   uint64 `json:"block_number"`
+	BlockHash     string `json:"block_hash"`
+	UniswapEdges  int    `json:"uniswap_edges"`
+	TotalEdges    int    `json:"total_edges"`
+	UnlistedEdges int    `json:"unlisted_uniswap_edges"` // labelled edges on locations the report did not keep
+	// The report stores the critical path's tx indices but not each tx's locations, so the Uniswap share of the
+	// path is counted in labelled locations with an edge on it, not in transactions. Nil without a builder ceiling.
+	CriticalPathLength           *int          `json:"critical_path_length"`
+	CriticalPathUniswapLocations *int          `json:"critical_path_uniswap_locations"`
+	Pools                        []UniswapPool `json:"pools"`
+}
+type UniswapPool struct {
+	Protocol       string   `json:"protocol"`
+	Pool           string   `json:"pool"`
+	Verified       bool     `json:"verified"`
+	Edges          int      `json:"edges"`
+	OnCriticalPath bool     `json:"on_critical_path"`
+	Labels         []string `json:"labels"`
+}
+type UniswapScan struct {
+	Reports int            `json:"reports_scanned"`
+	Matches int            `json:"blocks_with_uniswap_edges"`
+	Blocks  []UniswapBlock `json:"blocks"`
+}
 type Envelope struct {
 	Slot                          uint64
 	BeaconBlockRoot, BuilderIndex string

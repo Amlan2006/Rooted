@@ -69,6 +69,32 @@ func (s *Store) List(ctx context.Context, limit int) ([]Brief, error) {
 	return out, rows.Err()
 }
 
+// Uniswap scans every stored report and returns the newest limit blocks with Uniswap-labelled edges.
+func (s *Store) Uniswap(ctx context.Context, limit int) (UniswapScan, error) {
+	out := UniswapScan{Blocks: []UniswapBlock{}}
+	const labelled = `(report->'uniswap'->>'labeled_edges')::int>0`
+	if err := s.Pool.QueryRow(ctx, `SELECT count(*),count(*) FILTER (WHERE `+labelled+`) FROM xray_reports WHERE network='sepolia'`).Scan(&out.Reports, &out.Matches); err != nil {
+		return out, err
+	}
+	rows, err := s.Pool.Query(ctx, `SELECT report-'transactions' FROM xray_reports WHERE network='sepolia' AND `+labelled+` ORDER BY block_number DESC,block_hash LIMIT $1`, limit)
+	if err != nil {
+		return out, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var raw []byte
+		var r Report
+		if err := rows.Scan(&raw); err != nil {
+			return out, err
+		}
+		if json.Unmarshal(raw, &r) != nil {
+			return out, errors.New("stored X-ray schema unavailable")
+		}
+		out.Blocks = append(out.Blocks, UniswapOf(r))
+	}
+	return out, rows.Err()
+}
+
 // EPBS projects the latest live PayloadWatch state for the payload, or nil when none exists.
 func (s *Store) EPBS(ctx context.Context, hash string) (*EPBS, error) {
 	var e EPBS
