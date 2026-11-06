@@ -1,26 +1,31 @@
 import type { ReactNode } from "react";
-import { Section } from "@/components/ui/section";
+import { Section, SectionHead } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
-import { CopyButton } from "@/components/ui/copy-button";
 import { ArrowUpRight } from "@/components/ui/icons";
-import { Reveal } from "@/components/motion";
+import { Reveal } from "@/components/reveal";
 import { Accordion } from "@/components/s4-pricing-faq/accordion";
 import { docUrl } from "@/components/s4-pricing-faq/docs";
 import { links } from "@/lib/data";
 
-const Code = ({ children }: { children: ReactNode }) => <code className="font-mono text-[14px] text-ink">{children}</code>;
+const Code = ({ children }: { children: ReactNode }) => (
+  <code className="rounded-[5px] border border-line bg-fg/[0.04] px-[5px] py-px font-mono text-[13px] text-fg">{children}</code>
+);
 
 /** The repo docs an answer is drawn from; a doc the snapshot did not find on main is left out. */
 function Sources({ docs }: { docs: [path: string, url?: string][] }) {
   const found = docs.flatMap(([path, url = docUrl(path)]) => (url ? [{ path, url }] : []));
   if (!found.length) return null;
   return (
-    <p className="mt-4 flex flex-wrap items-center gap-x-4 font-mono text-label">
-      <span className="uppercase">{found.length > 1 ? "Sources" : "Source"}</span>
+    <p className="mt-5 flex flex-wrap items-center gap-2">
+      <span className="mr-1 text-[13px] text-fg-3">{found.length > 1 ? "Sources" : "Source"}</span>
       {found.map((d) => (
-        <a key={d.path} href={d.url} className="link inline-flex items-center gap-1 py-1">
+        <a
+          key={d.path}
+          href={d.url}
+          className="group/src inline-flex h-6 items-center gap-1 rounded-md border border-line-strong bg-fg/[0.02] px-2 font-mono text-[12px] text-fg-2 transition-[border-color,background-color,color] duration-150 hover:border-fg/20 hover:bg-fg/[0.05] hover:text-fg"
+        >
           {d.path.replace("docs/", "")}
-          <ArrowUpRight className="text-muted" />
+          <ArrowUpRight className="size-2.5 opacity-60 transition-transform duration-150 ease-out group-hover/src:-translate-y-px group-hover/src:translate-x-px" />
         </a>
       ))}
     </p>
@@ -38,8 +43,9 @@ const faqs = [
           must hash to the header&rsquo;s <Code>blockAccessListHash</Code>, or ingestion stops.
         </p>
         <p className="mt-3">
-          It does not prove execution validity. Rooted records the node&rsquo;s import verdict instead of re-executing payloads,
-          and replay starts from the node&rsquo;s prestate trace, not from a proof against the parent state root.
+          It does not prove execution validity. Rooted records the node&rsquo;s import verdict instead of re-executing payloads
+          to judge validity. Its replay is for timing, and starts from the node&rsquo;s prestate trace, not from a proof against
+          the parent state root.
         </p>
         <Sources docs={[["docs/PAYLOADWATCH.md"], ["docs/BAL_ANALYZER.md"], ["docs/EXECUTION_PROFILER.md"]]} />
       </>
@@ -52,7 +58,7 @@ const faqs = [
         <p>
           Public endpoints don&rsquo;t stream beacon events (the public Sepolia beacon answered <Code>/eth/v1/events</Code>{" "}
           with 501), rarely expose Geth debug traces, and arrival times only mean something at a node you run. Public RPCs
-          still work as polling fallbacks and as the second source in provider comparison.
+          still work as polling fallbacks and as the second source in a provider diff.
         </p>
         <Sources docs={[["docs/SEPOLIA_NODE.md"], ["docs/PROVIDER_COMPARISON.md"]]} />
       </>
@@ -77,8 +83,8 @@ const faqs = [
     a: (
       <>
         <p>
-          Nothing on this page is estimated. Each figure comes from a snapshot of Rooted&rsquo;s own Sepolia node or the repo,
-          and shows its source and capture date. Arrival times are when our node received each event, not when a builder published it.
+          Nothing on this page is estimated. Each figure comes from a snapshot of Rooted&rsquo;s own Sepolia node, the Hedera
+          testnet mirror node or the repo, and shows its source and capture date. Arrival times are when our node received each event, not when a builder published it.
           Replay timings come from one machine&rsquo;s native Geth replay. When a value is missing, Rooted leaves it empty
           rather than deriving it from gas.
         </p>
@@ -90,37 +96,18 @@ const faqs = [
 
 export function Faq() {
   return (
-    <Section
-      id="faq"
-      index={7}
-      eyebrow="Open source"
-      title={
-        <>
-          Open source. Check our <em className="italic">work.</em>
-        </>
-      }
-      intro="MIT licensed: the Go backend, the dashboard and the captured evidence behind every check. Point it at your own node and run every check yourself."
-      compact
-    >
-      <Reveal className="flex flex-col gap-3 rounded-panel border bg-paper-2 p-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center justify-between gap-2 pl-3">
-          {/* Breaks only between "git clone" and the URL unless the URL alone cannot fit. */}
-          <code className="min-w-0 font-mono text-xs leading-5 [overflow-wrap:anywhere] sm:text-sm">
-            <span className="select-none text-muted">$ </span>git clone {links.github}
-          </code>
-          <CopyButton value={`git clone ${links.github}`} label="Copy clone command" className="shrink-0" />
+    <Section id="faq" aria-labelledby="faq-title">
+      <div className="grid gap-y-12 lg:grid-cols-12 lg:gap-x-8">
+        {/* Head left, list right from lg; the head stays in view while the answers scroll. */}
+        <div className="lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
+          <SectionHead id="faq-title" size="sm" title="Fair questions, sourced answers." lead="What Rooted checks, what it can’t, and where every number on this page comes from." />
+          <div className="mt-8">
+            <Button href={links.docs} variant="ghost" arrow="external">
+              Read the docs
+            </Button>
+          </div>
         </div>
-        <Button href={links.github} variant="outline" className="bg-paper">
-          View on GitHub <ArrowUpRight />
-        </Button>
-      </Reveal>
-
-      <div className="mt-16 grid grid-cols-12 gap-x-6 gap-y-8 md:mt-24">
-        <div className="col-span-12 md:col-span-4 md:pt-3">
-          <h3 className="font-serif text-h3">Fair questions.</h3>
-          <p className="mt-3 max-w-[30ch] text-muted">Each answer cites the docs it comes from.</p>
-        </div>
-        <Reveal className="col-span-12 md:col-span-8">
+        <Reveal className="lg:col-span-7">
           <Accordion items={faqs} />
         </Reveal>
       </div>
