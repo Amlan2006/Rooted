@@ -1,0 +1,102 @@
+/* Hover detail for the bento minis: each cell does one thing. `.cell` is the hover root (an <li>). */
+
+/* ePBS: a playhead replays the 500 ms axis in 2 s. Each lead line grows in step with it (--t0 to --t, as fractions
+   of the axis), each point lands as the playhead reaches it, and the PTC window runs from its start to the edge. */
+.playhead {
+  opacity: 0;
+}
+.cell:hover .playhead {
+  animation: sweep 2s linear both;
+}
+.cell:hover .lead {
+  animation: grow calc(2s * (var(--t) - var(--t0))) linear calc(2s * var(--t0)) both;
+}
+.cell:hover .dot {
+  animation: land 0.45s cubic-bezier(0.22, 1, 0.36, 1) calc(2s * var(--t)) both;
+}
+.cell:hover .window {
+  animation: grow calc(2s * (1 - var(--t0))) linear calc(2s * var(--t0)) both;
+}
+
+/* Access list: the per-index strip brightens left to right. */
+.wipe {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cell:hover .wipe {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Frame mempool: the pass marks re-draw in order. */
+.tick path {
+  stroke-dasharray: 1;
+}
+.cell:hover .tick path {
+  animation: draw 0.4s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 70ms) both;
+}
+
+/* Profiler: the partition bar re-measures from zero. */
+.cell:hover .measure {
+  animation: grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Providers: rows are compared top to bottom; each match mark lands as its row is scanned. */
+.cell:hover .row {
+  animation: scan 0.8s ease-out calc(var(--i) * 90ms) both;
+}
+.cell:hover .mark {
+  animation: pop 0.35s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 90ms + 120ms) both;
+}
+
+@keyframes sweep {
+  from {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scan {
+  30% {
+    background-color: rgb(255 255 255 / 0.035);
+  }
+}
+@keyframes land {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+  60% {
+    scale: 1.35;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell:hover * {
+    animation: none !important;
+  }
+}

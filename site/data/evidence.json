@@ -1,0 +1,71 @@
+{
+  "source": "Rooted demo evidence in the repo: rooted profile, rooted frame-sync and rooted compare-providers runs (demo/profiler, demo/phase4, demo/provider-comparison)",
+  "captured_at": "2026-11-06T08:18:31Z",
+  "profile": {
+    "source": "rooted profile, native Geth v1.17.10 replay (demo/profiler)",
+    "captured_at": "2026-11-06T08:13:48Z",
+    "block_number": 12075311,
+    "tx_count": 85,
+    "samples": 7,
+    "apply_ns": 599651251,
+    "evm_call_ns": 595549352,
+    "state_inside_evm_ns": 5778691,
+    "state_access_ns": 7954634,
+    "control_median_ns": 193020955
+  },
+  "frame": {
+    "source": "rooted frame-sync gateway on the frame devnet, chain 1337 (demo/phase4)",
+    "captured_at": "2026-11-06T08:18:31Z",
+    "tx_hash": "0x0cd83f6adc761d993402df583cb36483cf3ff20b18da84d56f7233316ff54051",
+    "frames": 5,
+    "checks": [
+      "gas-limit",
+      "recent-root",
+      "prefix",
+      "structure",
+      "signature",
+      "simulation"
+    ],
+    "checks_total": 24,
+    "checks_passed": 24,
+    "admitted_seq": 58,
+    "included_seq": 59,
+    "admission_to_inclusion_ms": 16786,
+    "receipt_type": "0x6",
+    "receipt_block": 1056,
+    "canonical": true
+  },
+  "providers": {
+    "source": "rooted compare-providers, your node against a public Sepolia RPC (demo/provider-comparison)",
+    "captured_at": "2026-11-06T08:14:36Z",
+    "block_number": 12075311,
+    "slot": 11518264,
+    "fields": [
+      {
+        "name": "block hash",
+        "value": "0x5003b43a843799fd3043275a52cfc9f1d16907e685e0781b0cb13aa21a326cdc"
+      },
+      {
+        "name": "parent hash",
+        "value": "0xa3139ded75315e7f9ea6835ecd3a245d62321279980927ef626be56fa988bb9b"
+      },
+      {
+        "name": "state root",
+        "value": "0xebd6afc9e7dece210d56a90e1d76ef722c070bb98d732377d92ab03d4801d15c"
+      },
+      {
+        "name": "receipts root",
+        "value": "0x73b977ab7261e25816d8c1c33ea1424b4f0787333eb7dcdf468f983367db4a94"
+      },
+      {
+        "name": "BAL hash",
+        "value": "0xeaa96f16696e0e7cac003a9c1f768a144e3cfddddab36fd0bfe74ccd86930f0f"
+      }
+    ],
+    "tx_hashes": 85,
+    "gap": {
+      "method": "eth_getBlockAccessList",
+      "code": -32601
+    }
+  }
+}
