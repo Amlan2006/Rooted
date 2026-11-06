@@ -24,6 +24,8 @@ import (
 	"rooted/internal/framemempool"
 	"rooted/internal/ingest"
 	"rooted/internal/payloadwatch"
+	"rooted/internal/profiler"
+	"rooted/internal/providers"
 	"rooted/internal/remote"
 	"rooted/internal/storage"
 )
@@ -41,7 +43,7 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	if command == "help" {
-		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | help]")
+		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | compare-providers [BLOCK_HASH] | profile BLOCK_HASH | profile-replay PROFILE_ID | profile-capture PROFILE_ID | help]")
 		return nil
 	}
 	c, err := config.Load()
@@ -53,6 +55,10 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	ac, err := config.LoadAnalysis()
+	if err != nil {
+		return err
+	}
+	pc, err := config.LoadProviders()
 	if err != nil {
 		return err
 	}
@@ -74,6 +80,14 @@ func run(logger *slog.Logger) error {
 	watch := &payloadwatch.Engine{Pool: repo.Pool, Policy: payloadwatch.Policy{LateAfter: c.LateAfter, MissingAfter: c.MissingAfter, PTCQuorum: c.PTCQuorum, PTCSize: c.PTCSize}}
 	analysisStore := &analysis.Store{Pool: repo.Pool}
 	analyzer := &analysis.Collector{Beacon: remote.New(c.BeaconURL, c.RequestTimeout), AnchorNumber: ac.AnchorNumber, AnchorHash: ac.AnchorHash, Execution: remote.New(c.ExecutionURL, c.RequestTimeout), Trace: remote.New(ac.TraceURL, c.RequestTimeout), Network: c.Network, Mode: "live", ChainID: c.ChainID, Native: true, OpcodeLimit: 20000}
+	providerStore := &providers.Store{Pool: repo.Pool}
+	providerChecks := &providers.Collector{Providers: [2]providers.Endpoint{{ID: "primary", Execution: c.ExecutionURL, Beacon: c.BeaconURL}, {ID: "reference", Execution: pc.ExecutionURL, Beacon: pc.BeaconURL}}, AnchorNumber: ac.AnchorNumber, AnchorHash: ac.AnchorHash, GenesisRoot: c.GenesisRoot, Timeout: 8 * time.Second}
+	profileStore := &profiler.Store{Pool: repo.Pool}
+	replayBinary := os.Getenv("ROOTED_REPLAY_BINARY")
+	if replayBinary == "" {
+		replayBinary = ".tools/rooted-replay"
+	}
+	profileCollector := &profiler.Collector{RPC: remote.New(c.ExecutionURL, c.RequestTimeout), Endpoint: c.ExecutionURL, Binary: replayBinary, AnchorNumber: ac.AnchorNumber, AnchorHash: ac.AnchorHash}
 	frames := &framemempool.Store{Pool: repo.Pool, ObservationWindow: fc.ObservationWindow}
 	frameCollectors := map[string]*framemempool.Collector{}
 	for node, endpoint := range map[string]string{"gateway": fc.Gateway, "miner": fc.Miner} {
@@ -86,6 +100,75 @@ func run(logger *slog.Logger) error {
 		frameCollectors[node] = &framemempool.Collector{Scope: framemempool.Scope{Network: fc.Network, Mode: "live", Node: node}, Store: frames, Node: framemempool.NewClient(endpoint, c.RequestTimeout), Execution: framemempool.NewClient(fc.Execution, c.RequestTimeout), ChainID: fc.Chain, Genesis: fc.Genesis, WSURL: u.String(), Interval: fc.Poll, Logger: logger}
 	}
 	switch command {
+	case "compare-providers":
+		if c.Network != "sepolia" {
+			return errors.New("provider comparison requires Sepolia configuration")
+		}
+		bounded, done := context.WithTimeout(ctx, 75*time.Second)
+		defer done()
+		hash := ""
+		if len(os.Args) == 3 {
+			hash = os.Args[2]
+		} else {
+			hash, err = providerChecks.Latest(bounded)
+			if err != nil {
+				return err
+			}
+		}
+		report, err := providerChecks.Compare(bounded, hash)
+		if err != nil {
+			return err
+		}
+		if bounded.Err() != nil {
+			return bounded.Err()
+		}
+		if err = providerStore.Save(bounded, report); err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(map[string]any{"data": report})
+	case "profile", "profile-replay":
+		if c.Network != "sepolia" {
+			return errors.New("profiling requires Sepolia configuration")
+		}
+		bounded, done := context.WithTimeout(ctx, 90*time.Second)
+		defer done()
+		var report profiler.Report
+		var capture []byte
+		if command == "profile" {
+			report, capture, err = profileCollector.Capture(bounded, os.Args[2])
+		} else {
+			reports, readErr := profileStore.List(bounded, strings.ToLower(os.Args[2]))
+			if readErr != nil || len(reports) != 1 {
+				return errors.New("saved profile unavailable")
+			}
+			capture, err = profileStore.Capture(bounded, reports[0].ID)
+			if err != nil {
+				return err
+			}
+			metadata := reports[0]
+			metadata.CaptureMode = "recorded_capture"
+			if metadata.InputCapturedAt.IsZero() {
+				metadata.InputCapturedAt = metadata.CapturedAt
+			}
+			report, capture, err = profileCollector.Measure(bounded, metadata, capture)
+		}
+		if err != nil {
+			return err
+		}
+		if err = profileStore.Correlate(bounded, &report); err != nil {
+			return err
+		}
+		if err = profileStore.Save(bounded, report, capture); err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(map[string]any{"data": report})
+	case "profile-capture":
+		capture, err := profileStore.Capture(ctx, strings.ToLower(os.Args[2]))
+		if err != nil {
+			return err
+		}
+		_, err = os.Stdout.Write(capture)
+		return err
 	case "analyze", "analyze-fork":
 		selected := []string{}
 		if len(os.Args) == 4 {
@@ -214,7 +297,7 @@ func run(logger *slog.Logger) error {
 				}
 			}
 		}
-		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network}).Handler()
+		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network, Providers: providerStore, ProviderChecks: providerChecks, ProviderGate: make(chan struct{}, 1), Profiles: profileStore, Profiler: profileCollector, ProfileGate: make(chan struct{}, 1)}).Handler()
 		server := &http.Server{Addr: c.ListenAddr, Handler: handler, BaseContext: func(net.Listener) context.Context { return ctx }, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 		finished := make(chan error, 1)
 		go func() {
@@ -255,6 +338,16 @@ func parseArguments(args []string) (string, uint64, error) {
 		if len(args) == 1 {
 			return args[0], 0, nil
 		}
+	case "compare-providers":
+		if len(args) == 1 || (len(args) == 2 && ingest.ValidRoot(args[1])) {
+			return args[0], 0, nil
+		}
+		return "", 0, errors.New("usage: rooted compare-providers [BLOCK_HASH]")
+	case "profile", "profile-replay", "profile-capture":
+		if len(args) == 2 && ingest.ValidRoot(args[1]) {
+			return args[0], 0, nil
+		}
+		return "", 0, fmt.Errorf("usage: rooted %s IMMUTABLE_HASH", args[0])
 	case "replay":
 		if len(args) == 2 && args[1] != "" {
 			return "replay", 0, nil

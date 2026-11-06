@@ -15,6 +15,8 @@ import (
 	"rooted/internal/framemempool"
 	"rooted/internal/ingest"
 	"rooted/internal/payloadwatch"
+	"rooted/internal/profiler"
+	"rooted/internal/providers"
 	"rooted/internal/storage"
 )
 
@@ -22,16 +24,22 @@ type Fetcher interface {
 	Fetch(context.Context, uint64) (domain.Snapshot, error)
 }
 type Server struct {
-	Repository   storage.Repository
-	Collector    Fetcher
-	Network      string
-	Logger       *slog.Logger
-	Watch        *payloadwatch.Engine
-	SourceID     string
-	Analysis     *analysis.Store
-	Analyzer     *analysis.Collector
-	Frames       *framemempool.Store
-	FrameNetwork string
+	Repository     storage.Repository
+	Collector      Fetcher
+	Network        string
+	Logger         *slog.Logger
+	Watch          *payloadwatch.Engine
+	SourceID       string
+	Analysis       *analysis.Store
+	Analyzer       *analysis.Collector
+	Providers      *providers.Store
+	ProviderChecks *providers.Collector
+	ProviderGate   chan struct{}
+	Profiles       *profiler.Store
+	Profiler       *profiler.Collector
+	ProfileGate    chan struct{}
+	Frames         *framemempool.Store
+	FrameNetwork   string
 }
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
@@ -72,6 +80,14 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/v1/collector", s.collectorStatus)
 	mux.HandleFunc("GET /api/v1/live", s.live)
 	mux.HandleFunc("GET /metrics", s.metrics)
+	mux.HandleFunc("GET /api/v1/providers/comparisons", s.providerComparisons)
+	mux.HandleFunc("GET /api/v1/providers/comparisons/{id}", s.providerComparisons)
+	mux.HandleFunc("POST /api/v1/providers/compare", s.providerCompare)
+	mux.HandleFunc("GET /api/v1/profiles", s.profiles)
+	mux.HandleFunc("GET /api/v1/profiles/{id}", s.profiles)
+	mux.HandleFunc("GET /api/v1/profiles/{id}/capture", s.profileCapture)
+	mux.HandleFunc("POST /api/v1/profiles", s.profileCreate)
+	mux.HandleFunc("POST /api/v1/profiles/{id}/replay", s.profileCreate)
 	mux.HandleFunc("GET /api/v1/analysis/runs", s.analysisList)
 	mux.HandleFunc("GET /api/v1/analysis/blocks/{hash}", s.analysisList)
 	mux.HandleFunc("POST /api/v1/analysis/blocks/{hash}/ingest", s.analysisIngest)
