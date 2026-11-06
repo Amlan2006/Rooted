@@ -243,7 +243,7 @@ function UniswapExample() {
   </details>;
 }
 
-const palette = { validator: "#008aa3", builder: "#c26d22", reference: "#b5bec5" };
+const palette = { validator: "var(--acc)", builder: "var(--fg-2)", reference: "var(--fg-4)" };
 function CoresChart({ report }: { report: Report }) {
   const series = speedupSeries(report);
   const [W, H, x0, x1, y0, y1] = [620, 270, 44, 470, 236, 14];
@@ -257,7 +257,7 @@ function CoresChart({ report }: { report: Report }) {
     <div className="activity-legend">{lines.map(s => <span key={s}><i className="legend" style={{ background: palette[s] }} />{names[s]}</span>)}<span><i className="legend" style={{ background: palette.reference }} />y = k (perfect scaling)</span></div>
     <svg className="cores-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Speedup vs cores. ${lines.map(s => `${names[s]}: ${series.map(p => `${p.k} cores ${formatX(p[s])}`).join(", ")}`).join(". ")}`}>
       {[1, 2, 4, 8, 16].map(v => <g key={v}>
-        <line x1={x0} x2={x1} y1={y(v)} y2={y(v)} stroke="#edf0f2" />
+        <line x1={x0} x2={x1} y1={y(v)} y2={y(v)} stroke="var(--line)" />
         <text x={x0 - 8} y={y(v) + 3} textAnchor="end" className="axis">{v}×</text>
         <text x={x(v)} y={y0 + 16} textAnchor="middle" className="axis">{v}</text>
       </g>)}
@@ -266,7 +266,7 @@ function CoresChart({ report }: { report: Report }) {
       {/* Validator is drawn wider underneath so it stays visible where the two schedules coincide. */}
       {lines.map(s => <g key={s}>
         <polyline fill="none" stroke={palette[s]} strokeWidth={s === "validator" ? 5 : 2} points={series.map(p => `${x(p.k)},${y(p[s]!)}`).join(" ")} />
-        {series.map(p => <circle key={p.k} cx={x(p.k)} cy={y(p[s]!)} r={s === "validator" ? 6.5 : 4} fill={palette[s]} stroke="#fff" strokeWidth={2}><title>{`${names[s]} · ${p.k} cores · ${formatX(p[s])}`}</title></circle>)}
+        {series.map(p => <circle key={p.k} cx={x(p.k)} cy={y(p[s]!)} r={s === "validator" ? 6.5 : 4} fill={palette[s]} stroke="var(--surface-2)" strokeWidth={2}><title>{`${names[s]} · ${p.k} cores · ${formatX(p[s])}`}</title></circle>)}
       </g>)}
       {ends.map(e => <text key={e.s} x={x1 + 12} y={e.y + 4} className="label">{tags[e.s]} {formatX(series[4][e.s])}</text>)}
     </svg>

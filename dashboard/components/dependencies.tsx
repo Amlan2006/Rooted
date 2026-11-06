@@ -151,7 +151,7 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
                 height="22"
                 patternUnits="userSpaceOnUse"
               >
-                <circle cx="1" cy="1" r=".8" fill="#d5d9df" />
+                <circle cx="1" cy="1" r=".8" fill="var(--line-strong)" />
               </pattern>
             </defs>
             <rect width="1000" height="260" fill="url(#grid)" />
@@ -165,10 +165,10 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
                   fill="none"
                   stroke={
                     e.kind === "RAW"
-                      ? "#2196a5"
+                      ? "var(--fg-2)"
                       : e.kind === "WAR"
-                        ? "#d39b3c"
-                        : "#8b929e"
+                        ? "var(--warn)"
+                        : "var(--fg-4)"
                   }
                   strokeWidth="1.6"
                   opacity=".7"
@@ -198,14 +198,14 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
                     rx="10"
                     width="46"
                     height="46"
-                    fill={focus === index ? "#142632" : "#fff"}
-                    stroke="#1e6473"
+                    fill={focus === index ? "var(--acc-soft)" : "var(--surface-2)"}
+                    stroke={focus === index ? "var(--acc)" : "var(--line-strong)"}
                   />
                   <text
                     x={p.x}
                     y={p.y + 5}
                     textAnchor="middle"
-                    fill={focus === index ? "#fff" : "#244552"}
+                    fill={focus === index ? "var(--acc)" : "var(--fg)"}
                     fontSize="14"
                   >
                     {index}
@@ -214,7 +214,7 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
                     x={p.x}
                     y={p.y + 43}
                     textAnchor="middle"
-                    fill="#69757c"
+                    fill="var(--fg-3)"
                     fontSize="10"
                   >
                     TX {index}
