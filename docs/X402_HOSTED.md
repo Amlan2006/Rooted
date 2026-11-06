@@ -51,7 +51,9 @@ agent.mjs ──GET──▶ dashboard /api/paid/xray/[hash]   (Next.js route, w
 Guarantees enforced in `dashboard/lib/x402.ts`:
 
 - Malformed hashes get a 400 before any payment is requested.
-- Only an exact `ROOTED_FREE_XRAY_BLOCKS` hash skips payment, and it still goes through the report checks below.
+- On the paid route and the read proxy, only an exact `ROOTED_FREE_XRAY_BLOCKS` hash skips payment, and it still goes
+  through the report checks below. `ROOTED_ANALYST_PUBLIC=true` lets the analyst read any stored report (see
+  [ANALYST.md](ANALYST.md)).
 - `withX402` settles only when the handler returns a status below 400. An unknown hash (404), a backend outage (502) or a backend body that is not the `rooted-xray-v1` report for that exact hash (502 `invalid_report`) is never charged.
 - The backend origin goes through the same `backendURL` guard as the read proxy: http(s) only, no credentials, no path.
 - A misconfigured paywall throws when the module loads (fail closed) instead of serving reports free or at the wrong price.

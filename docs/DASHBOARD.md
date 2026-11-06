@@ -15,7 +15,7 @@ The dashboard lives in `dashboard/`, alongside the Go backend. Next.js provides 
 | Compare workloads | Controlled A/A/A versus A/B/A fork comparison bundles; see [WORKLOAD_COMPARISON.md](WORKLOAD_COMPARISON.md) |
 | RPC providers | Primary versus reference provider comparison reports; see [PROVIDER_COMPARISON.md](PROVIDER_COMPARISON.md) |
 | Execution profiler | Native replay profiles and their saved captures; see [EXECUTION_PROFILER.md](EXECUTION_PROFILER.md) |
-| Incidents | Separate scoped PayloadWatch signals and frame-devnet incidents; no CRE policy panel, because the backend has no `/api/v1/cre/*` routes yet |
+| Incidents | Separate scoped PayloadWatch signals and frame-devnet incidents; no CRE policy panel, because the backend has no `/api/v1/cre/*` routes yet; for the same reason, Investigate's step 5 (related CRE policy checks) shows them as unavailable |
 | Private RPC | Nox worker transport, supported Sepolia investigation reads, readiness, latency, bootstrap counters, logs, explicit direct mode, and fail-closed drill |
 
 The payload scope selector offers live Sepolia or the clearly labeled **synthetic lifecycle demo** (`phase3-demo`). It does not silently switch frame data to synthetic. Frame observations always identify their independent devnet. BAL fork data uses `sepolia-fork`, chain 31337, and an explicit trace-demo label. The header changes network identity for frame and fork views. Unknown values are rendered as **Unknown**, never zero or confirmed.

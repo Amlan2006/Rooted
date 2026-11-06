@@ -140,6 +140,13 @@ effort `medium`. Total Claude spend for everything below, retries and the screen
 The purchase settled on Hedera testnet: [`0.0.9185802@1793973360.446037453`](https://hashscan.io/testnet/transaction/0.0.9185802@1793973360.446037453),
 1,000,000 tinybars from agent `0.0.11338137` to `0.0.11337330`, mirror node result `SUCCESS`.
 
+The Uniswap miss above only looked at recent blocks; `uniswap_contention` now reads every stored X-ray. Asked later
+the same day, against a copy of the 710 stored X-rays:
+
+| Question | Tool calls | Time | Cost | Answer, first line |
+|---|---|---|---|---|
+| Which Uniswap pools caused contention in stored blocks? | 1 | 16 s | $0.063 | Six pools across 13 of 710 stored X-rays. The heaviest is v3 pool `0x3289680d…eff1`: 87 edges in block 12,076,476 and 14 in 12,076,479. Only the v4 PoolManager in block 12,077,498 has an edge on the critical path |
+
 The briefs loop stored 6 briefs in its first two minutes, for blocks 12,076,992 to 12,077,001, at $0.023–0.038
 each. All six tripped `gas_misleads`. Their hashes are messages 4–9 on HCS topic
 [`0.0.11338138`](https://hashscan.io/testnet/topic/0.0.11338138).
