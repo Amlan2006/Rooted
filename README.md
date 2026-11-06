@@ -57,6 +57,15 @@ cd dashboard && npm ci && npm run dev    # http://127.0.0.1:3000/?view=xray
 Needs Go 1.25+, Node 24, Docker and a Glamsterdam Sepolia node (Geth with `debug`, Nimbus serving payload
 envelopes). One block: `rooted xray 0xBLOCKHASH`. Offline: `rooted xray --capture demo/profiler/replay-input.json.gz`.
 
+## The analyst
+
+`?view=analyst` puts a Claude agent (`claude-opus-5-5`) on Rooted's own evidence. It reads stored X-rays, ePBS slots
+and frame data and calls the node, and every figure in its answer cites the tool result it came from. It can replay
+a block or buy a report over x402, within caps. Asked why the builder loses parallelism in block 12,076,467, it
+found the 12-transaction chain (16.1 ms) that holds the static builder to 13.3× against 21.0× with the BAL, in 15 s
+for $0.08. `npm run briefs` writes briefs for unusual blocks with nobody asking. It is off without
+`ANTHROPIC_API_KEY` and has a daily spend cap. Details: [docs/ANALYST.md](docs/ANALYST.md).
+
 ## Partner prizes
 
 ### Ethereum Foundation · Frame Transaction Alt Mempool
@@ -103,6 +112,8 @@ approval, under a per-request cap, a daily budget, a trusted `payTo` list and on
 **Settled on Hedera testnet** (agent `0.0.11338137` → `0.0.11337330`, 1,000,000 tinybars, `SUCCESS`):
 - [`0.0.9185802@1793963177.452527184`](https://hashscan.io/testnet/transaction/0.0.9185802@1793963177.452527184) via `e2e.sh`
 - [`0.0.9185802@1793963925.399944560`](https://hashscan.io/testnet/transaction/0.0.9185802@1793963925.399944560) via the MCP tool `buy_xray_report`
+- Claude pays too: [`0.0.9185802@1793973360.446037453`](https://hashscan.io/testnet/transaction/0.0.9185802@1793973360.446037453),
+  bought by the [analyst](docs/ANALYST.md) when asked for the newest block with a builder gap
 
 Every paid call is logged to HCS topic [`0.0.11338138`](https://hashscan.io/testnet/topic/0.0.11338138).
 The code is in [`integrations/x402-agent`](integrations/x402-agent) (agent, spend policy, MCP server) and
@@ -111,7 +122,7 @@ Details: [docs/X402_HOSTED.md](docs/X402_HOSTED.md).
 
 ## Docs
 
-[X-ray](docs/XRAY.md) · [Frame conformance](docs/FRAME_CONFORMANCE.md) · [Uniswap](docs/UNISWAP.md) ·
+[X-ray](docs/XRAY.md) · [Analyst](docs/ANALYST.md) · [Frame conformance](docs/FRAME_CONFORMANCE.md) · [Uniswap](docs/UNISWAP.md) ·
 [x402](docs/X402_HOSTED.md) · [Backend](docs/BACKEND.md) · [API](docs/API.md) · [PayloadWatch](docs/PAYLOADWATCH.md) ·
 [BAL analyzer](docs/BAL_ANALYZER.md) · [Frame monitor](docs/FRAME_MONITOR.md) · [Profiler](docs/EXECUTION_PROFILER.md) ·
 [Providers](docs/PROVIDER_COMPARISON.md) · [Dashboard](docs/DASHBOARD.md) · [Sepolia node](docs/SEPOLIA_NODE.md) ·

@@ -12,5 +12,6 @@ batches, one commit series per round, which is why parts of the git history arri
 | [`prompts/rooted-repo-context/`](prompts/rooted-repo-context/) | Read-only map of the repo (8 agents) |
 | [`prompts/rooted-three-picks/`](prompts/rooted-three-picks/) | Contract, five builders, integrator and the first review round (10 agents) |
 | [`prompts/rooted-site/`](prompts/rooted-site/) | The marketing site (6 agents) |
+| [`prompts/rooted-analyst/`](prompts/rooted-analyst/) | Analyst build prompts |
 
 Keys stay in gitignored env files and were never given to a prompt.
