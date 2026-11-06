@@ -63,7 +63,7 @@ export default function Analyst() {
   const u = state.usage;
   return <div className="analyst-grid">
     <div>
-      <Panel title="Ask" subtitle="Claude investigates with Rooted's tools and the live node. Every figure in the answer cites the tool result it came from.">
+      <Panel title="Ask" subtitle="Claude investigates with Rooted's tools and the live node, and is told to cite the tool result behind every figure.">
         <form className="analyst-form" onSubmit={e => { e.preventDefault(); void ask(question); }} aria-busy={running}>
           <label htmlFor="analyst-question">Question</label>
           <textarea id="analyst-question" value={question} rows={3} maxLength={2000} disabled={running} aria-describedby="analyst-help"
@@ -91,7 +91,7 @@ export default function Analyst() {
         </section>}
         {state.error && <div className={"notice " + (tone === "amber" ? "warning" : tone === "red" ? "error" : "")} role="alert">
           <Badge tone={tone}>{state.error.code.replace("_", " ").toUpperCase()}</Badge>
-          <span>{hint} {state.error.message}</span>
+          <span>{state.error.message || hint}</span>
         </div>}
         {(u || evidence.length > 0) && <div className="panel-footer analyst-usage">
           <span>{u ? `$${u.usd.toFixed(4)} · ${u.input.toLocaleString()} input · ${u.output.toLocaleString()} output · ${u.cache_read.toLocaleString()} cache read · ${u.cache_write.toLocaleString()} cache write tokens` : "Usage arrives with the answer."}</span>
@@ -146,7 +146,7 @@ function Briefs({ onOpen }: { onOpen: (d: Drawer) => void }) {
     const timer = setInterval(load, 15000);
     return () => { stopped = true; clearInterval(timer); };
   }, []);
-  return <Panel className="analyst-briefs" title="Briefs" subtitle="Written automatically for unusual blocks · refreshed every 15 s">
+  return <Panel className="analyst-briefs" title="Briefs" subtitle="Written automatically for blocks that trip a rule · refreshed every 15 s">
     {feed.error && <div className="notice error" role="alert">{feed.error}{feed.data && " Showing the last successful response."}</div>}
     {!feed.data && !feed.error && <div className="notice loading">Retrieving briefs<span className="dots">…</span></div>}
     {feed.data?.length === 0 && <div className="notice"><span>No briefs yet. <code>npm run briefs</code> writes one when a recent block trips an anomaly rule.</span></div>}
@@ -179,7 +179,7 @@ function EvidenceDrawer({ title, items, onClose }: Drawer & { onClose: () => voi
       return <article key={e.id}>
         <div className="analyst-badges"><Badge tone="blue">{e.id}</Badge><Badge>{e.kind.replaceAll("_", " ")}</Badge></div>
         <h3>{e.label}</h3>
-        {link ? <a className="text-button" href={link} target="_blank" rel="noreferrer">{link}<ExternalLink size={12} /></a> : <span className="muted small">No link for this evidence.</span>}
+        {link ? <a className="text-button" href={link} title={link} target="_blank" rel="noreferrer">{link.startsWith("/") ? "Open in Rooted" : `Open on ${link.split("/")[2]}`}<ExternalLink size={12} /></a> : <span className="muted small">No link for this evidence.</span>}
         <dl>
           <dt>sha256 of the raw tool result</dt><dd><code>{e.sha256}</code></dd>
           <dt>Recorded</dt><dd>{e.at}</dd>

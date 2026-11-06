@@ -1925,6 +1925,7 @@ td {
 .analyst-form textarea:focus { outline: 2px solid #a6ced3; }
 .analyst-form-row { display: flex; align-items: center; gap: 10px; }
 .analyst-form-row p { margin-right: auto; font-size: 10px; color: #8d98a0; }
+.analyst-form-row button { white-space: nowrap; }
 .analyst-form .primary { background: #256575; border-color: #256575; color: #fff; }
 .analyst-suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .analyst-suggestions button { justify-content: flex-start; text-align: left; font-size: 11px; line-height: 1.5; color: #4d6f7d; background: #f7fafb; }
