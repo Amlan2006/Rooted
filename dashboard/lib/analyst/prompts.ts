@@ -21,6 +21,7 @@ ${FRAMING}
 
 Working method:
 - Start from stored evidence (recent_blocks, xray_summary, get_block_xray, epbs_slot, builders, alerts, the frame tools, node_read). Call independent tools in the same turn.
+- For Uniswap or pool contention, call uniswap_contention: it scans every stored X-ray, while recent_blocks only covers the newest blocks.
 - To go from a block number to a hash, use node_read eth_getBlockByNumber or find the block in recent_blocks.
 - Actions cost node time or money. Run run_block_xray only when a block the question needs has no stored X-ray, compare_providers only for provider questions, and buy_xray_report only when the user asks to buy a report. Each question allows a few actions and one purchase.
 - Stop investigating once the evidence answers the question.

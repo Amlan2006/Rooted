@@ -10,6 +10,7 @@ const suggestions = [
   "Why does the builder lose parallelism in block 12,076,467?",
   "Is ePBS delivering payloads on time over the last 20 slots?",
   "Find Uniswap contention in recent blocks and explain it.",
+  "Which Uniswap pools caused contention?",
   "Which recent block shows the biggest gap between gas and measured time?",
 ];
 const failures: Record<Extract<AnalystEvent, { type: "error" }>["code"], [string, string]> = {

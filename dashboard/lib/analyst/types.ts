@@ -3,7 +3,7 @@
 import type { BetaMessageParam } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import type { z } from "zod";
 
-export type EvidenceKind = "xray" | "xray_run" | "summary" | "blocks" | "epbs_slot" | "builders" | "alerts"
+export type EvidenceKind = "xray" | "xray_run" | "summary" | "blocks" | "uniswap" | "epbs_slot" | "builders" | "alerts"
   | "frame_node" | "frame_conformance" | "frame_txs" | "provider_compare" | "rpc" | "payment" | "brief";
 export interface Evidence { id: string; kind: EvidenceKind; label: string; link?: string; sha256: string; at: string }
 export type Usage = { input: number; output: number; cache_read: number; cache_write: number; usd: number };

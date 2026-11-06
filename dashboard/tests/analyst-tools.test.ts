@@ -19,7 +19,7 @@ const keys = (v: unknown): string[] => (v && typeof v === "object" ? Object.entr
 
 test("tool schemas are strict, ordered and leave unsupported constraints to zod", () => {
   const params = toolParams(TOOLS);
-  assert.deepEqual(params.map(p => p.name), ["recent_blocks", "xray_summary", "get_block_xray", "run_block_xray", "epbs_slot", "builders", "alerts", "frame_status", "frame_conformance", "frame_transactions", "compare_providers", "node_read", "buy_xray_report"]);
+  assert.deepEqual(params.map(p => p.name), ["recent_blocks", "xray_summary", "uniswap_contention", "get_block_xray", "run_block_xray", "epbs_slot", "builders", "alerts", "frame_status", "frame_conformance", "frame_transactions", "compare_providers", "node_read", "buy_xray_report"]);
   for (const p of params) {
     assert.equal(p.strict, true);
     assert.equal(p.input_schema.additionalProperties, false);
@@ -132,6 +132,32 @@ test("executors call the fixed backend and node routes and label their evidence"
     const tx = await EXECUTORS.node_read({ method: "eth_getTransactionReceipt", params: [hash] } as never);
     assert.equal(tx.link, `https://sepolia.etherscan.io/tx/${hash}`);
   } finally { delete process.env.ROOTED_EXECUTION_URL; }
+});
+
+test("uniswap_contention: strict limit, the scan route, and an X-ray link on every block under the cap", async (t) => {
+  const s = spec("uniswap_contention");
+  assert.deepEqual(s.parse({ limit: 5 }), { limit: 5 });
+  for (const bad of [{ limit: 0 }, { limit: 21 }, { limit: 2.5 }, {}, { limit: 5, pool: "x" }]) assert.equal(s.safeParse(bad).success, false, JSON.stringify(bad));
+  assert.equal(TOOLS.find(t => t.name === "uniswap_contention")!.action, false);
+
+  // Shaped like block 12,076,476's stored report: one verified v3 pool, 87 of 2,751 edges.
+  const pool = { protocol: "uniswap_v3", pool: "0x3289680dd4d6c10bb19b899729cda5eef58aeff1", verified: true, edges: 87, on_critical_path: false, labels: ["token_balance_of_pool", "pool_slot0", "fee_growth_global0", "liquidity", "pool_mapping_or_observation"] };
+  const block = (i: number) => ({ block_number: 12076476 - i, block_hash: "0x" + i.toString(16).padStart(64, "0"), uniswap_edges: 87, total_edges: 2751, unlisted_uniswap_edges: 0, critical_path_length: 9, critical_path_uniswap_locations: 0, pools: [pool] });
+  const body = (n: number, pools = 1) => ({ data: { reports_scanned: 308, blocks_with_uniswap_edges: n, blocks: Array.from({ length: n }, (_, i) => ({ ...block(i), pools: Array(pools).fill(pool) })) } });
+  t.mock.method(globalThis, "fetch", async (url: URL) => { assert.equal(String(url), "http://127.0.0.1:8080/api/v1/xray/uniswap?network=sepolia&limit=7"); return Response.json(body(7)); });
+  const out = await EXECUTORS.uniswap_contention({ limit: 7 } as never);
+  assert.deepEqual([out.kind, out.label, out.link], ["uniswap", "Uniswap contention in 7 of 308 stored X-rays", "/?view=xray"]);
+
+  const few = trim("uniswap_contention", out.data) as { reports_scanned: number; blocks: Record<string, unknown>[] };
+  assert.equal(few.reports_scanned, 308);
+  assert.deepEqual(few.blocks, body(7).data.blocks.map(b => ({ ...b, link: xrayLink(b.block_hash) })), "nothing dropped, one X-ray link per block");
+  assert.equal((trim("uniswap_contention", body(20)) as { blocks: unknown[] }).blocks.length, 20, "the 20-block maximum fits with one pool each");
+  const many = trim("uniswap_contention", body(20, 3));
+  assert.ok(JSON.stringify(many).length <= 2 * CAP);
+  assert.equal(JSON.stringify(many), JSON.stringify(trim("uniswap_contention", body(20, 3))));
+  const kept = (many as { blocks: unknown[] }).blocks;
+  assert.match(String(kept.at(-1)), /^… \d+ more omitted$/, "the oldest blocks go first");
+  for (const b of kept.slice(0, -1) as { block_hash: string; link: string }[]) assert.equal(b.link, xrayLink(b.block_hash));
 });
 
 const ask = (body: unknown, headers: Record<string, string> = {}) => POST(new Request("http://localhost:3000/api/analyst", {

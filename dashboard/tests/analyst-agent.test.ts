@@ -86,7 +86,7 @@ test("one investigation: parallel tools, one tool_result message, cited answer, 
   assert.equal(body.fallbacks, "default");
   assert.deepEqual(body.tool_choice, { type: "auto" });
   assert.deepEqual(body.system, [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }]);
-  assert.equal(body.tools?.length, 13);
+  assert.equal(body.tools?.length, 14);
   assert.ok(body.tools?.every(t => "strict" in t && t.strict === true));
 });
 
@@ -149,7 +149,7 @@ test("brief mode: brief prompt, read-only tools, six steps, actions are unknown 
   assert.equal(end.type === "error" && end.code, "max_steps");
   assert.equal(ran, 0);
   assert.equal((bodies[0].system as { text: string }[])[0].text, BRIEF_PROMPT);
-  assert.deepEqual(bodies[0].tools?.map(t => "name" in t && t.name), ["recent_blocks", "xray_summary", "get_block_xray", "epbs_slot", "builders", "alerts", "frame_status", "frame_conformance", "frame_transactions", "node_read"]);
+  assert.deepEqual(bodies[0].tools?.map(t => "name" in t && t.name), ["recent_blocks", "xray_summary", "uniswap_contention", "get_block_xray", "epbs_slot", "builders", "alerts", "frame_status", "frame_conformance", "frame_transactions", "node_read"]);
 });
 
 test("budget is checked before each call; refusals and API errors end with an error event", async () => {

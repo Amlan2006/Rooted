@@ -32,6 +32,7 @@ the session id.
 |---|---|---|
 | `recent_blocks` | newest stored X-rays, 1–50 (`/api/v1/xray/blocks`) | |
 | `xray_summary` | p10 / median / p90 of every ceiling (`/api/v1/xray/summary`) | |
+| `uniswap_contention` | blocks with Uniswap-labelled conflict edges across every stored X-ray, by pool, 1–20 (`/api/v1/xray/uniswap`) | |
 | `get_block_xray` | one stored X-ray: ceilings, capping txs, critical path, hot locations, ePBS, coverage | |
 | `run_block_xray` | replays a block natively and stores the X-ray (≤ 85 s, ~128-block state window) | yes |
 | `epbs_slot` | PayloadWatch slot and timeline | |

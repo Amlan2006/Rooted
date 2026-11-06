@@ -1,5 +1,6 @@
 // Shrinks tool results to the fields a decision needs, deterministically, under CAP characters of JSON.
 import type { Report } from "../xray";
+import { xrayLink } from "./evidence";
 import type { RuleInput } from "./rules";
 
 export const CAP = 6000;
@@ -39,6 +40,12 @@ const blocks = (body: unknown) => {
     columns: [...briefKeys, "gas_to_validator_ratio"],
     rows: rows.map((b: RuleInput) => [...briefKeys.map(k => b[k] ?? null), b.gas_weighted != null && b.validator_bal_time ? b.gas_weighted / b.validator_bal_time : null]),
   } : body;
+};
+
+// Each block carries its X-ray view link, so every block the answer names can be opened.
+const uniswap = (body: unknown) => {
+  const d = record(record(body).data);
+  return Array.isArray(d.blocks) ? { ...d, blocks: d.blocks.map((b: { block_hash: string }) => ({ ...b, link: xrayLink(b.block_hash) })) } : body;
 };
 
 // Deep copy with ratios rounded to 3 decimals and long strings cut, so small float noise never changes the output.
@@ -84,5 +91,6 @@ export function fit(value: unknown, cap = CAP): unknown {
 export function trim(tool: string, data: unknown): unknown {
   if (tool === "get_block_xray" || tool === "run_block_xray") return fit(xray(data));
   if (tool === "recent_blocks") return fit(blocks(data), 2 * CAP); // the 50-block maximum fits in about 9 KB
+  if (tool === "uniswap_contention") return fit(uniswap(data), 2 * CAP); // about 500 bytes per block with one pool
   return fit(data);
 }

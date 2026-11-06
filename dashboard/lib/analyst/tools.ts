@@ -19,6 +19,8 @@ export const TOOLS: ToolSpec[] = [
     description: "Lists the newest blocks Rooted has X-rayed (number, hash, slot, tx count, BAL commitment check, the gas, execution-gas, validator-with-BAL and builder ceilings, the gas and validator capping txs, whether gas misidentifies the bottleneck, and the gas / validator ceiling ratio). Call this first to find recent blocks, block hashes, or blocks that match a pattern." },
   { name: "xray_summary", action: false, input: none,
     description: "Distribution of the ceilings over all stored X-rays (p10, median, p90), the share of blocks bound by a single transaction, how often gas picks the wrong bottleneck, and the BAL commitment success rate. Call this for questions about typical blocks or trends." },
+  { name: "uniswap_contention", action: false, input: z.strictObject({ limit: z.number().int().min(1).max(20).describe("How many of the newest blocks with Uniswap contention") }),
+    description: "Scans every stored X-ray, not just the newest blocks, and lists the blocks whose conflict edges touch Uniswap-labelled state, newest first: Uniswap edges against all edges, the pools involved (v3 pool address or v4 poolId, with label names such as pool_slot0 or token_balance_of_pool) and whether a pool has an edge on the builder critical path. Pools come from each report's stored hot locations; unlisted_uniswap_edges are labelled edges on locations a report did not keep. Reports do not store which locations each transaction touched, so the number of critical-path transactions that touch Uniswap state is unavailable; critical_path_uniswap_locations (labelled locations with an edge on the critical path) stands in for it. Call this first for any Uniswap or pool contention question." },
   { name: "get_block_xray", action: false, input: blockHash,
     description: "The stored X-ray of one block: ceilings with their capping transactions, the builder critical path, speedup by core count, conflict edges, top hot storage locations with Uniswap labels, ePBS delivery for its slot, replay coverage and the BAL commitment check. Call this before reasoning about a specific block. If none is stored, it says so." },
   { name: "run_block_xray", action: true, input: blockHash,
@@ -106,6 +108,11 @@ export const EXECUTORS: Record<string, Executor> = {
     const r = await backend(`/api/v1/xray/summary?${scope.sepolia}`, signal);
     const s = r.data.data as { blocks?: number; from_block?: number; to_block?: number };
     return { kind: "summary", label: `X-ray summary of ${s?.blocks ?? 0} blocks (${s?.from_block ?? "?"}–${s?.to_block ?? "?"})`, link: "/?view=xray", ...r };
+  },
+  async uniswap_contention({ limit }: { limit: number }, signal) {
+    const r = await backend(`/api/v1/xray/uniswap?${scope.sepolia}&limit=${limit}`, signal);
+    const d = r.data.data as { reports_scanned?: number; blocks_with_uniswap_edges?: number };
+    return { kind: "uniswap", label: `Uniswap contention in ${d?.blocks_with_uniswap_edges ?? 0} of ${d?.reports_scanned ?? 0} stored X-rays`, link: "/?view=xray", ...r };
   },
   get_block_xray: xrayRead,
   async run_block_xray({ block_hash }: { block_hash: string }, signal) {
