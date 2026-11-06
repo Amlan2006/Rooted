@@ -61,7 +61,7 @@ blocks wrongly when it did that arithmetic itself.
   output $20, cache read $0.20, cache write $5 per million tokens). An aborted call is charged for the usage the
   stream reported before the abort. The daily cap `ROOTED_ANALYST_DAILY_USD` (default 20) is checked before
   every call. The ledger survives restarts and is shared with `npm run briefs`.
-- **One at a time:** one investigation per server process. A second request gets 429.
+- **One at a time:** one investigation per server process. A second request gets 429 with `error/busy`.
 - **Requests:** same-origin `application/json` only, at most 8 KiB, and the question is 1–2000 characters.
 - **Refusals:** `stop_reason` is checked every turn. A refusal reaches the view as `error/refusal` with the
   `stop_details` explanation.

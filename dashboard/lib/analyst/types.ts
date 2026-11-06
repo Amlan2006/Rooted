@@ -14,7 +14,7 @@ export type AnalystEvent =
   | { type: "step_done"; id: string; ok: boolean; ms: number; evidence?: Evidence; note: string }
   | { type: "text"; delta: string }
   | { type: "done"; answer: string; evidence: Evidence[]; usage: Usage }
-  | { type: "error"; code: "disabled" | "budget" | "refusal" | "max_steps" | "upstream" | "bad_request"; message: string };
+  | { type: "error"; code: "disabled" | "budget" | "busy" | "refusal" | "max_steps" | "upstream" | "bad_request"; message: string };
 
 // What an executor hands back: the exact bytes it received (hashed into the evidence), the parsed value (trimmed
 // for the model) and how to label and link the evidence. Executors throw an Error whose message the model sees.

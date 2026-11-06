@@ -75,7 +75,8 @@ test("parseSSE splits complete frames and keeps the tail", () => {
 test("httpFailure maps non-SSE responses to error events", () => {
   assert.deepEqual(httpFailure(503, { type: "error", code: "disabled", message: "off" }), { type: "error", code: "disabled", message: "off" });
   assert.deepEqual(httpFailure(400, { error: { message: "too long" } }), { type: "error", code: "bad_request", message: "too long" });
-  assert.equal(httpFailure(429, null).code, "upstream");
+  assert.equal(httpFailure(429, null).code, "busy");
+  assert.equal(httpFailure(429, { type: "error", code: "budget", message: "spent" }).code, "budget", "a coded 429 keeps its code");
   assert.match(httpFailure(429, null).message, /Another investigation/);
   assert.equal(httpFailure(502, { error: { code: "weird" } }).message, "Analyst HTTP 502");
 });

@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     if (!parsed.success) return fail("bad_request", "Send {question: 1-2000 characters, session_id?: uuid}.", 400);
     input = parsed.data;
   } catch { return fail("bad_request", "Invalid JSON.", 400); }
-  if (busy) return fail("bad_request", "Another investigation is running. Retry when it finishes.", 429);
+  if (busy) return fail("busy", "Another investigation is running. Retry when it finishes.", 429);
   busy = true; // before any await, so two requests cannot both pass the check
   const ledger = fileLedger();
   const over = await overBudget(ledger, new Date()).catch(error => { busy = false; throw error; });

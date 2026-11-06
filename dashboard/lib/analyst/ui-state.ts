@@ -58,12 +58,12 @@ export function parseSSE(buffer: string): { events: AnalystEvent[]; rest: string
   return { events, rest };
 }
 
-const codes: Failure["code"][] = ["disabled", "budget", "refusal", "max_steps", "upstream", "bad_request"];
+const codes: Failure["code"][] = ["disabled", "budget", "busy", "refusal", "max_steps", "upstream", "bad_request"];
 // A non-SSE response (busy, malformed request, proxy failure) becomes one error event.
 export function httpFailure(status: number, body: unknown): Failure {
   const b = body as { type?: string; code?: string; message?: string; error?: { code?: string; message?: string } } | null;
   const err = b?.type === "error" ? b : b?.error;
-  const code = codes.find(c => c === err?.code) ?? (status >= 400 && status < 429 ? "bad_request" : "upstream");
+  const code = codes.find(c => c === err?.code) ?? (status === 429 ? "busy" : status >= 400 && status < 429 ? "bad_request" : "upstream");
   const message = err?.message || (status === 429 ? "Another investigation is running on this server. Try again when it finishes." : `Analyst HTTP ${status}`);
   return { type: "error", code, message };
 }

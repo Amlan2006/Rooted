@@ -55,7 +55,6 @@ import ExecutionProfiler from "./execution-profiler";
 import { investigationURL, selectionForRun } from "@/lib/guided-investigation";
 import AnalysisForm from "./analysis-form";
 import RpcInspector from "./rpc-inspector";
-import CREReports from "./cre-reports";
 import Xray from "./xray";
 import Analyst from "./analyst";
 import FrameConformance from "./frame-conformance";
@@ -1136,7 +1135,6 @@ export default function Dashboard() {
                   ))}
                 </div>
               </Panel>
-              <CREReports key={liveSource || "pending"} liveSource={liveSource} />
             </>
           )}
           {view === "privacy" && <RpcInspector />}

@@ -20,6 +20,7 @@ const failures: Record<Extract<AnalystEvent, { type: "error" }>["code"], [string
   max_steps: ["amber", "Stopped at the step cap (12 model steps, 3 actions). The evidence so far is above; ask a narrower follow-up."],
   upstream: ["red", "The investigation failed upstream."],
   bad_request: ["red", "The question was rejected."],
+  busy: ["amber", "Another investigation is running on this server. Ask again when it finishes."],
 };
 const triggerTone: Record<string, string> = { builder_gap: "amber", gas_misleads: "blue", big_block: "neutral", commitment: "red" };
 const byId = (items: Evidence[]) => Object.fromEntries(items.map(e => [e.id, e]));

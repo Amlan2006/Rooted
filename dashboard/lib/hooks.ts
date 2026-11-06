@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 export type Resource<T> = {
   data?: T;
   error?: string;
+  code?: string; // the backend's error.code, e.g. hosted_read_only
   loading: boolean;
   at?: string;
   refresh: () => void;
@@ -16,6 +17,7 @@ export function useResource<T>(
     key: string | null;
     data?: T;
     error?: string;
+    code?: string;
     at?: string;
     loading: boolean;
   }>({ key: null, loading: true });
@@ -46,8 +48,9 @@ export function useResource<T>(
         });
         const body = await response.json();
         if (!response.ok)
-          throw new Error(
-            body.error?.message || `Backend HTTP ${response.status}`,
+          throw Object.assign(
+            new Error(body.error?.message || `Backend HTTP ${response.status}`),
+            { code: body.error?.code },
           );
         if (!stopped)
           set({
@@ -62,6 +65,7 @@ export function useResource<T>(
             ...old,
             key: path,
             error: error instanceof Error ? error.message : "Request failed",
+            code: (error as { code?: string }).code,
             loading: false,
           }));
       } finally {

@@ -14,7 +14,7 @@ export default function ExecutionProfiler(){
  <Panel title="Measure a controlled block replay" subtitle="Native Geth 1.17.10 · trace-seeded in-memory state · sequential transaction processing">
  <form className="analysis-form" onSubmit={e=>{e.preventDefault();void run()}} aria-busy={busy}><div className="analysis-inputs transaction-only"><label>Execution block hash<input value={hash} onChange={e=>setHash(e.target.value)} placeholder="0x… a nonempty Sepolia block with at most 512 transactions" disabled={busy}/></label><button disabled={busy}>{busy?"Capturing and measuring…":"Profile block replay"}</button></div><p>Capture is read-only. A separate local runner restores the same state before every sample. Receipt gas, status, logs, transaction root, and receipt root must validate before results are saved. RPC and capture time are excluded.</p>{error&&<div className="notice error" role="alert">{error}</div>}</form>
  </Panel>
- <Notice resource={profiles}/>
+ {profiles.code==="hosted_read_only"?<div className="notice">Profiles are run on self-hosted Rooted.</div>:<Notice resource={profiles}/>}
  {!!profiles.data?.data.length&&<div className="notice"><label>Saved profiles <select value={profile?.id||""} onChange={e=>setSelected(profiles.data!.data.find(p=>p.id===e.target.value)||null)}>{profiles.data.data.map(p=><option key={p.id} value={p.id}>{p.captured_at} · {short(p.block_hash)} · measured replay</option>)}</select></label></div>}
  {invalid&&<div className="notice error">{invalid}</div>}
  {profile&&summary&&<>

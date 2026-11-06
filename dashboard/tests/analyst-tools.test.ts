@@ -209,7 +209,8 @@ test("one investigation at a time: a concurrent request gets 429, a cancelled on
     const both = await Promise.all([ask({ question: "a" }), ask({ question: "b" })]);
     assert.deepEqual(both.map(r => r.status).sort(), [200, 429], "the second request loses even when both arrive together");
     const [running, busy] = both[0].status === 200 ? both : [both[1], both[0]];
-    assert.match(await busy.text(), /Another investigation is running/);
+    assert.equal(busy.headers.get("content-type"), "text/event-stream; charset=utf-8");
+    assert.deepEqual(JSON.parse((await busy.text()).slice(6)), { type: "error", code: "busy", message: "Another investigation is running. Retry when it finishes." });
     await upstream;
     await running.body!.cancel();
     let next = await ask({ question: "c" });
