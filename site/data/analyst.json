@@ -1,0 +1,71 @@
+{
+  "source": "Sepolia block 12,077,198 brief + Hedera testnet mirror node",
+  "captured_at": "2026-11-06T16:54:23.546Z",
+  "network": "sepolia",
+  "block_number": 12077198,
+  "block_hash": "0xe7a3afe8cc9f5993136b61cb83f350388275787dc3d5044e84184f75e465f5f1",
+  "triggers": [
+    "builder_gap"
+  ],
+  "created_at": "2026-11-06T14:41:07.911361Z",
+  "model": "claude-opus-5-5",
+  "usd": 0.042631,
+  "question": "Write the brief for block 12077198 (0xe7a3afe8cc9f5993136b61cb83f350388275787dc3d5044e84184f75e465f5f1). Rules triggered: builder_gap.",
+  "question_source": "dashboard/scripts/briefs.ts",
+  "brief": "Block 12077198 shows a big builder gap: builders without a BAL top out at 7.028x, while validators with the BAL could reach 25.488x [E1].\n- Both builder ceilings, multi-version and static, are 7.028x [E1]. That is about 0.28x of the validator ceiling (derived from [E1]), far below the 0.8x and 0.7x thresholds.\n- Two storage slots on contract 0x1c7d4b19…7238 each have 100 writers and 100 readers, and both sit on the critical path [E1]. That path is 100 transactions long and capped at tx 108 [E1].\n- Gas and time point at different bottlenecks: gas names tx 23 and measured time names tx 25 (7.37 ms) [E1]. Every ceiling is an upper bound on speedup, not a measured one.\n- Outside this rule, PayloadWatch saw the payload arrive late, with a 2417 ms reveal latency [E1].",
+  "brief_sha256": "b986aefe5f62cfead4bcdb6e5be48abdf9e3a624a4110d7f681a6d05ad5b365b",
+  "steps": [
+    {
+      "tool": "get_block_xray",
+      "input": {
+        "block_hash": "0xe7a3afe8cc9f5993136b61cb83f350388275787dc3d5044e84184f75e465f5f1"
+      },
+      "evidence": "E1",
+      "at": "2026-11-06T14:40:59.779Z"
+    }
+  ],
+  "evidence": [
+    {
+      "at": "2026-11-06T14:40:59.779Z",
+      "id": "E1",
+      "kind": "xray",
+      "link": "/?view=xray&block=0xe7a3afe8cc9f5993136b61cb83f350388275787dc3d5044e84184f75e465f5f1",
+      "label": "X-ray of block 12077198",
+      "sha256": "42370c285d1bf6df2c80c41919c509770f4b72e4a2e9c3ac28964b6e07e4cbb8"
+    }
+  ],
+  "tools": [
+    "recent_blocks",
+    "xray_summary",
+    "get_block_xray",
+    "run_block_xray",
+    "epbs_slot",
+    "builders",
+    "alerts",
+    "frame_status",
+    "frame_conformance",
+    "frame_transactions",
+    "compare_providers",
+    "node_read",
+    "buy_xray_report"
+  ],
+  "hcs": {
+    "topic": "0.0.11338138",
+    "sequence": 10,
+    "consensus_at": "2026-11-06T14:41:09.357Z",
+    "brief_sha256": "b986aefe5f62cfead4bcdb6e5be48abdf9e3a624a4110d7f681a6d05ad5b365b"
+  },
+  "payment": {
+    "tx_id": "0.0.9185802@1793976079.666677371",
+    "result": "SUCCESS",
+    "network": "hedera:testnet",
+    "amount_tinybars": 1000000,
+    "payer": "0.0.11338137",
+    "pay_to": "0.0.11337330",
+    "fee_payer": "0.0.9185802",
+    "report_sha256": "42370c285d1bf6df2c80c41919c509770f4b72e4a2e9c3ac28964b6e07e4cbb8",
+    "consensus_at": "2026-11-06T14:41:27.357Z",
+    "hcs_topic": "0.0.11338138",
+    "hcs_sequence": 12
+  }
+}

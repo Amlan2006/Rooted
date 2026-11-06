@@ -1,0 +1,97 @@
+{
+  "source": "GET /api/analyst/briefs on Rooted's dashboard: briefs the Analyst wrote for Sepolia blocks that tripped a rule",
+  "captured_at": "2026-11-06T16:41:58.000Z",
+  "network": "sepolia",
+  "briefs": [
+    {
+      "block_number": 12077801,
+      "block_hash": "0xb4dba03727537cbf87021e75f3ae5f523a71e3c11277ab406403165853cba998",
+      "created_at": "2026-11-06T16:41:46.48866Z",
+      "triggers": [
+        "gas_misleads"
+      ],
+      "brief": "Gas points to the wrong bottleneck in block 12077801: tx 22 caps the gas ceiling, but measured replay time is capped by tx 83 [E1].\n- Gas-weighted ceiling is 15.496x, capped by tx 22, whose 4,728,628 gas is mostly state gas (3,818,880), yet it takes only 2,196,017 ns to apply [E1].\n- Validator-with-BAL time ceiling is 20.989x, capped by tx 83 at 11,146,822 ns [E1]. Execution gas instead blames tx 5, which uses the same 2,491,067 gas on the same contract but runs in 6,893,830 ns [E1].\n- Both builder ceilings equal 20.989x with a critical path length of 1, so there is no builder gap. 91 of 116 transactions are independent [E1].\n- All figures are upper bounds from a warm-cache replay [E1]. Whether cold-state I/O would make tx 22 slower is unknown.",
+      "evidence": [
+        {
+          "id": "E1",
+          "kind": "xray",
+          "label": "X-ray of block 12077801",
+          "sha256": "106fbd06c03c3d034463c253075e4c9f2d95ecff7f29748f1e28d6574ec117e8"
+        }
+      ],
+      "model": "claude-opus-5-5"
+    },
+    {
+      "block_number": 12077798,
+      "block_hash": "0xa37b04d7545910d929b0a6f44b6a0a1b9497ee0da7a5b2501e84ffa143f8aeed",
+      "created_at": "2026-11-06T16:41:14.119552Z",
+      "triggers": [
+        "gas_misleads"
+      ],
+      "brief": "Gas wrongly blames tx 101 for the bottleneck in block 12077798, because nearly all of its gas is state gas, while timing shows tx 14 is the slowest transaction [E1].\n- Tx 101 used 29,784,859 gas, of which 29,203,110 is state gas, but it applied in only 1.17 ms. That caps the gas-weighted ceiling at 3.731x [E1].\n- Tx 14 took 11.28 ms and sets the validator-with-BAL time ceiling at 18.763x, about five times the gas figure [E1]. The execution-gas ceiling (27.743x) is capped by a third transaction, tx 0 [E1].\n- Both builder ceilings also come to 18.763x, with a critical path of 1, so there is no builder gap despite 1,640 conflict edges [E1].\n- Receipt gas (111.1M) is higher than header gas (69.1M) [E1]. Every ceiling is an upper bound, not a measured speedup.",
+      "evidence": [
+        {
+          "id": "E1",
+          "kind": "xray",
+          "label": "X-ray of block 12077798",
+          "sha256": "940b399e6f5162474f2cc378375a22b09f5b6551559020ede64c3a471d286b75"
+        }
+      ],
+      "model": "claude-opus-5-5"
+    },
+    {
+      "block_number": 12077516,
+      "block_hash": "0x335a7e9f274c193451ec856332646395cebf4a10e452275cb3edae6e63b67e42",
+      "created_at": "2026-11-06T15:43:25.228356Z",
+      "triggers": [
+        "gas_misleads"
+      ],
+      "brief": "Gas points at the wrong bottleneck in block 12077516: by gas the slowest transaction is tx 67, but by measured time it is tx 87 [E1].\n- Tx 67 has the most gas, 4,433,986, but 1,860,480 of that is state gas. It replayed in about 8.49 ms. Tx 87 used only 2,491,067 gas, none of it state gas, yet it took 9.05 ms [E1].\n- So the gas-weighted ceiling is 18.367x, while the time-based validator-with-BAL ceiling is 19.941x. These are upper bounds, not measured speedups [E1].\n- There is no builder gap. The multi-version and static builder ceilings both equal 19.941x, the critical path is just tx 87, and 90 of the 105 transactions are independent [E1].\n- One caveat: replay timing is \"uninstrumented_control\" with 7 samples, so the two times are within about 6% of each other [E1].",
+      "evidence": [
+        {
+          "id": "E1",
+          "kind": "xray",
+          "label": "X-ray of block 12077516",
+          "sha256": "e62310b8da6c65677062df0d9f08f2daba21c366f7d190af57d63e0f87877ec8"
+        }
+      ],
+      "model": "claude-opus-5-5"
+    },
+    {
+      "block_number": 12077510,
+      "block_hash": "0xd24d5a822d5d38ad27756654bbd6c7e6d32309ad6b2f5d9d917464d1ae505ae2",
+      "created_at": "2026-11-06T15:43:04.21847Z",
+      "triggers": [
+        "gas_misleads"
+      ],
+      "brief": "Receipt gas points at the wrong bottleneck: block 12077510's gas ceiling is 3.036x, but its time-weighted validator-with-BAL ceiling is 18.704x [E1].\n- Gas blames tx 51, a contract creation with 30,213,619 gas, 29,746,260 of it state gas. It took only 569,334 ns to replay [E1].\n- In measured time the slowest transaction is tx 58 at 8,372,134 ns, with 2,491,067 execution gas [E1]. Execution gas instead picks tx 0, which has the same gas but replayed faster at 7,713,450 ns, for a 21.951x ceiling [E1].\n- There is no builder gap: both builder ceilings are 18.704x, the critical path is 1 transaction long, and 76 of 80 transactions are independent [E1].\n- These are upper bounds, not measured speedups. The BAL commitment checked out [E1].",
+      "evidence": [
+        {
+          "id": "E1",
+          "kind": "xray",
+          "label": "X-ray of block 12077510",
+          "sha256": "b383745f71c58730df31cd16efef8fb6878d8cd1fd264f6b033cd934080b720b"
+        }
+      ],
+      "model": "claude-opus-5-5"
+    },
+    {
+      "block_number": 12077511,
+      "block_hash": "0x6785a962b9890054fe14b253ac773a0bc5de2bf7f5267bdbdb4a96ba52ce358c",
+      "created_at": "2026-11-06T15:42:27.089732Z",
+      "triggers": [
+        "gas_misleads"
+      ],
+      "brief": "Gas points at the wrong bottleneck in block 12077511: tx 63 sets the gas ceiling, but measured time is capped by tx 72 [E1].\n- The gas-weighted ceiling is 3.361x, set by tx 63 [E1]. Its 34,392,634 gas is mostly state gas (33,993,540), yet it took only 371,283 ns to replay [E1].\n- The time-weighted validator-with-BAL ceiling is 20.37x, set by tx 72 at 10,304,942 ns [E1]. Execution gas gives 27.229x and names tx 0 instead, which has the same execution gas as tx 72 but a median of 6,090,822 ns [E1].\n- There is no builder gap. Both builder ceilings are also 20.37x, with a critical path of 1, despite 1,020 conflict edges [E1].\n- Unknown: why two transactions with equal execution gas take such different times. Replay timing is labelled \"uninstrumented_control\" over 7 samples [E1], so instrumented replays would settle it.",
+      "evidence": [
+        {
+          "id": "E1",
+          "kind": "xray",
+          "label": "X-ray of block 12077511",
+          "sha256": "d2cc29ff18b17fe30fbb9fa116fbeda4f3d94940e208dac5019ffb3c225890f1"
+        }
+      ],
+      "model": "claude-opus-5-5"
+    }
+  ]
+}
