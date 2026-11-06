@@ -140,6 +140,10 @@ effort `medium`. Total Claude spend for everything below, retries and the screen
 The purchase settled on Hedera testnet: [`0.0.9185802@1793973360.446037453`](https://hashscan.io/testnet/transaction/0.0.9185802@1793973360.446037453),
 1,000,000 tinybars from agent `0.0.11338137` to `0.0.11337330`, mirror node result `SUCCESS`.
 
+The demo video's purchase, asked "Buy the full report for this block over x402." after the first question above, bought
+block 12,076,467 and settled as [`0.0.9185802@1794005802.208694217`](https://hashscan.io/testnet/transaction/0.0.9185802@1794005802.208694217):
+the same 1,000,000 tinybars, `SUCCESS`.
+
 The Uniswap miss above only looked at recent blocks; `uniswap_contention` now reads every stored X-ray. Asked later
 the same day, against a copy of the 710 stored X-rays:
 
