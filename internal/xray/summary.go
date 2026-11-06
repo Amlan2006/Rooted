@@ -7,7 +7,7 @@ import (
 
 func BriefOf(r Report) Brief {
 	b := Brief{BlockHash: r.Block.Hash, BlockNumber: r.Block.Number, Slot: r.Block.Slot, ComputedAt: r.ComputedAt, Source: r.Source, TransactionCount: r.Block.TransactionCount, HeaderGasUsed: r.Gas.HeaderGasUsed, ReceiptsGasSum: r.Gas.ReceiptsGasSum, CommitmentVerified: r.BAL.CommitmentVerified,
-		GasWeighted: r.Ceilings.Gas.Value, ExecutionGasWeighted: r.Ceilings.Execution.Value, ValidatorBALTime: r.Ceilings.Validator.Value, BuilderDAGTime: r.Ceilings.Builder.Value, GasCappingTx: r.Ceilings.Gas.CappingTx, ValidatorCappingTx: r.Ceilings.Validator.CappingTx}
+		GasWeighted: r.Ceilings.Gas.Value, ExecutionGasWeighted: r.Ceilings.Execution.Value, ValidatorBALTime: r.Ceilings.Validator.Value, BuilderDAGTime: r.Ceilings.Builder.Value, BuilderMultiVersionTime: r.Ceilings.BuilderMultiVersion.Value, GasCappingTx: r.Ceilings.Gas.CappingTx, ValidatorCappingTx: r.Ceilings.Validator.CappingTx}
 	if r.Ceilings.Builder.Value != nil {
 		n := len(r.Ceilings.Builder.CriticalPath)
 		b.BuilderCriticalPathLength = &n
@@ -40,7 +40,7 @@ func BriefOf(r Report) Brief {
 
 func Summarize(briefs []Brief) Summary {
 	s := Summary{Blocks: len(briefs)}
-	var gas, execution, validator, builder, v8, b8 []float64
+	var gas, execution, validator, builder, builderMV, v8, b8 []float64
 	var timed, single, misidentified, verified, execTimed, execMisidentified int
 	for i := range briefs {
 		b := &briefs[i]
@@ -51,6 +51,7 @@ func Summarize(briefs []Brief) Summary {
 			s.ToBlock = &b.BlockNumber
 		}
 		gas, execution, validator, builder, v8, b8 = add(gas, b.GasWeighted), add(execution, b.ExecutionGasWeighted), add(validator, b.ValidatorBALTime), add(builder, b.BuilderDAGTime), add(v8, b.Speedup8Validator), add(b8, b.Speedup8Builder)
+		builderMV = add(builderMV, b.BuilderMultiVersionTime)
 		if b.CommitmentVerified {
 			verified++
 		}
@@ -71,7 +72,7 @@ func Summarize(briefs []Brief) Summary {
 			}
 		}
 	}
-	s.Ceilings.Gas, s.Ceilings.Execution, s.Ceilings.Validator, s.Ceilings.Builder = percentiles(gas), percentiles(execution), percentiles(validator), percentiles(builder)
+	s.Ceilings.Gas, s.Ceilings.Execution, s.Ceilings.Validator, s.Ceilings.Builder, s.Ceilings.BuilderMV = percentiles(gas), percentiles(execution), percentiles(validator), percentiles(builder), percentiles(builderMV)
 	s.SingleTxBound, s.GasMisidentifies, s.CommitmentVerified = share(single, timed), share(misidentified, timed), share(verified, len(briefs))
 	s.ExecMisidentifies = share(execMisidentified, execTimed)
 	if p := percentiles(v8); p != nil {

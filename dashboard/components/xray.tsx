@@ -80,7 +80,7 @@ export default function Xray() {
       <div className="banner-icon"><Cpu size={18} /></div>
       <div>
         <strong>With an EIP-7928 block access list, validators can execute every transaction in parallel.</strong>
-        <p>The validator ceiling is Amdahl on measured replay time. The RAW/WAR/WAW conflict DAG is the builder / no-BAL view, not the validator limit. Every ceiling here is an upper bound.</p>
+        <p>The validator ceiling is Amdahl on measured replay time. The conflict DAG is the builder / no-BAL view, not the validator limit: a static scheduler orders every RAW, WAR and WAW conflict, while a multi-version executor renames WAR away. Every ceiling here is an upper bound for its model.</p>
       </div>
       <Badge tone="blue">UPPER BOUNDS</Badge>
     </div>
@@ -124,7 +124,7 @@ function BriefHero({ brief: b }: { brief: Brief }) {
     ["Receipt gas", "execution + EIP-8037 state gas", b.gas_weighted, `${cap(b.gas_capping_tx_index)} · weight: receipt gasUsed`],
     ["Execution gas", "the EIP-8037 dimension that prices compute", b.execution_gas_weighted ?? null, "weight: execution gas"],
     ["Validator with BAL", "Amdahl on measured time", b.validator_bal_time, `${cap(b.validator_capping_tx_index)} · weight: ns`],
-    ["Builder / no BAL", "conflict-DAG critical path", b.builder_dag_time, `critical path ${b.builder_critical_path_length ?? "unknown"} txs · weight: ns`],
+    ["Builder / no BAL", "static conflict-DAG critical path", b.builder_dag_time, `critical path ${b.builder_critical_path_length ?? "unknown"} txs · multi-version ${formatX(b.builder_multiversion_time)} · weight: ns`],
   ]} />;
 }
 
@@ -154,7 +154,7 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
       ["Receipt gas", "execution + EIP-8037 state gas", c.gas_weighted.value, `${cap(c.gas_weighted.capping_tx_index)} · Σ receipt gas / max`],
       ["Execution gas", "the EIP-8037 dimension that prices compute", c.execution_gas_weighted?.value ?? null, c.execution_gas_weighted ? `${cap(c.execution_gas_weighted.capping_tx_index)} · Σ execution gas / max` : "not in this report (older replay runner)"],
       ["Validator with BAL", "Amdahl on measured time", c.validator_bal_time.value, `${cap(c.validator_bal_time.capping_tx_index)} · weight: ns · Σt / max t`],
-      ["Builder / no BAL", "conflict-DAG critical path", c.builder_dag_time.value, `${cap(c.builder_dag_time.capping_tx_index)} · path of ${c.builder_dag_time.critical_path?.length ?? "unknown"} txs · weight: ns`],
+      ["Builder / no BAL", "static conflict-DAG critical path (orders RAW, WAR, WAW)", c.builder_dag_time.value, `${cap(c.builder_dag_time.capping_tx_index)} · path of ${c.builder_dag_time.critical_path?.length ?? "unknown"} txs · multi-version executor (WAR renamed away): ${c.builder_multiversion_time ? `${formatX(c.builder_multiversion_time.value)}, path of ${c.builder_multiversion_time.critical_path?.length ?? "unknown"}` : "not in this report"} · weight: ns`],
     ]} />
     <Panel title="Gas accounting" subtitle="Header gasUsed vs the sum of receipt gasUsed (EIP-8037 two-dimensional gas)">
       <div className="contention-categories xray-gas">
@@ -194,7 +194,7 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
     <Panel title="Speedup vs cores" subtitle="Scheduled upper bounds: LPT for validators with BAL, bottom-level list scheduling for builders. Both axes log₂.">
       <CoresChart report={r} />
     </Panel>
-    <Panel title="Hot state locations" subtitle="Top 10 by conflict edges in the builder / no-BAL view">
+    <Panel title="Hot state locations" subtitle="Top 10 by conflict edges in the builder / no-BAL view, plus up to 10 more Uniswap-labelled locations">
       {r.hot_locations.length ? <div className="table-scroll"><table><thead><tr><th>Location</th><th>Label</th><th>Writers / readers</th><th>Edges</th><th>Critical path</th></tr></thead><tbody>
         {r.hot_locations.map(h => <tr key={h.address + h.field + h.key}>
           <td><code title={h.address}>{short(h.address)}</code><br /><code title={h.key}>{h.field}{h.key ? ` · ${short(h.key)}` : ""}</code></td>
@@ -204,7 +204,7 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
         </tr>)}
       </tbody></table></div> : <div className="notice">No conflict edges in this block.</div>}
       <p className="footnote">Uniswap: {r.uniswap.v3_swap_transactions} v3 swap transactions · {r.uniswap.v4_swap_transactions} v4 swap transactions · {r.uniswap.labeled_edges} labelled edges. Token balance labels assume a storage layout and stay unverified.</p>
-      {r.uniswap.labeled_edges === 0 && <UniswapExample />}
+      {!r.hot_locations.some(h => h.label) && <UniswapExample />}
     </Panel>
     <Panel title="ePBS delivery" subtitle={r.epbs ? `Slot ${r.epbs.slot} · source ${r.epbs.source}` : "Payload envelope and PayloadWatch state"}>
       {r.epbs ? <div className="fact-grid">
@@ -223,7 +223,7 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
   </>;
 }
 
-// Shown when the current block has no labelled Uniswap contention (most Sepolia blocks): a real labelled case.
+// Shown when no hot location in the current block is Uniswap-labelled (most Sepolia blocks): a real labelled case.
 function UniswapExample() {
   const e = uniswapExample;
   return <details className="coverage"><summary>Labelled Uniswap contention example <span>Sepolia block {e.block_number.toLocaleString()} · {e.labeled_edges} labelled BAL edges</span></summary>
@@ -287,7 +287,7 @@ function RecentBlocks({ briefs, target, stats, onSelect }: { briefs: Brief[]; ta
     {stats && stats.blocks > 0 && <div className="stats xray-summary">
       <Stat label="Median execution-gas ceiling" value={formatX(stats.ceilings.execution_gas_weighted?.median)} detail={`Receipt gas (incl. state gas) ${formatX(stats.ceilings.gas_weighted?.median)} · ${stats.blocks} blocks · ${stats.from_block}–${stats.to_block}`} />
       <Stat label="Median validator-with-BAL ceiling" value={formatX(stats.ceilings.validator_bal_time?.median)} detail={`P10 ${formatX(stats.ceilings.validator_bal_time?.p10)} · P90 ${formatX(stats.ceilings.validator_bal_time?.p90)} · 8 cores ${formatX(stats.speedup_8.validator_median)}`} />
-      <Stat label="Median builder / no-BAL ceiling" value={formatX(stats.ceilings.builder_dag_time?.median)} detail={`Single-tx bound in ${percent(stats.single_tx_bound_share)} of blocks · 8 cores ${formatX(stats.speedup_8.builder_median)}`} />
+      <Stat label="Median builder / no-BAL ceiling" value={formatX(stats.ceilings.builder_dag_time?.median)} detail={`Static scheduler · multi-version ${formatX(stats.ceilings.builder_multiversion_time?.median)} · single-tx bound in ${percent(stats.single_tx_bound_share)} of blocks · 8 cores ${formatX(stats.speedup_8.builder_median)}`} />
       <Stat label="Execution gas picks a different bottleneck" value={percent(stats.execution_gas_misidentifies_bottleneck_share)} detail={`Time-capping tx uses less execution gas than the gas-capping tx (ties excluded) · receipt gas: ${percent(stats.gas_misidentifies_bottleneck_share)} · BAL verified in ${percent(stats.commitment_verified_share)}`} />
     </div>}
   </Panel>;

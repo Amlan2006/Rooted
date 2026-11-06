@@ -238,31 +238,27 @@ func Compute(in Inputs) (Report, error) {
 	}
 
 	g := bal.BuildGraph(access, false, 100000)
-	preds := make([][]int, n)
-	seen := map[[2]uint64]bool{}
-	for _, e := range g.Edges {
-		if !seen[[2]uint64{e.From, e.To}] {
-			seen[[2]uint64{e.From, e.To}] = true
-			preds[e.To] = append(preds[e.To], int(e.From))
-		}
-	}
+	preds, pairs := predecessors(g, n, false), 0
 	for i := range preds {
-		sort.Ints(preds[i])
+		pairs += len(preds[i])
 		if len(preds[i]) == 0 {
 			r.Independent++
 		} else {
 			r.Transactions[i].DependsOn = preds[i]
 		}
 	}
-	r.Edges = Edges{RAW: g.ConflictCounts["RAW"], WAR: g.ConflictCounts["WAR"], WAW: g.ConflictCounts["WAW"], Total: len(g.Edges), DependentPairs: len(seen), Truncated: g.Truncated}
+	r.Edges = Edges{RAW: g.ConflictCounts["RAW"], WAR: g.ConflictCounts["WAR"], WAW: g.ConflictCounts["WAW"], Total: len(g.Edges), DependentPairs: pairs, Truncated: g.Truncated}
 	if g.Truncated {
 		r.Coverage = append(r.Coverage, "edge_limit_reached")
 	}
 	r.Ceilings.Gas, r.Ceilings.Validator, r.Ceilings.Builder = Ceilings(t, gas, preds)
+	_, _, r.Ceilings.BuilderMultiVersion = Ceilings(t, gas, predecessors(g, n, true))
+	r.Ceilings.BuilderMultiVersion.Model = "builder_dag_multiversion"
 	r.Schedules.Cores = Cores
 	r.Schedules.Validator, r.Schedules.Builder = Speedups(t, preds, Cores)
 	if g.Truncated { // dropped edges would shorten the critical path and overstate the builder view
 		r.Ceilings.Builder, r.Schedules.Builder = Ceiling{Model: "builder_dag", Weight: "ns"}, nil
+		r.Ceilings.BuilderMultiVersion = Ceiling{Model: "builder_dag_multiversion", Weight: "ns"}
 	}
 
 	hotEdges(&r, g, in.Uniswap)
@@ -297,6 +293,25 @@ func Compute(in Inputs) (Report, error) {
 	}
 	sort.Strings(r.Excluded)
 	return r, nil
+}
+
+// predecessors lists each transaction's distinct lower-index conflict predecessors, ascending. withoutWAR drops
+// pairs linked only by write-after-read edges: a multi-version (Block-STM style) executor renames those away.
+// WAW stays, because SSTORE and balance credits are read-modify-writes even where the read is not modelled.
+func predecessors(g bal.Graph, n int, withoutWAR bool) [][]int {
+	preds := make([][]int, n)
+	seen := map[[2]uint64]bool{}
+	for _, e := range g.Edges {
+		if withoutWAR && e.Kind == "WAR" || seen[[2]uint64{e.From, e.To}] {
+			continue
+		}
+		seen[[2]uint64{e.From, e.To}] = true
+		preds[e.To] = append(preds[e.To], int(e.From))
+	}
+	for i := range preds {
+		sort.Ints(preds[i])
+	}
+	return preds
 }
 
 // medians binds replay metrics to the block and takes the per-transaction median apply_ns, preferring the
@@ -405,8 +420,16 @@ func hotEdges(r *Report, g bal.Graph, ctx uniswap.BlockContext) {
 		}
 		return id(a) < id(b)
 	})
-	for _, h := range list[:min(10, len(list))] {
+	// Top 10 by edges, plus up to 10 more labelled locations so Uniswap contention is never hidden below the cut.
+	extra := 0
+	for i, h := range list {
 		h.Label = label(bal.Location{Address: h.Address, Field: h.Field, Key: h.Key})
+		if i >= 10 {
+			if h.Label == nil || extra == 10 {
+				continue
+			}
+			extra++
+		}
 		r.HotLocations = append(r.HotLocations, *h)
 	}
 }

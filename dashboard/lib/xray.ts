@@ -1,6 +1,6 @@
 // Glamsterdam X-ray (schema rooted-xray-v1, spec §1). Gas is a gas count, time is ns, null = unavailable.
 // gas_used is receipt gas (execution + EIP-8037 state gas); execution_gas is the dimension that prices compute.
-// Optional (?) fields are absent from reports computed before per-tx gas dimensions and control timings existed.
+// Optional (?) fields are absent from reports computed before per-tx gas dimensions, control timings and the multi-version builder view existed.
 export type Ceiling = { model: string; weight: "gas" | "ns"; value: number | null; total: number | null; bottleneck: number | null; capping_tx_index: number | null; critical_path?: number[] };
 export type XrayTx = { index: number; hash: string; from: string; to: string | null; is_create: boolean; status: number; gas_used: number; execution_gas?: number | null; state_gas?: number | null; apply_ns_median: number | null; reads: number; writes: number; depends_on: number[] };
 export type HotLocation = { address: string; field: string; key: string; writers: number; readers: number; edges: number; on_critical_path: boolean; label: { protocol: string; name: string; pool: string; verified: boolean } | null };
@@ -13,7 +13,7 @@ export type Report = {
   transactions: XrayTx[];
   edges: { RAW: number; WAR: number; WAW: number; total: number; dependent_pairs: number; truncated: boolean };
   independent_transactions: number;
-  ceilings: { gas_weighted: Ceiling; execution_gas_weighted?: Ceiling; validator_bal_time: Ceiling; builder_dag_time: Ceiling };
+  ceilings: { gas_weighted: Ceiling; execution_gas_weighted?: Ceiling; validator_bal_time: Ceiling; builder_dag_time: Ceiling; builder_multiversion_time?: Ceiling };
   schedules: { cores: number[]; validator_bal_time: number[] | null; builder_dag_time: number[] | null };
   hot_locations: HotLocation[];
   uniswap: { v3_swap_transactions: number; v4_swap_transactions: number; labeled_edges: number };
@@ -25,14 +25,14 @@ export type Report = {
 export type Brief = {
   block_hash: string; block_number: number; slot: number | null; computed_at: string; source: string; transaction_count: number;
   header_gas_used: number; receipts_gas_sum: number; commitment_verified: boolean;
-  gas_weighted: number | null; execution_gas_weighted?: number | null; validator_bal_time: number | null; builder_dag_time: number | null;
+  gas_weighted: number | null; execution_gas_weighted?: number | null; validator_bal_time: number | null; builder_dag_time: number | null; builder_multiversion_time?: number | null;
   gas_capping_tx_index: number | null; validator_capping_tx_index: number | null; builder_critical_path_length: number | null;
   speedup_8_validator: number | null; speedup_8_builder: number | null; builder_index: string | null;
 };
 type Spread = { p10: number; median: number; p90: number } | null;
 export type Summary = {
   blocks: number; from_block: number | null; to_block: number | null;
-  ceilings: { gas_weighted: Spread; execution_gas_weighted?: Spread; validator_bal_time: Spread; builder_dag_time: Spread };
+  ceilings: { gas_weighted: Spread; execution_gas_weighted?: Spread; validator_bal_time: Spread; builder_dag_time: Spread; builder_multiversion_time?: Spread };
   single_tx_bound_share: number | null; gas_misidentifies_bottleneck_share: number | null; execution_gas_misidentifies_bottleneck_share?: number | null; commitment_verified_share: number | null;
   speedup_8: { validator_median: number | null; builder_median: number | null };
 };
@@ -45,7 +45,7 @@ export function parseReport(v: unknown): Report {
   if (!Array.isArray(r.transactions) || r.transactions.length !== r.block.transaction_count || r.transactions.some((t, i) => t.index !== i || !Array.isArray(t.depends_on)))
     throw Error("X-ray transaction rows do not match the block transaction count.");
   const c = r.ceilings;
-  if (!c || [c.gas_weighted, c.validator_bal_time, c.builder_dag_time].some(x => !x || (x.value != null && !(x.value >= 1))) || (c.execution_gas_weighted?.value != null && !(c.execution_gas_weighted.value >= 1)))
+  if (!c || [c.gas_weighted, c.validator_bal_time, c.builder_dag_time].some(x => !x || (x.value != null && !(x.value >= 1))) || [c.execution_gas_weighted, c.builder_multiversion_time].some(x => x?.value != null && !(x.value >= 1)))
     throw Error("X-ray ceilings must be at least 1.");
   const s = r.schedules;
   if (s?.cores?.length !== 5 || [s.validator_bal_time, s.builder_dag_time].some(x => x != null && x.length !== 5))

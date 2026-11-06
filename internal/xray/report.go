@@ -102,7 +102,9 @@ type CeilingSet struct {
 	Gas       Ceiling `json:"gas_weighted"` // receipt gasUsed
 	Execution Ceiling `json:"execution_gas_weighted"`
 	Validator Ceiling `json:"validator_bal_time"`
-	Builder   Ceiling `json:"builder_dag_time"`
+	Builder   Ceiling `json:"builder_dag_time"` // static scheduler: orders every RAW, WAR and WAW conflict
+	// No-BAL executor with multi-versioned state (Block-STM style): WAR edges dropped; nil Value on older reports.
+	BuilderMultiVersion Ceiling `json:"builder_multiversion_time"`
 }
 type Schedules struct {
 	Cores     []int     `json:"cores"`
@@ -165,6 +167,7 @@ type Brief struct {
 	ExecutionGasWeighted      *float64  `json:"execution_gas_weighted"`
 	ValidatorBALTime          *float64  `json:"validator_bal_time"`
 	BuilderDAGTime            *float64  `json:"builder_dag_time"`
+	BuilderMultiVersionTime   *float64  `json:"builder_multiversion_time"`
 	GasCappingTx              *int      `json:"gas_capping_tx_index"`
 	ValidatorCappingTx        *int      `json:"validator_capping_tx_index"`
 	BuilderCriticalPathLength *int      `json:"builder_critical_path_length"`
@@ -189,6 +192,7 @@ type Summary struct {
 		Execution *Percentiles `json:"execution_gas_weighted"`
 		Validator *Percentiles `json:"validator_bal_time"`
 		Builder   *Percentiles `json:"builder_dag_time"`
+		BuilderMV *Percentiles `json:"builder_multiversion_time"`
 	} `json:"ceilings"`
 	SingleTxBound      *float64 `json:"single_tx_bound_share"`
 	GasMisidentifies   *float64 `json:"gas_misidentifies_bottleneck_share"`
