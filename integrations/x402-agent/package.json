@@ -1,0 +1,16 @@
+{
+  "name": "rooted-x402-agent",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "node setup.mjs",
+    "agent": "node agent.mjs",
+    "test": "node --test spend.test.mjs"
+  },
+  "dependencies": {
+    "@hiero-ledger/sdk": "2.90.1",
+    "@x402/core": "2.30.0",
+    "@x402/fetch": "2.30.0",
+    "@x402/hedera": "2.30.0"
+  }
+}
