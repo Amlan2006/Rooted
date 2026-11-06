@@ -2,12 +2,13 @@ import type { ReactNode } from "react";
 import { epbs, heroBlock, links, meta, pricing } from "@/lib/data";
 import { num, shortHash } from "@/lib/format";
 import { Section } from "@/components/ui/section";
+import { Reveal } from "@/components/reveal";
 import { Badge } from "@/components/ui/badge";
 import { SourceLine } from "@/components/ui/mono";
-import { CopyButton } from "@/components/ui/copy-button";
 import { ArrowUpRight } from "@/components/ui/icons";
-import { Tabs } from "@/components/s3-tape-how-terminal/tabs";
+import { TerminalTabs } from "@/components/s3-tape-how-terminal/tabs";
 import { x402Docs } from "@/components/s4-pricing-faq/docs";
+import t from "@/components/s3-tape-how-terminal/terminal.module.css";
 
 // Commands come from README.md (quick start), docs/BACKEND.md (Use), cmd/rooted/main.go and the routes in
 // internal/api/server.go; the agent exchange follows dashboard/lib/x402.ts and docs/X402_HOSTED.md, all on main.
@@ -56,7 +57,10 @@ const paidHash = stored?.block_hash ?? hash;
 const paidPath = (pricing.route ?? "/api/paid/xray/[hash]").replace("[hash]", shortHash(paidHash));
 // Without a recorded settlement the example stops at the signed retry: it never shows a 200 that did not happen.
 const settled = stored && { success: true, transaction: stored.payment_tx };
+// agent.mjs lives in integrations/x402-agent with its own dependencies and .env (docs/X402_HOSTED.md, Setup).
 const agent = [
+  "# once: npm ci and node setup.mjs --hcs, see docs/X402_HOSTED.md",
+  "$ cd integrations/x402-agent",
   `$ node agent.mjs ${paidHash}`,
   "",
   "# 1 · ask: no payment attached, so the route quotes its price",
@@ -77,7 +81,7 @@ const agent = [
         `< PAYMENT-RESPONSE: ${b64(settled)}`,
         `    ${JSON.stringify(settled).slice(0, -1)},…}`,
         "< ",
-        `{"data":{"schema":"rooted-xray-v1","block":{"hash":"${shortHash(paidHash)}",…}}}`,
+        `{"data":{"schema":"rooted-xray-v1",…,"block":{"hash":"${shortHash(paidHash)}",…}}}`,
       ]
     : []),
 ];
@@ -87,7 +91,7 @@ const hederaTx = /(0\.0\.\d+@\d+\.\d+)/;
 const withTxLink = (text: string) =>
   text.split(hederaTx).map((part, i) =>
     i % 2 ? (
-      <a key={i} href={`https://hashscan.io/testnet/transaction/${part}`} className="link">
+      <a key={i} href={`https://hashscan.io/testnet/transaction/${part}`} className="link text-fg-2 hover:text-fg">
         {part}
       </a>
     ) : (
@@ -102,19 +106,20 @@ const commands = (lines: string[]) =>
     .join("\n")
     .trim();
 
-// The prompt is drawn by CSS so it stays out of copied selections. Muted, not signal: signal marks only the capping tx.
-const prompt = "before:mr-[1ch] before:text-muted before:content-['$']";
+// Colour is sparse: commands fg, flags and output fg-2, comments fg-3; the accent only marks prompts and success.
+// The prompt is drawn by CSS so it stays out of copied selections.
+const prompt = "before:mr-[1ch] before:text-acc before:content-['$']";
 
 function Line({ line }: { line: string }) {
   if (line.startsWith("$ "))
     return (
-      <span className={prompt}>
+      <span className={`text-fg ${prompt}`}>
         {line
           .slice(2)
           .split(/(\s+)/)
           .map((t, i) =>
             /^[-+][a-zA-Z-]/.test(t) ? (
-              <span key={i} className="text-muted">
+              <span key={i} className="text-fg-2">
                 {t}
               </span>
             ) : (
@@ -126,66 +131,83 @@ function Line({ line }: { line: string }) {
   if (/^[<>] /.test(line)) {
     const [, mark, rest] = line.match(/^([<>]) (.*)$/)!;
     const header = rest.match(/^([A-Za-z-]+): (.*)$/);
+    const status = rest.match(/^(HTTP\/1\.1) (2\d\d .*)$/);
     return (
       <>
-        <span className="select-none text-muted">{mark} </span>
+        <span className="select-none text-fg-3">{mark} </span>
         {header ? (
           <>
-            {header[1]}: <span className="text-muted">{header[2]}</span>
+            <span className="text-fg">{header[1]}:</span> <span className="text-fg-2">{header[2]}</span>
           </>
+        ) : status ? (
+          <span className="text-fg">
+            {status[1]} <span className="text-acc">{status[2]}</span>
+          </span>
         ) : (
-          rest
+          <span className="text-fg">{rest}</span>
         )}
       </>
     );
   }
-  return <span className="text-muted">{line.startsWith("# ") ? withTxLink(line) : line}</span>;
+  if (line.startsWith("# ")) return <span className="text-fg-3">{withTxLink(line)}</span>;
+  return <span className="text-fg-2">{line}</span>;
 }
 
-function Code({ title, lines, copy, copyLabel }: { title: string; lines: string[]; copy: string; copyLabel: string }) {
+// The pre's own fill (bg at 45% over the window's surface-1), so the end fade blends into it.
+const preFill = "color-mix(in srgb, var(--bg) 45%, var(--surface-1))";
+
+function Code({ title, lines }: { title: string; lines: string[] }) {
   return (
-    <div className="overflow-hidden rounded-panel border bg-paper-2">
-      <div className="flex h-11 items-center justify-between border-b pl-4 pr-2 md:pl-5">
-        <p className="font-mono text-label uppercase text-muted">{title}</p>
-        <CopyButton value={copy} label={copyLabel} />
-      </div>
-      <pre tabIndex={0} role="region" aria-label={`${title} example`} className="overflow-x-auto px-4 py-5 font-mono text-[13px] leading-[22px] text-ink outline-offset-[-2px] focus-visible:outline-ink md:px-5">
-        <code>
-          {lines.map((line, i) => (
-            <span key={i}>
-              <Line line={line} />
-              {"\n"}
-            </span>
-          ))}
-        </code>
-      </pre>
+    <div className="relative min-w-0">
+    <pre
+      tabIndex={0}
+      role="region"
+      aria-label={`${title} example`}
+      className="overflow-x-auto px-4 py-5 font-mono text-[13px] leading-[22px] outline-offset-[-2px] [scrollbar-color:var(--line-strong)_transparent] [scrollbar-width:thin] md:px-5"
+      style={{ background: preFill }}
+    >
+      <code>
+        {lines.map((line, i) => (
+          <span key={i} data-line="">
+            <Line line={line} />
+            {"\n"}
+          </span>
+        ))}
+        <span data-line="" aria-hidden="true" className={prompt}>
+          <span className={`${t.cursor} inline-block h-4 w-[7px] translate-y-[3px] bg-fg-2`} />
+        </span>
+      </code>
+    </pre>
+      {/* The fade sits over the end padding (a line that fits is never dimmed), inset 2 px so the focus ring stays whole. */}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-y-[2px] right-[2px] w-4" style={{ background: `linear-gradient(90deg, transparent, ${preFill})` }} />
     </div>
   );
 }
 
-function Notes({ children, href, link }: { children: ReactNode; href?: string; link?: string }) {
+const C = ({ children }: { children: ReactNode }) => <code className="font-mono text-[13px] text-fg">{children}</code>;
+
+function Notes({ title, children, href, link }: { title: ReactNode; children: ReactNode; href: string; link: string }) {
   return (
-    <div className="max-w-[62ch] space-y-4 text-muted lg:pt-3">
+    <aside className="flex flex-col gap-4 border-t p-5 text-sm leading-[22px] text-fg-2 md:p-6 lg:border-t-0 lg:border-l">
+      <h3 data-note="" className="text-[15px] font-medium tracking-[-0.01em] text-fg">
+        {title}
+      </h3>
       {children}
-      {href && (
-        <p>
-          <a href={href} className="link inline-flex items-center gap-1 py-0.5">
-            {link}
-            <ArrowUpRight className="text-muted" />
-          </a>
-        </p>
-      )}
-    </div>
+      <p data-note="" className="pt-1 lg:mt-auto">
+        <a href={href} className="group inline-flex items-center gap-1.5 font-medium text-fg transition-colors hover:text-fg-2">
+          {link}
+          <ArrowUpRight className="text-fg-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </a>
+      </p>
+    </aside>
   );
 }
 
-const C = ({ children }: { children: ReactNode }) => <code className="font-mono text-[13px] text-ink">{children}</code>;
-
-function Panel({ code, notes }: { code: ReactNode; notes: ReactNode }) {
+function Panel({ title, lines, notes }: { title: string; lines: string[]; notes: ReactNode }) {
   return (
-    <div className="grid grid-cols-12 gap-x-6 gap-y-8">
-      <div className="col-span-12 min-w-0 lg:col-span-8">{code}</div>
-      <div className="col-span-12 lg:col-span-4">{notes}</div>
+    <div className="grid lg:grid-cols-[minmax(0,1fr)_320px]">
+      <Code title={title} lines={lines} />
+      {notes}
     </div>
   );
 }
@@ -194,15 +216,19 @@ const tabs = [
   {
     id: "cli",
     label: "CLI",
+    meta: "sh · repo root",
+    copy: commands(cli),
+    copyLabel: "Copy shell commands",
     panel: (
       <Panel
-        code={<Code title="Shell" lines={cli} copy={commands(cli)} copyLabel="Copy shell commands" />}
+        title="Shell"
+        lines={cli}
         notes={
-          <Notes href={links.doc("docs/BACKEND.md")} link="Backend guide">
-            <p>
-              Needs Go {meta.go_version.split(".").slice(0, 2).join(".")}+ and Docker for Postgres; the dashboard adds Node {meta.node_version}. The Go process reads exported variables and never loads <C>.env</C> on its own.
+          <Notes title="Build it and point it at your node." href={links.doc("docs/BACKEND.md")} link="Backend guide">
+            <p data-note="">
+              Needs <b>Go {meta.go_version.split(".").slice(0, 2).join(".")}+</b> and <b>Docker</b> for Postgres; the dashboard adds Node {meta.node_version}. The Go process reads exported variables and never loads <C>.env</C> on its own.
             </p>
-            <p>
+            <p data-note="">
               Commands apply the embedded migrations before they touch the database. <C>serve</C> then opens the API and starts the collectors; SIGINT drains it cleanly.
             </p>
           </Notes>
@@ -213,15 +239,19 @@ const tabs = [
   {
     id: "api",
     label: "API",
+    meta: api.replace("http://", ""),
+    copy: commands(http),
+    copyLabel: "Copy curl commands",
     panel: (
       <Panel
-        code={<Code title="HTTP" lines={http} copy={commands(http)} copyLabel="Copy curl commands" />}
+        title="HTTP"
+        lines={http}
         notes={
-          <Notes href={links.doc("docs/API.md")} link="API reference">
-            <p>
+          <Notes title="Read the evidence over HTTP." href={links.doc("docs/API.md")} link="API reference">
+            <p data-note="">
               Slot routes take <C>network=sepolia</C> explicitly. Ingesting writes Rooted’s database, never the chain.
             </p>
-            <p>
+            <p data-note="">
               The live feed resumes from <C>Last-Event-ID</C> after a disconnect. There is no authentication, so keep the API on loopback or a network you trust.
             </p>
           </Notes>
@@ -232,26 +262,36 @@ const tabs = [
   {
     id: "agent",
     label: "Agent",
+    meta: `x402 · ${pricing.network ?? "hedera"}`,
+    copy: commands(agent.slice(0, 3)),
+    copyLabel: "Copy agent command",
     panel: (
       <Panel
-        code={<Code title="x402 over HTTP" lines={agent} copy={agent[0].slice(2)} copyLabel="Copy agent command" />}
+        title="x402 over HTTP"
+        lines={agent}
         notes={
-          <Notes href={x402Docs} link="x402 guide">
-            <p className="flex items-center gap-3 text-ink">
-              Hosted mode <Badge>{pricing.testnet ? "testnet" : pricing.network}</Badge>
-            </p>
-            <p>
+          <Notes
+            title={
+              <span className="flex items-center gap-2.5">
+                Let an agent pay. <Badge>{pricing.testnet ? "testnet" : pricing.network}</Badge>
+              </span>
+            }
+            href={x402Docs}
+            link="x402 guide"
+          >
+            <p data-note="">
               {pricing.price ? (
                 <>
-                  An agent pays <C>{pricing.price.display}</C> {pricing.price.unit} over x402, settled on Hedera with no human approval.
+                  An agent pays <b className="num">{pricing.price.display}</b> {pricing.price.unit} over x402, settled on Hedera with no human approval.
                 </>
               ) : (
                 "Priced per request in the 402 response, settled on Hedera over x402 with no human approval."
               )}
             </p>
-            <p>The facilitator settles only after the report is found, so a 404 or a backend error is never charged. The paywall is off unless an operator turns it on.</p>
-            <SourceLine data={pricing} />
-            {stored && <SourceLine data={{ source: `Block ${num(stored.block_number)}: ${stored.source}`, captured_at: pricing.captured_at }} />}
+            <p data-note="">The facilitator settles only after the report is found, so a 404 or a backend error is never charged. The paywall is off unless an operator turns it on.</p>
+            <div data-note="" className="border-t pt-4">
+              <SourceLine data={{ source: `x402.ts @ ${meta.commit}${stored ? ` · HCS ${stored.hcs_topic} #${stored.hcs_sequence}` : ""}`, captured_at: pricing.captured_at }} />
+            </div>
           </Notes>
         }
       />
@@ -263,18 +303,18 @@ export function Terminal() {
   return (
     <Section
       id="use"
-      index={5}
-      eyebrow="Use it"
-      title="Run it, curl it, or let an agent pay."
-      intro={
-        <>
-          Every command here is taken from the repo’s docs. The CLI and API commands point at the hero block above; the agent exchange follows the first
-          call an agent actually paid for.
-        </>
+      size="md"
+      title="One repo. Three ways in."
+      aside={
+        <p className="max-w-[46ch] text-[15px] leading-[1.55] text-fg-2 lg:pb-1">
+          Run it from a shell, read it over HTTP, or let an agent pay for a report. Every command here is taken from the repo’s docs.
+        </p>
       }
-      compact
     >
-      <Tabs label="Ways to use Rooted" tabs={tabs} />
+      <Reveal delay={0.12}>
+        <TerminalTabs label="Ways to use Rooted" tabs={tabs} />
+        <SourceLine className="mt-4" data={{ source: `CLI and API examples use Sepolia block ${num(heroBlock.number)}, slot ${num(slot)}`, captured_at: heroBlock.captured_at }} />
+      </Reveal>
     </Section>
   );
 }

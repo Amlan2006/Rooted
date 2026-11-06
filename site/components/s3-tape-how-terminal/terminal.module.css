@@ -1,0 +1,12 @@
+/* The idle cursor on the fresh prompt that ends each tab. It blinks four times (under 5 s, WCAG 2.2.2) once the
+   window has scrolled into view (data-shown, set by the reveal script), and again when a tab is shown; then it stays
+   solid. Without JS or under reduced motion it is simply solid. */
+[data-shown] .cursor {
+  animation: blink 1.1s steps(1) 4;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,39 @@
+/* The How diagram's junctions: the chevron on the hairline between two stages. Stacked (below lg) it sits on the
+   bottom rule under the stage icon; from lg on the column rule, level with the artefact cards' centres
+   (p-6 + half the 94 px card - half itself). Once a stage has revealed (data-shown, from the reveal script), its
+   junction brightens once, after the stage itself: one pass along the flow, never looping. */
+.junction {
+  bottom: 0;
+  left: calc(1.25rem - 2px);
+  transform: translateY(50%);
+}
+
+@media (min-width: 40rem) {
+  .junction {
+    left: calc(1.5rem - 2px);
+  }
+}
+
+@media (min-width: 64rem) {
+  .junction {
+    left: auto;
+    right: 0;
+    bottom: calc(1.5rem + 47px - 10px);
+    transform: translateX(50%);
+  }
+}
+
+[data-shown] > .junction {
+  animation: lit 0.7s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--d, 0s) + 0.3s) both;
+}
+
+@keyframes lit {
+  from {
+    color: var(--fg-4);
+    border-color: var(--line);
+  }
+  to {
+    color: var(--fg-2);
+    border-color: rgb(255 255 255 / 0.2);
+  }
+}
