@@ -7,6 +7,8 @@
 
 ePBS payloads · block access lists · frame-transaction mempool · native execution replay · x402 on Hedera
 
+[Live dashboard](https://app.91-98-123-155.sslip.io) · [Site](https://91-98-123-155.sslip.io)
+
 </div>
 
 ---
@@ -110,6 +112,24 @@ Developer feedback: **[FEEDBACK.md](FEEDBACK.md)** · more in [docs/UNISWAP.md](
 Settlement goes through the x402.org facilitator, which also pays the network fee. An agent pays with no human
 approval, under a per-request cap, a daily budget, a trusted `payTo` list and one purchase at a time.
 
+**Architecture and payment flow**
+```
+ agent.mjs (CLI, MCP, analyst)      dashboard /api/paid/xray/{hash}  facilitator → Hedera testnet
+ 1 GET ───────────────────────────▶ 402 PAYMENT-REQUIRED: payTo, 0.01 HBAR, feePayer
+ 2 spend policy passes, signs a TransferTransaction (agent → payTo)
+ 3 GET + PAYMENT-SIGNATURE ───────▶ /verify ───────────────────────▶ payer signature and balance
+ 4                                  reads the stored report from the Go backend
+ 5                                  handler < 400: /settle ────────▶ co-signs, submits, SUCCESS
+ 6 ◀─────────────────────────────── 200 report + PAYMENT-RESPONSE (tx id)
+ 7 checks the tx on the mirror node, logs the call to HCS
+```
+
+**Setup:** `cd integrations/x402-agent && npm ci && node setup.mjs --hcs` writes a fresh key to the gitignored `.env`.
+Fund the printed address at portal.hedera.com/faucet and run `setup.mjs --hcs` again: it creates the agent account
+and the HCS topic and sets `ROOTED_X402_PAY_TO` in `dashboard/.env.local`. The dashboard sells reports with
+`ROOTED_X402_ENABLED=true` ([all variables](docs/X402_HOSTED.md#setup)); `e2e.sh` runs it with the backend,
+a refused purchase and a paid one.
+
 **Settled on Hedera testnet** (agent `0.0.11338137` → `0.0.11337330`, 1,000,000 tinybars, `SUCCESS`):
 - [`0.0.9185802@1793963177.452527184`](https://hashscan.io/testnet/transaction/0.0.9185802@1793963177.452527184) via `e2e.sh`
 - [`0.0.9185802@1793963925.399944560`](https://hashscan.io/testnet/transaction/0.0.9185802@1793963925.399944560) via the MCP tool `buy_xray_report`
@@ -118,8 +138,7 @@ approval, under a per-request cap, a daily budget, a trusted `payTo` list and on
 
 Every paid call is logged to HCS topic [`0.0.11338138`](https://hashscan.io/testnet/topic/0.0.11338138).
 The code is in [`integrations/x402-agent`](integrations/x402-agent) (agent, spend policy, MCP server) and
-[`dashboard/lib/x402.ts`](dashboard/lib/x402.ts) (paid route). Run it with `integrations/x402-agent/e2e.sh`.
-Details: [docs/X402_HOSTED.md](docs/X402_HOSTED.md).
+[`dashboard/lib/x402.ts`](dashboard/lib/x402.ts) (paid route). Details: [docs/X402_HOSTED.md](docs/X402_HOSTED.md).
 
 ## Docs
 
