@@ -96,7 +96,7 @@ StateView [`0xe1dd9c3f…7e4c`](https://sepolia.etherscan.io/address/0xe1dd9c3fa
 | What | Where |
 |---|---|
 | v4 PoolManager, event topics, `_pools` slot 6 | [`internal/uniswap/v4.go:12-18`](internal/uniswap/v4.go#L12-L18) |
-| `DecodeSwapV4` · position keys · `PoolStateSlot` | [`v4.go:71`](internal/uniswap/v4.go#L71) · [`v4.go:95`](internal/uniswap/v4.go#L95) · [`v4.go:116`](internal/uniswap/v4.go#L116) |
+| `DecodeSwapV4` · position keys · `PoolStateSlot` | [`v4.go:71`](internal/uniswap/v4.go#L71) · [`v4.go:97`](internal/uniswap/v4.go#L97) · [`v4.go:116`](internal/uniswap/v4.go#L116) |
 | `ContextFromLogs` · `LabelLocation` | [`internal/uniswap/labels.go:36`](internal/uniswap/labels.go#L36) · [`labels.go:58`](internal/uniswap/labels.go#L58) |
 | `VerifyV3Pools` (factory round-trip) | [`internal/uniswap/verify.go:18`](internal/uniswap/verify.go#L18) |
 | v3 Factory · `DecodeSwap` | [`internal/uniswap/v3.go:12`](internal/uniswap/v3.go#L12) · [`v3.go:87`](internal/uniswap/v3.go#L87) |
