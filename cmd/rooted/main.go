@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"rooted/internal/analysis"
+	"rooted/internal/analyst"
 	"rooted/internal/api"
 	"rooted/internal/config"
 	"rooted/internal/framemempool"
@@ -336,7 +337,7 @@ func run(logger *slog.Logger) error {
 			workers.Add(1)
 			go func() { defer workers.Done(); xrayEngine.Follow(workerCtx, replayGate, logger) }()
 		}
-		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network, Providers: providerStore, ProviderChecks: providerChecks, ProviderGate: make(chan struct{}, 1), Profiles: profileStore, Profiler: profileCollector, ProfileGate: replayGate, Xray: xrayStore, XrayEngine: xrayEngine, XrayGate: replayGate}).Handler()
+		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network, Providers: providerStore, ProviderChecks: providerChecks, ProviderGate: make(chan struct{}, 1), Profiles: profileStore, Profiler: profileCollector, ProfileGate: replayGate, Xray: xrayStore, XrayEngine: xrayEngine, XrayGate: replayGate, Analyst: &analyst.Store{Pool: repo.Pool}}).Handler()
 		server := &http.Server{Addr: c.ListenAddr, Handler: handler, BaseContext: func(net.Listener) context.Context { return ctx }, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 		finished := make(chan error, 1)
 		go func() {

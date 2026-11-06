@@ -204,3 +204,15 @@ or executable paths. A profile is an isolated replay measurement with explicit
 timing boundaries, never live production-import timing. Both services persist
 new immutable results and are independent of the deferred CRE integration.
 
+## Analyst briefs
+
+Brief routes require `network=sepolia`. `npm run briefs` in `dashboard/` writes them; the dashboard proxies the GET.
+
+- `GET /api/v1/analyst/briefs?network=sepolia[&limit=1..100]`: stored briefs, newest first, default 20.
+- `POST /api/v1/analyst/briefs?network=sepolia`, `Content-Type: application/json`, body
+  `{"block_hash":"0x…","block_number":N,"triggers":["builder_gap"],"brief":"…","evidence":[…],"model":"…","usd":0.12}`.
+  `triggers` holds 1–4 unique values from `builder_gap`, `gas_misleads`, `big_block`, `commitment`. `brief` is
+  1–8000 characters. A second brief for the same block replaces the first. Returns 200 with the stored row.
+
+Invalid scope, limit or body returns 400, a non-JSON content type 415, a body over 64 KiB 413, and an
+unconfigured store 503.

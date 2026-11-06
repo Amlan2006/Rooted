@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"rooted/internal/analysis"
+	"rooted/internal/analyst"
 	"rooted/internal/domain"
 	"rooted/internal/framemempool"
 	"rooted/internal/ingest"
@@ -44,6 +45,7 @@ type Server struct {
 	Xray           *xray.Store
 	XrayEngine     *xray.Engine
 	XrayGate       chan struct{}
+	Analyst        *analyst.Store
 }
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
@@ -109,6 +111,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/v1/xray/blocks/{hash}", s.xrayBlock)
 	mux.HandleFunc("POST /api/v1/xray/blocks/{hash}", s.xrayCreate)
 	mux.HandleFunc("GET /api/v1/xray/summary", s.xraySummary)
+	mux.HandleFunc("GET /api/v1/analyst/briefs", s.analystBriefs)
+	mux.HandleFunc("POST /api/v1/analyst/briefs", s.analystBriefCreate)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { failure(w, 404, "not_found", "route not found") })
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()

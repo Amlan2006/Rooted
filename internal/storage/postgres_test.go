@@ -48,7 +48,7 @@ func TestPostgresPersistence(t *testing.T) {
 		t.Fatal("migration not repeatable", err)
 	}
 	var migrations int
-	if err = p.Pool.QueryRow(ctx, "SELECT count(*) FROM schema_migrations").Scan(&migrations); err != nil || migrations != 7 {
+	if err = p.Pool.QueryRow(ctx, "SELECT count(*) FROM schema_migrations").Scan(&migrations); err != nil || migrations != 8 {
 		t.Fatalf("unexpected migration state: count=%d error=%v", migrations, err)
 	}
 	stamp := time.Now().UTC()
