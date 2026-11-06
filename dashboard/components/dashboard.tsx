@@ -26,6 +26,7 @@ import { useLive, useResource } from "@/lib/hooks";
 import {
   age,
   ms,
+  nodeOffline,
   short,
   verdict,
   type Slot,
@@ -398,6 +399,12 @@ export default function Dashboard() {
             <strong>{navigation.find((n) => n.id === view)?.name}</strong>
           </div>
           <div className="topbar-right">
+            {nodeOffline(latest) && (
+              <span className="live-status disconnected" role="status">
+                <i />
+                Node offline · showing stored data
+              </span>
+            )}
             <span
               className={
                 "live-status " + (stream === "connected" ? "" : "disconnected")

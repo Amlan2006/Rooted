@@ -182,3 +182,6 @@ export const age = (value?: string | null) => {
       ? `${Math.floor(sec / 60)}m ago`
       : `${Math.floor(sec / 3600)}h ago`;
 };
+// The poller hits the node every interval; a failed poll with no connected Beacon stream means the node is unreachable.
+export const nodeOffline = (c?: Collector) =>
+  c?.poll_status === "error" && c.stream_status !== "connected";
