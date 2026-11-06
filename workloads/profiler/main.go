@@ -134,8 +134,8 @@ func run(in Input) (Report, error) {
 		return Report{}, fmt.Errorf("only post-Merge Sepolia blocks are supported")
 	}
 	n := len(block.Transactions)
-	if n == 0 || n > 128 || len(in.Traces) != n || len(in.Receipts) != n {
-		return Report{}, fmt.Errorf("expected 1–128 transactions with complete receipt/prestate coverage")
+	if n == 0 || n > 512 || len(in.Traces) != n || len(in.Receipts) != n {
+		return Report{}, fmt.Errorf("expected 1–512 transactions with complete receipt/prestate coverage")
 	}
 	if h.Hash() != block.Hash {
 		return Report{}, fmt.Errorf("execution header hash mismatch")

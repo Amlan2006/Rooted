@@ -28,6 +28,7 @@ import (
 	"rooted/internal/providers"
 	"rooted/internal/remote"
 	"rooted/internal/storage"
+	"rooted/internal/xray"
 )
 
 func main() {
@@ -43,7 +44,7 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	if command == "help" {
-		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | compare-providers [BLOCK_HASH] | profile BLOCK_HASH | profile-replay PROFILE_ID | profile-capture PROFILE_ID | help]")
+		fmt.Fprintln(os.Stdout, "Rooted: Ethereum block-pipeline observations\nUsage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync [gateway|miner] [HASH] | frame-submit SIGNED.json HASH [gateway|miner] | compare-providers [BLOCK_HASH] | profile BLOCK_HASH | profile-replay PROFILE_ID | profile-capture PROFILE_ID | xray BLOCK_HASH | xray --capture CAPTURE.json[.gz] [ENVELOPE.json] | xray-follow | help]")
 		return nil
 	}
 	c, err := config.Load()
@@ -59,6 +60,10 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	pc, err := config.LoadProviders()
+	if err != nil {
+		return err
+	}
+	xrayFollow, err := config.XrayFollow()
 	if err != nil {
 		return err
 	}
@@ -88,6 +93,10 @@ func run(logger *slog.Logger) error {
 		replayBinary = ".tools/rooted-replay"
 	}
 	profileCollector := &profiler.Collector{RPC: remote.New(c.ExecutionURL, c.RequestTimeout), Endpoint: c.ExecutionURL, Binary: replayBinary, AnchorNumber: ac.AnchorNumber, AnchorHash: ac.AnchorHash}
+	xrayStore := &xray.Store{Pool: repo.Pool}
+	xrayEngine := &xray.Engine{Profiler: profileCollector, Profiles: profileStore, Store: xrayStore, Execution: remote.New(c.ExecutionURL, c.RequestTimeout), Beacon: remote.New(c.BeaconURL, c.RequestTimeout)}
+	// One gate for profile, X-ray and follower jobs, so two native replays never overlap.
+	replayGate := make(chan struct{}, 1)
 	frames := &framemempool.Store{Pool: repo.Pool, ObservationWindow: fc.ObservationWindow}
 	frameCollectors := map[string]*framemempool.Collector{}
 	for node, endpoint := range map[string]string{"gateway": fc.Gateway, "miner": fc.Miner} {
@@ -159,6 +168,32 @@ func run(logger *slog.Logger) error {
 			return err
 		}
 		if err = profileStore.Save(bounded, report, capture); err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(map[string]any{"data": report})
+	case "xray", "xray-capture", "xray-follow":
+		if c.Network != "sepolia" {
+			return errors.New("X-ray requires Sepolia configuration")
+		}
+		if command == "xray-follow" {
+			xrayEngine.Follow(ctx, replayGate, logger)
+			return nil
+		}
+		bounded, done := context.WithTimeout(ctx, 3*time.Minute)
+		defer done()
+		var report xray.Report
+		if command == "xray" {
+			report, err = xrayEngine.Block(bounded, os.Args[2], "live")
+		} else {
+			var capture, envelope []byte
+			if capture, err = readBounded(os.Args[3]); err == nil && len(os.Args) == 5 {
+				envelope, err = readBounded(os.Args[4])
+			}
+			if err == nil {
+				report, err = xrayEngine.FromCapture(bounded, capture, envelope)
+			}
+		}
+		if err != nil {
 			return err
 		}
 		return json.NewEncoder(os.Stdout).Encode(map[string]any{"data": report})
@@ -297,7 +332,11 @@ func run(logger *slog.Logger) error {
 				}
 			}
 		}
-		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network, Providers: providerStore, ProviderChecks: providerChecks, ProviderGate: make(chan struct{}, 1), Profiles: profileStore, Profiler: profileCollector, ProfileGate: make(chan struct{}, 1)}).Handler()
+		if xrayFollow && c.Network == "sepolia" {
+			workers.Add(1)
+			go func() { defer workers.Done(); xrayEngine.Follow(workerCtx, replayGate, logger) }()
+		}
+		handler := (&api.Server{Repository: repo, Collector: collector, Network: c.Network, Logger: logger, Watch: watch, SourceID: c.SourceID, Analysis: analysisStore, Analyzer: analyzer, Frames: frames, FrameNetwork: fc.Network, Providers: providerStore, ProviderChecks: providerChecks, ProviderGate: make(chan struct{}, 1), Profiles: profileStore, Profiler: profileCollector, ProfileGate: replayGate, Xray: xrayStore, XrayEngine: xrayEngine, XrayGate: replayGate}).Handler()
 		server := &http.Server{Addr: c.ListenAddr, Handler: handler, BaseContext: func(net.Listener) context.Context { return ctx }, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 100 * time.Second, IdleTimeout: 60 * time.Second}
 		finished := make(chan error, 1)
 		go func() {
@@ -348,6 +387,19 @@ func parseArguments(args []string) (string, uint64, error) {
 			return args[0], 0, nil
 		}
 		return "", 0, fmt.Errorf("usage: rooted %s IMMUTABLE_HASH", args[0])
+	case "xray":
+		if len(args) == 2 && ingest.ValidRoot(args[1]) {
+			return "xray", 0, nil
+		}
+		if (len(args) == 3 || len(args) == 4) && args[1] == "--capture" && args[2] != "" && args[len(args)-1] != "" {
+			return "xray-capture", 0, nil
+		}
+		return "", 0, errors.New("usage: rooted xray BLOCK_HASH | rooted xray --capture CAPTURE.json[.gz] [ENVELOPE.json]")
+	case "xray-follow":
+		if len(args) == 1 {
+			return args[0], 0, nil
+		}
+		return "", 0, errors.New("usage: rooted xray-follow")
 	case "replay":
 		if len(args) == 2 && args[1] != "" {
 			return "replay", 0, nil
@@ -401,5 +453,19 @@ func parseArguments(args []string) (string, uint64, error) {
 		}
 		return "ingest", slot, nil
 	}
-	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync | frame-submit | help]")
+	return "", 0, errors.New("usage: rooted [serve | migrate | ingest SLOT | replay PATH.json | analyze[-fork] BLOCK_HASH [TX_HASH,...] | frame-sync | frame-submit | xray | xray-follow | help]")
+}
+
+// readBounded reads an operator-supplied capture or envelope file, capped at 32 MiB.
+func readBounded(path string) ([]byte, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("unable to open %s", path)
+	}
+	defer file.Close()
+	body, err := io.ReadAll(io.LimitReader(file, (32<<20)+1))
+	if err != nil || len(body) > 32<<20 {
+		return nil, fmt.Errorf("%s exceeds 32 MiB or cannot be read", path)
+	}
+	return body, nil
 }

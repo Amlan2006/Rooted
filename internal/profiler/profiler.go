@@ -105,8 +105,8 @@ func (c *Collector) Capture(ctx context.Context, hash string) (Report, []byte, e
 		Number       string            `json:"number"`
 		Transactions []json.RawMessage `json:"transactions"`
 	}
-	if json.Unmarshal(capture.Block, &block) != nil || !strings.EqualFold(block.Hash, hash) || len(block.Transactions) == 0 || len(block.Transactions) > 128 {
-		return report, nil, errors.New("select a nonempty block containing at most 128 transactions")
+	if json.Unmarshal(capture.Block, &block) != nil || !strings.EqualFold(block.Hash, hash) || len(block.Transactions) == 0 || len(block.Transactions) > 512 {
+		return report, nil, errors.New("select a nonempty block containing at most 512 transactions")
 	}
 	n, err := strconv.ParseUint(strings.TrimPrefix(block.Number, "0x"), 16, 64)
 	if err != nil {
@@ -151,7 +151,7 @@ func (c *Collector) Measure(ctx context.Context, metadata Report, input []byte) 
 		Number       string            `json:"number"`
 		Transactions []json.RawMessage `json:"transactions"`
 	}
-	if !ingest.ValidRoot(metadata.BlockHash) || json.Unmarshal(input, &capture) != nil || json.Unmarshal(capture.Block, &block) != nil || !strings.EqualFold(block.Hash, metadata.BlockHash) || block.Number != metadata.BlockNumber || len(block.Transactions) == 0 || len(block.Transactions) > 128 {
+	if !ingest.ValidRoot(metadata.BlockHash) || json.Unmarshal(input, &capture) != nil || json.Unmarshal(capture.Block, &block) != nil || !strings.EqualFold(block.Hash, metadata.BlockHash) || block.Number != metadata.BlockNumber || len(block.Transactions) == 0 || len(block.Transactions) > 512 {
 		return report, nil, errors.New("stored capture identity mismatch")
 	}
 	digest := sha256.Sum256(input)

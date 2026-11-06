@@ -87,15 +87,13 @@ func (s *Server) profileCreate(w http.ResponseWriter, r *http.Request) {
 		failure(w, 400, "invalid_request", "provide a single request")
 		return
 	}
-	select {
-	case s.ProfileGate <- struct{}{}:
-		defer func() { <-s.ProfileGate }()
-	default:
+	ctx, cancel := context.WithTimeout(r.Context(), 85*time.Second)
+	defer cancel()
+	if !acquireReplay(ctx, s.ProfileGate) {
 		failure(w, 429, "busy", "a profile is already running; retry later")
 		return
 	}
-	ctx, cancel := context.WithTimeout(r.Context(), 85*time.Second)
-	defer cancel()
+	defer func() { <-s.ProfileGate }()
 	var report profiler.Report
 	var capture []byte
 	var err error

@@ -1,0 +1,185 @@
+// Package xray compares three parallelism ceilings for one Sepolia block: gas-weighted,
+// validator-with-BAL (Amdahl on measured time) and builder/no-BAL (conflict-DAG critical path).
+package xray
+
+import (
+	"time"
+
+	"rooted/internal/uniswap"
+)
+
+const Schema = "rooted-xray-v1"
+
+var Cores = []int{1, 2, 4, 8, 16}
+
+type Report struct {
+	Schema       string        `json:"schema"`
+	Network      string        `json:"network"`
+	ComputedAt   time.Time     `json:"computed_at"`
+	Source       string        `json:"source"`
+	ProfileID    *string       `json:"profile_id"`
+	Block        Block         `json:"block"`
+	Gas          Gas           `json:"gas"`
+	BAL          BAL           `json:"bal"`
+	Transactions []Tx          `json:"transactions"`
+	Edges        Edges         `json:"edges"`
+	Independent  int           `json:"independent_transactions"`
+	Ceilings     CeilingSet    `json:"ceilings"`
+	Schedules    Schedules     `json:"schedules"`
+	HotLocations []Hot         `json:"hot_locations"`
+	Uniswap      UniswapCounts `json:"uniswap"`
+	EPBS         *EPBS         `json:"epbs"`
+	Replay       *Replay       `json:"replay"`
+	Excluded     []string      `json:"excluded_addresses"`
+	Coverage     []string      `json:"coverage"`
+}
+type Block struct {
+	Number                uint64  `json:"number"`
+	Hash                  string  `json:"hash"`
+	ParentHash            string  `json:"parent_hash"`
+	Timestamp             uint64  `json:"timestamp"`
+	Slot                  *uint64 `json:"slot"`
+	BeaconBlockRoot       *string `json:"beacon_block_root"`
+	ParentBeaconBlockRoot string  `json:"parent_beacon_block_root"`
+	FeeRecipient          string  `json:"fee_recipient"`
+	GasLimit              uint64  `json:"gas_limit"`
+	TransactionCount      int     `json:"transaction_count"`
+}
+type Gas struct {
+	HeaderGasUsed  uint64 `json:"header_gas_used"`
+	ReceiptsGasSum uint64 `json:"receipts_gas_sum"`
+	Differs        bool   `json:"differs"`
+}
+type BAL struct {
+	Commitment         string `json:"commitment"`
+	ComputedCommitment string `json:"computed_commitment"`
+	CommitmentVerified bool   `json:"commitment_verified"`
+	Accounts           int    `json:"accounts"`
+	Source             string `json:"source"`
+	Schema             string `json:"schema"`
+}
+type Tx struct {
+	Index     int     `json:"index"`
+	Hash      string  `json:"hash"`
+	From      string  `json:"from"`
+	To        *string `json:"to"`
+	IsCreate  bool    `json:"is_create"`
+	Status    uint64  `json:"status"`
+	GasUsed   uint64  `json:"gas_used"`
+	ApplyNS   *int64  `json:"apply_ns_median"`
+	Reads     int     `json:"reads"`
+	Writes    int     `json:"writes"`
+	DependsOn []int   `json:"depends_on"`
+}
+type Edges struct {
+	RAW            int  `json:"RAW"`
+	WAR            int  `json:"WAR"`
+	WAW            int  `json:"WAW"`
+	Total          int  `json:"total"`
+	DependentPairs int  `json:"dependent_pairs"`
+	Truncated      bool `json:"truncated"`
+}
+
+// Ceiling is an upper bound on speedup; nil fields mean the weight was unavailable.
+type Ceiling struct {
+	Model        string   `json:"model"`
+	Weight       string   `json:"weight"`
+	Value        *float64 `json:"value"`
+	Total        *int64   `json:"total"`
+	Bottleneck   *int64   `json:"bottleneck"`
+	CappingTx    *int     `json:"capping_tx_index"`
+	CriticalPath []int    `json:"critical_path,omitempty"`
+}
+type CeilingSet struct {
+	Gas       Ceiling `json:"gas_weighted"`
+	Validator Ceiling `json:"validator_bal_time"`
+	Builder   Ceiling `json:"builder_dag_time"`
+}
+type Schedules struct {
+	Cores     []int     `json:"cores"`
+	Validator []float64 `json:"validator_bal_time"`
+	Builder   []float64 `json:"builder_dag_time"`
+}
+type Hot struct {
+	Address        string         `json:"address"`
+	Field          string         `json:"field"`
+	Key            string         `json:"key"`
+	Writers        int            `json:"writers"`
+	Readers        int            `json:"readers"`
+	Edges          int            `json:"edges"`
+	OnCriticalPath bool           `json:"on_critical_path"`
+	Label          *uniswap.Label `json:"label"`
+}
+type UniswapCounts struct {
+	V3Swaps      int `json:"v3_swap_transactions"`
+	V4Swaps      int `json:"v4_swap_transactions"`
+	LabeledEdges int `json:"labeled_edges"`
+}
+type Envelope struct {
+	Slot                          uint64
+	BeaconBlockRoot, BuilderIndex string
+}
+type EPBS struct {
+	Slot            uint64  `json:"slot"`
+	BeaconBlockRoot string  `json:"beacon_block_root"`
+	BuilderIndex    string  `json:"builder_index"`
+	Source          string  `json:"source"`
+	SelfBuild       *bool   `json:"self_build"`
+	Status          *string `json:"status"`
+	Delivery        *string `json:"delivery"`
+	RevealLatencyMS *int64  `json:"reveal_latency_ms"`
+	PTCPayloadYes   *int    `json:"ptc_payload_yes"`
+	PTCPayloadNo    *int    `json:"ptc_payload_no"`
+	PTCTimely       *bool   `json:"ptc_timely"`
+	Canonical       *bool   `json:"canonical"`
+}
+type Replay struct {
+	Runner      string `json:"runner"`
+	GethLibrary string `json:"geth_library"`
+	CPUModel    string `json:"cpu_model"`
+	LogicalCPUs int    `json:"logical_cpus"`
+	Samples     int    `json:"samples"`
+	MedianNS    int64  `json:"median_apply_ns"`
+}
+type Brief struct {
+	BlockHash                 string    `json:"block_hash"`
+	BlockNumber               uint64    `json:"block_number"`
+	Slot                      *uint64   `json:"slot"`
+	ComputedAt                time.Time `json:"computed_at"`
+	Source                    string    `json:"source"`
+	TransactionCount          int       `json:"transaction_count"`
+	HeaderGasUsed             uint64    `json:"header_gas_used"`
+	ReceiptsGasSum            uint64    `json:"receipts_gas_sum"`
+	CommitmentVerified        bool      `json:"commitment_verified"`
+	GasWeighted               *float64  `json:"gas_weighted"`
+	ValidatorBALTime          *float64  `json:"validator_bal_time"`
+	BuilderDAGTime            *float64  `json:"builder_dag_time"`
+	GasCappingTx              *int      `json:"gas_capping_tx_index"`
+	ValidatorCappingTx        *int      `json:"validator_capping_tx_index"`
+	BuilderCriticalPathLength *int      `json:"builder_critical_path_length"`
+	Speedup8Validator         *float64  `json:"speedup_8_validator"`
+	Speedup8Builder           *float64  `json:"speedup_8_builder"`
+	BuilderIndex              *string   `json:"builder_index"`
+}
+type Percentiles struct {
+	P10    float64 `json:"p10"`
+	Median float64 `json:"median"`
+	P90    float64 `json:"p90"`
+}
+type Summary struct {
+	Blocks    int     `json:"blocks"`
+	FromBlock *uint64 `json:"from_block"`
+	ToBlock   *uint64 `json:"to_block"`
+	Ceilings  struct {
+		Gas       *Percentiles `json:"gas_weighted"`
+		Validator *Percentiles `json:"validator_bal_time"`
+		Builder   *Percentiles `json:"builder_dag_time"`
+	} `json:"ceilings"`
+	SingleTxBound      *float64 `json:"single_tx_bound_share"`
+	GasMisidentifies   *float64 `json:"gas_misidentifies_bottleneck_share"`
+	CommitmentVerified *float64 `json:"commitment_verified_share"`
+	Speedup8           struct {
+		Validator *float64 `json:"validator_median"`
+		Builder   *float64 `json:"builder_median"`
+	} `json:"speedup_8"`
+}

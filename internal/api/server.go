@@ -18,6 +18,7 @@ import (
 	"rooted/internal/profiler"
 	"rooted/internal/providers"
 	"rooted/internal/storage"
+	"rooted/internal/xray"
 )
 
 type Fetcher interface {
@@ -40,6 +41,9 @@ type Server struct {
 	ProfileGate    chan struct{}
 	Frames         *framemempool.Store
 	FrameNetwork   string
+	Xray           *xray.Store
+	XrayEngine     *xray.Engine
+	XrayGate       chan struct{}
 }
 type ErrorResponse struct {
 	Error ErrorDetail `json:"error"`
@@ -100,6 +104,11 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/v1/frames/transactions/{hash}/evidence", s.frameEvidence)
 	mux.HandleFunc("GET /api/v1/frames/incidents", s.frameIncidents)
 	mux.HandleFunc("GET /api/v1/frames/submissions", s.frameSubmissions)
+	mux.HandleFunc("GET /api/v1/frames/conformance", s.frameConformance)
+	mux.HandleFunc("GET /api/v1/xray/blocks", s.xrayBlocks)
+	mux.HandleFunc("GET /api/v1/xray/blocks/{hash}", s.xrayBlock)
+	mux.HandleFunc("POST /api/v1/xray/blocks/{hash}", s.xrayCreate)
+	mux.HandleFunc("GET /api/v1/xray/summary", s.xraySummary)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { failure(w, 404, "not_found", "route not found") })
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
