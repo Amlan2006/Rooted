@@ -51,8 +51,8 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
         <div>
           <Badge tone={run.mode === "fork" ? "amber" : "blue"}>
             {run.mode === "fork"
-              ? "LOCAL FORK · TRACE DEMO"
-              : "LIVE · NATIVE BAL"}
+              ? "Local fork · trace demo"
+              : "Live · native BAL"}
           </Badge>
           <h2>Block {parseInt(run.block.number, 16).toLocaleString()}</h2>
           <code title={run.block.hash}>{run.block.hash}</code>
@@ -69,6 +69,7 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
       <div className="stats">
         <Stat
           label="Committed changes"
+          tone="word"
           value={run.native_bal ? "Native BAL" : "Trace diff"}
           detail={
             run.native_bal
@@ -168,10 +169,9 @@ export default function Dependencies({ run, initialFocus = null, linkedSource }:
                       ? "var(--fg-2)"
                       : e.kind === "WAR"
                         ? "var(--warn)"
-                        : "var(--fg-4)"
+                        : "var(--fg-3)"
                   }
                   strokeWidth="1.6"
-                  opacity=".7"
                 />
               );
             })}

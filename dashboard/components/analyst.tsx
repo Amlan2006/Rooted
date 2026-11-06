@@ -83,7 +83,7 @@ export default function Analyst() {
         </form>
       </Panel>
       {state.status !== "idle" && <Panel className="analyst-run" title="Investigation" subtitle={state.question}
-        action={<Badge tone={running ? "blue" : state.status === "done" ? "green" : tone}>{running ? "RUNNING" : state.status === "done" ? "ANSWERED" : "STOPPED"}</Badge>}>
+        action={<Badge tone={running ? "blue" : state.status === "done" ? "green" : tone}>{running ? "Running" : state.status === "done" ? "Answered" : "Stopped"}</Badge>}>
         {state.steps.length > 0 && <ol className="analyst-trace" aria-label="Tool calls">
           {state.steps.map(step => <TraceRow key={step.id} step={step} running={running} onOpen={open} />)}
         </ol>}
@@ -92,7 +92,7 @@ export default function Analyst() {
           {state.answer ? <Cited text={state.answer} evidence={state.evidence} onOpen={open} /> : <span className="muted">Investigating<span className="dots">…</span></span>}
         </section>}
         {state.error && <div className={"notice " + (tone === "amber" ? "warning" : tone === "red" ? "error" : "")} role="alert">
-          <Badge tone={tone}>{state.error.code.replace("_", " ").toUpperCase()}</Badge>
+          <Badge tone={tone}>{state.error.code.replace("_", " ")}</Badge>
           <span>{state.error.message || hint}</span>
         </div>}
         {(u || evidence.length > 0) && <div className="panel-footer analyst-usage">
@@ -114,8 +114,8 @@ function TraceRow({ step, running, onOpen }: { step: Step; running: boolean; onO
       : running ? <LoaderCircle size={14} className="analyst-spin" role="img" aria-label="Running" /> : <span className="muted">no result</span>}</span>
     <div>
       <code className="analyst-tool">{step.tool}</code>
-      {step.action && <Badge tone="amber">ACTION</Badge>}
-      {step.tool === "buy_xray_report" && <Badge tone="red">PAYMENT</Badge>}
+      {step.action && <Badge tone="amber">Action</Badge>}
+      {step.tool === "buy_xray_report" && <Badge tone="red">Payment</Badge>}
       {input !== "{}" && <code className="analyst-input" title={input}>{input}</code>}
       {r?.note && <small>{r.ok ? "" : "Failed: "}{r.note}</small>}
     </div>

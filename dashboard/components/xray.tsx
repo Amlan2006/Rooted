@@ -83,18 +83,18 @@ export default function Xray() {
         <strong>With an EIP-7928 block access list, validators can execute every transaction in parallel.</strong>
         <p>The validator ceiling is Amdahl on measured replay time. The conflict DAG is the builder / no-BAL view, not the validator limit: a static scheduler orders every RAW, WAR and WAW conflict, while a multi-version executor renames WAR away. Every ceiling here is an upper bound for its model.</p>
       </div>
-      <Badge tone="blue">UPPER BOUNDS</Badge>
+      <Badge tone="blue">Upper bounds</Badge>
     </div>
     {offline ? (report
-      ? <div className="notice warning"><Badge tone="amber">STORED</Badge>Backend offline. Showing the committed example report computed {report.computed_at} ({age(report.computed_at)}).</div>
+      ? <div className="notice warning"><Badge tone="amber">Stored</Badge>Backend offline. Showing the committed example report computed {report.computed_at} ({age(report.computed_at)}).</div>
       : loaded.error && <div className="notice error" role="alert">{loaded.error}</div>)
       : <Notice resource={blocks} empty={!briefs.length && !selected} />}
     {briefError && <div className="notice error" role="alert">{briefError}</div>}
-    {loaded.status === 402 && <div className="notice warning"><Badge tone="amber">{loaded.paidURL ? "PAID VIA X402" : "BRIEF ONLY"}</Badge>
+    {loaded.status === 402 && <div className="notice warning"><Badge tone="amber">{loaded.paidURL ? "Paid via x402" : "Brief only"}</Badge>
       <span>{loaded.paidURL ? <>Hosted mode: the full report for this block is sold to agents via x402 at <code>{loaded.paidURL}</code>.</>
         : "This hosted deployment does not serve full reports; self-hosted Rooted serves them free."}{brief && " The brief below stays free."}</span>
       {loaded.samples?.map(h => <button key={h} onClick={() => select(h)}>Open free sample {short(h)}</button>)}</div>}
-    {loaded.sample && <div className="notice"><Badge tone="green">FREE SAMPLE</Badge>This block&apos;s full report is a free sample on this hosted deployment. Other blocks show the brief only.</div>}
+    {loaded.sample && <div className="notice"><Badge tone="green">Free sample</Badge>This block&apos;s full report is a free sample on this hosted deployment. Other blocks show the brief only.</div>}
     {loaded.status === 404 && <div className="notice">No stored X-ray for {short(target)} yet.{canCompute ? " Compute it below." : ""}</div>}
     {loaded.error && !offline && loaded.status !== 404 && <div className="notice error" role="alert">{loaded.error}<button onClick={() => setReload(n => n + 1)}>Retry</button></div>}
     {!offline && <RecentBlocks briefs={briefs} target={target} stats={stats} onSelect={select} />}
@@ -144,7 +144,7 @@ function ReportView({ report: r, stored }: { report: Report; stored: boolean }) 
   return <>
     <div className="analysis-identity">
       <div>
-        <Badge tone={stored ? "amber" : "blue"}>{stored ? "STORED" : r.source.toUpperCase()}</Badge>{" "}
+        <Badge tone={stored ? "amber" : "blue"}>{stored ? "Stored" : r.source}</Badge>{" "}
         <Badge tone={r.bal.commitment_verified ? "green" : "amber"}>{r.bal.commitment_verified ? "BAL commitment verified" : "BAL commitment unverified"}</Badge>
         <h2>Sepolia block {r.block.number.toLocaleString()}</h2>
         <code title={r.block.hash}>{r.block.hash}</code>
@@ -309,7 +309,7 @@ function HostedAPI({ hash, hosted }: { hash: string | null; hosted: boolean }) {
       .catch(() => { if (!stopped) setProbe({ status: null, terms: [] }); });
     return () => { stopped = true; };
   }, [hash]);
-  return <Panel title="Hosted API for agents" subtitle="Self-hosting is free. A hosted deployment can sell per-block reports over x402." action={<Badge tone={probe.status === 402 || probe.status === 200 ? "green" : "neutral"}>{probe.status === 402 ? "PAYWALL LIVE" : probe.status === 200 ? "FREE SAMPLE" : "READ-ONLY"}</Badge>}>
+  return <Panel title="Hosted API for agents" subtitle="Self-hosting is free. A hosted deployment can sell per-block reports over x402." action={<Badge tone={probe.status === 402 || probe.status === 200 ? "green" : "neutral"}>{probe.status === 402 ? "Paywall live" : probe.status === 200 ? "Free sample" : "Read-only"}</Badge>}>
     <div className="analysis-form">
       <p>Paid endpoint: <code>GET /api/paid/xray/{"{block_hash}"}</code> returns the stored <code>rooted-xray-v1</code> report. Settlement happens only after a response below 400, so an unknown block or a backend failure is never charged. Recent-block briefs and the summary stay free.</p>
       {probe.status === 402 && probe.terms.length ? probe.terms.map((t, i) => <p key={i}>Price: <strong>{formatPrice(t)}</strong> on <code>{t.network}</code> · pay to {t.network.startsWith("hedera:") ? <a className="text-button" href={`https://hashscan.io/${t.network.split(":")[1]}/account/${t.payTo}`} target="_blank" rel="noreferrer">{t.payTo}</a> : <code>{t.payTo}</code>}{t.maxTimeoutSeconds ? ` · ${t.maxTimeoutSeconds}s payment window` : ""}. Terms read live from this deployment&apos;s 402 response.</p>)

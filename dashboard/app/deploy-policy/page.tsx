@@ -186,7 +186,6 @@ export default function DeployPolicy() {
       </a>
       <div className="page-heading">
         <div>
-          <span className="eyebrow">PHASE 7 / PUBLIC POLICY</span>
           <h1>
             Review policy deployment
           </h1>
@@ -194,7 +193,7 @@ export default function DeployPolicy() {
             One immutable contract on Sepolia. Signing stays inside your wallet.
           </p>
         </div>
-        <Badge tone="blue">SEPOLIA · 11155111</Badge>
+        <Badge tone="blue">Sepolia · 11155111</Badge>
       </div>
       <Panel
         title="Deployment review"

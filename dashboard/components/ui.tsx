@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { AlertCircle, ChevronDown, ExternalLink, X } from "lucide-react";
+import { AlertCircle, Braces, ChevronDown, X } from "lucide-react";
 import { age } from "@/lib/data";
 import type { Resource } from "@/lib/hooks";
 export function Badge({
@@ -131,7 +131,7 @@ export function Evidence({
     <>
       <button className="text-button" onClick={() => setOpen(true)}>
         {label}
-        <ExternalLink size={12} />
+        <Braces size={12} />
       </button>
       {open && (
         <EvidenceDialog

@@ -24,7 +24,7 @@ export default function FrameConformance({ scope }: { scope: string }) {
   const tx = useResource<{ data: Frame[] }>(own ? `/api/v1/frames/transactions/${own.expected_hash}?${ownQuery}` : null, 0, 30000);
   const state = tx.data?.data[0];
   return <>
-    <Panel title="Own admitted transaction" subtitle="Latest acknowledged Rooted submission, joined with its archived lifecycle" action={node && <Badge tone="blue">{node.toUpperCase()} · CHAIN 1337</Badge>}>
+    <Panel title="Own admitted transaction" subtitle="Latest acknowledged Rooted submission, joined with its archived lifecycle" action={node && <Badge tone="blue">{node === "miner" ? "Miner" : "Gateway"} · chain 1337</Badge>}>
       <Notice resource={submissions} />
       {submissions.data && !own && <div className="notice">No acknowledged Rooted submission is recorded in the {node} scope yet. Run <code>scripts/test_frame_transaction.py --submit --record</code>.</div>}
       {own && <>
@@ -50,7 +50,7 @@ export default function FrameConformance({ scope }: { scope: string }) {
       {invalid && <div className="notice error" role="alert">{invalid}</div>}
       {run && <>
         <p className="footnote">Run {run.run_id} · {run.network} (chain {run.chain_id}) · genesis <code title={run.genesis}>{short(run.genesis)}</code> · sidecar {run.sidecar_version} · sender <code title={run.sender}>{short(run.sender)}</code> · {run.started_at} → {run.finished_at || "in progress"}. Expectations were written before submitting and are not edited after observation.</p>
-        <div className="table-scroll"><table><thead><tr><th>Case</th>{sources.map(s => <th key={s}>{run.sources[s] ? <a href={run.sources[s]} target="_blank" rel="noreferrer">{labels[s]}</a> : labels[s]}</th>)}<th>Observed</th><th>Verdict</th><th>Evidence</th></tr></thead><tbody>
+        <div className="table-scroll"><table className="conformance-table"><thead><tr><th>Case</th>{sources.map(s => <th key={s}>{run.sources[s] ? <a href={run.sources[s]} target="_blank" rel="noreferrer">{labels[s]}</a> : labels[s]}</th>)}<th>Observed</th><th>Verdict</th><th>Evidence</th></tr></thead><tbody>
           {run.cases.map(c => <tr key={c.id} className={divergent(c) ? "conformance-divergent" : ""}>
             <td><strong>{c.id}</strong><span className="subtext">{c.description}</span></td>
             {sources.map(s => { const m = matches(c, s); return <td key={s} title={c.expected_basis[s] || undefined}>

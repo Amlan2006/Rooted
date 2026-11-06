@@ -74,15 +74,15 @@ const navigation = [
   { id: "builders", name: "Builders", group: "Monitor" },
   { id: "frames", name: "Frame mempool", group: "Monitor" },
   { id: "incidents", name: "Incidents", group: "Monitor" },
-  { id: "analyst", name: "Analyst", group: "Analyze" },
-  { id: "investigate", name: "Investigate", group: "Analyze" },
-  { id: "bal", name: "BAL analyzer", group: "Analyze" },
-  { id: "compare", name: "Compare workloads", group: "Analyze" },
-  { id: "profiler", name: "Execution profiler", group: "Analyze" },
+  { id: "analyst", name: "Analyst", group: "Investigate" },
+  { id: "investigate", name: "Investigate", group: "Investigate" },
+  { id: "bal", name: "BAL analyzer", group: "Investigate" },
+  { id: "compare", name: "Compare workloads", group: "Investigate" },
+  { id: "profiler", name: "Execution profiler", group: "Investigate" },
   { id: "providers", name: "RPC providers", group: "Network" },
   { id: "privacy", name: "Private RPC", group: "Network" },
 ] as const;
-const groups = ["Monitor", "Analyze", "Network"] as const;
+const groups = ["Monitor", "Investigate", "Network"] as const;
 // 16px line glyphs, stroked by .nav-item svg
 const glyphs: Record<View, React.ReactNode> = {
   xray: <><rect x="2" y="2" width="12" height="12" rx="2" /><path d="M5 11V8M8 11V5M11 11V7" /></>,
@@ -267,6 +267,7 @@ export default function Dashboard() {
     !latest?.last_success ||
     Date.now() - Date.parse(latest.last_success) > 60000;
   const run = analysisMode === "live" && requestedRun ? requestedRun : analysis.data?.data[0];
+  const crumb = navigation.find((n) => n.id === view);
   function scopeControl() {
     return (
       <div className="scope-control">
@@ -369,12 +370,14 @@ export default function Dashboard() {
   }
   return (
     <div className={"app-shell" + (menuOpen ? " menu-open" : "")}>
+      <a className="skip-link" href="#main">Skip to content</a>
       <aside className="sidebar" id="sidebar">
         <div className="sidebar-head">
           <a className="brand" aria-label={"Rooted home · " + (liveSource || "Sepolia")} href="/">
             <span className="brand-mark">
               <svg viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M10 4v6m0 0-4 4.5M10 10l4 4.5M10 10v6" />
+                <rect x="1" y="1" width="18" height="18" rx="5.25" />
+                <path d="M10 5.25v4.5m0 0-3.25 4M10 9.75l3.25 4M10 9.75v5" />
               </svg>
             </span>
             <span>{liveSource || "Sepolia"}</span>
@@ -441,15 +444,24 @@ export default function Dashboard() {
             </svg>
           </button>
           <div className="breadcrumb">
-            <em>{navigation.find((n) => n.id === view)?.group}</em>
-            <span>/</span>
-            <strong>{navigation.find((n) => n.id === view)?.name}</strong>
+            {crumb?.group !== crumb?.name && (
+              <>
+                <em>{crumb?.group}</em>
+                <span>/</span>
+              </>
+            )}
+            <strong>{crumb?.name}</strong>
           </div>
           <div className="topbar-right">
             {nodeOffline(latest) && (
-              <span className="live-status disconnected" role="status">
+              <span
+                className="live-status disconnected"
+                role="status"
+                aria-label="Node offline, showing stored data"
+                title="Node offline · showing stored data"
+              >
                 <i />
-                Node offline · showing stored data
+                <span className="live-label">Node offline · showing stored data</span>
               </span>
             )}
             <span
@@ -497,7 +509,7 @@ export default function Dashboard() {
             </button>
           </div>
         </header>
-        <main>
+        <main id="main">
           <div className="page-heading">
             <div>
               <h1>{titles[view][0]}</h1>
@@ -612,9 +624,10 @@ export default function Dashboard() {
                   title="Payload activity"
                   subtitle="Recent slots · real persisted observations"
                   action={
-                    <Badge tone={demo ? "amber" : "blue"}>
-                      {demo ? "SYNTHETIC" : "LIVE"}
-                    </Badge>
+                    <span className={"live-status " + (demo || sourceStale ? "disconnected" : "live")}>
+                      <i />
+                      {demo ? "Synthetic" : sourceStale ? "Stale" : "Live"}
+                    </span>
                   }
                 >
                   <Notice resource={slots} />
@@ -689,7 +702,7 @@ export default function Dashboard() {
                       <Radio size={17} />
                       Beacon event source
                     </span>
-                    <Badge tone="amber">
+                    <Badge tone={latest?.stream_status === "connected" ? "green" : "amber"}>
                       {latest?.stream_status || "Unknown"}
                     </Badge>
                   </div>
@@ -878,12 +891,12 @@ export default function Dashboard() {
                           <td className="mono">
                             {b.self_build ? "Self-build" : b.builder_index}
                           </td>
-                          <td>{b.observations}</td>
-                          <td>{percent(b.reveal_ratio)}</td>
-                          <td>{percent(b.healthy_ratio)}</td>
-                          <td>{b.unknown}</td>
+                          <td className="mono">{b.observations}</td>
+                          <td className="mono">{percent(b.reveal_ratio)}</td>
+                          <td className="mono">{percent(b.healthy_ratio)}</td>
+                          <td className="mono">{b.unknown}</td>
                           <td className="mono">{ms(b.p50_reveal_ms)}</td>
-                          <td>{b.timed_samples}</td>
+                          <td className="mono">{b.timed_samples}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -912,6 +925,7 @@ export default function Dashboard() {
                 <Stat
                   label="Network"
                   value="Frame devnet"
+                  tone="word"
                   detail={`Chain ${frameNode.data?.data.chain_id || "unknown"} · ${node}`}
                 />
                 <Stat
@@ -941,7 +955,7 @@ export default function Dashboard() {
               <Panel
                 title="Frame transaction lifecycle"
                 subtitle="Admission reports and receipt verification are separate facts"
-                action={<Badge tone="blue">LIVE · CHAIN 1337</Badge>}
+                action={<Badge tone="blue">Live · chain 1337</Badge>}
               >
                 <Notice resource={frames} empty={!frameData.length} />
                 <Notice resource={frameNode} />
@@ -1123,9 +1137,10 @@ export default function Dashboard() {
                 title="Payload incidents"
                 subtitle="Active and resolved signals in the selected payload scope"
                 action={
-                  <Badge tone={demo ? "amber" : "blue"}>
-                    {demo ? "SYNTHETIC" : "LIVE"}
-                  </Badge>
+                  <span className={"live-status " + (demo || sourceStale ? "disconnected" : "live")}>
+                    <i />
+                    {demo ? "Synthetic" : sourceStale ? "Stale" : "Live"}
+                  </span>
                 }
               >
                 <Notice resource={alerts} empty={!alerts.data?.data.length} />

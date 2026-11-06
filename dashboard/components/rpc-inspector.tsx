@@ -91,7 +91,7 @@ export default function RpcInspector() {
           <ShieldCheck size={30} />
         </div>
         <div>
-          <span className="eyebrow">ANON-RPC / EXECUTION READS</span>
+          <span className="eyebrow">Anon-RPC / execution reads</span>
           <h2>Investigate with a private route.</h2>
           <p>
             Nox carries supported execution reads through a sandboxed Sphinx
@@ -102,6 +102,7 @@ export default function RpcInspector() {
       <div className="stats">
         <Stat
           label="Transport"
+          tone="word"
           value={state.mode === "anonymous" ? "Nox" : "Direct"}
           detail={
             state.mode === "anonymous"
@@ -111,6 +112,7 @@ export default function RpcInspector() {
         />
         <Stat
           label="Worker"
+          tone="word"
           value={state.status}
           detail={"Ready time: " + ms(state.readyMS)}
         />
