@@ -1,5 +1,5 @@
 import { backendURL } from "@/lib/proxy";
-import { hosted } from "@/lib/hosted";
+import { hosted, hostedForbidden } from "@/lib/hosted";
 export const dynamic = "force-dynamic";
 export async function GET(
   request: Request,
@@ -35,6 +35,8 @@ export async function GET(
       },
       { status: 402, headers: { "Cache-Control": "no-store" } },
     );
+  // Profiles hold the paid report's inputs (per-tx timings, the full capture), so hosted mode does not serve them free.
+  if (hosted() && /^api\/v1\/profiles(\/|$)/.test(path.join("/"))) return hostedForbidden();
   const stream = path.join("/") === "api/v1/live";
   try {
     const response = await fetch(url, {

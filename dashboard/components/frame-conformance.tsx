@@ -3,14 +3,13 @@ import { useMemo } from "react";
 import { Check, X } from "lucide-react";
 import { useResource } from "@/lib/hooks";
 import { age, short, verdict, type Frame } from "@/lib/data";
-import { divergent, explorerTx, matches, parseConformance, sources } from "@/lib/frame-conformance";
+import { divergent, explorerTx, matches, ownSubmission, parseConformance, sources, type Submission } from "@/lib/frame-conformance";
 import { Badge, Evidence, Notice, Panel } from "./ui";
 
 // The own-tx panel reads the scope of the node that received the conformance run (results.node; the gateway never relays).
 const ownScope = (node: string) => `network=frame-devnet&mode=live&node=${node}`;
 const labels = { eip8141: "EIP-8141", eip8250: "EIP-8250", erc8421_draft: "ERC-8421 draft", sidecar_docs: "Sidecar docs" };
 const tone = (v: string) => (v === "accept" ? "green" : v === "reject" ? "red" : "neutral");
-type Submission = { attempt_id: string; expected_hash: string; submitted_at: string; submission_status: string };
 
 export default function FrameConformance({ scope }: { scope: string }) {
   // No node param: the API joins archive_status from the scope of the node that received the cases (results.node).
@@ -21,7 +20,7 @@ export default function FrameConformance({ scope }: { scope: string }) {
   const node = run ? (run.node === "miner" ? "miner" : "gateway") : results.error || invalid ? "gateway" : null;
   const ownQuery = node && ownScope(node);
   const submissions = useResource<{ data: Submission[] }>(ownQuery ? `/api/v1/frames/submissions?${ownQuery}&limit=50` : null, 0, 30000);
-  const own = submissions.data?.data.find(s => s.submission_status === "submission_acknowledged");
+  const own = ownSubmission(submissions.data?.data, run);
   const tx = useResource<{ data: Frame[] }>(own ? `/api/v1/frames/transactions/${own.expected_hash}?${ownQuery}` : null, 0, 30000);
   const state = tx.data?.data[0];
   return <>
@@ -32,7 +31,7 @@ export default function FrameConformance({ scope }: { scope: string }) {
         <Notice resource={tx} />
         <div className="fact-grid">
           <div><span>Transaction</span><strong><code title={own.expected_hash}>{short(own.expected_hash)}</code></strong></div>
-          <div><span>Submitted</span><strong>{age(own.submitted_at)} · {own.submission_status.replaceAll("_", " ")}</strong></div>
+          <div><span>Submitted</span><strong>{age(own.submitted_at)} · {own.fromRun ? `baseline case of conformance run ${own.fromRun}` : own.submission_status.replaceAll("_", " ")}</strong></div>
           <div><span>Lifecycle</span><strong>{state ? state.status.replaceAll("_", " ") : "Not observed yet"}</strong></div>
           <div><span>Admission</span><strong>{state?.admission_confirmed ? "Confirmed" : "Not confirmed"}</strong></div>
           <div><span>Inclusion verified</span><strong>{state?.inclusion_confirmed ? <span className="success"><Check size={14} />Confirmed</span> : "Not confirmed"}</strong></div>

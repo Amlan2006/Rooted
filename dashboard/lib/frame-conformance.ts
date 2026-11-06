@@ -30,3 +30,12 @@ export function divergent(c: ConformanceCase) {
   return new Set(known).size > 1 || sources.some(s => matches(c, s) === false);
 }
 export const explorerTx = (hash: string) => `https://explorer.altmempool.wtf/tx/${hash}`;
+export type Submission = { attempt_id: string; expected_hash: string; submitted_at: string; submission_status: string };
+// The journal wins. A fresh database has no journal, so fall back to the run's baseline case: the same script's own
+// acknowledged submission, already archived by the API join. Never spends another devnet submission.
+export function ownSubmission(journal: Submission[] | undefined, run: Conformance | null): (Submission & { fromRun?: string }) | undefined {
+  const own = journal?.find(s => s.submission_status === "submission_acknowledged");
+  const b = run?.cases.find(c => c.id === "baseline" && c.tx_hash && c.rpc?.acknowledged);
+  if (own || !journal || !b?.tx_hash) return own;
+  return { attempt_id: b.rooted_attempt_id ?? "", expected_hash: b.tx_hash, submitted_at: b.submitted_at ?? "", submission_status: "submission_acknowledged", fromRun: run!.run_id };
+}
