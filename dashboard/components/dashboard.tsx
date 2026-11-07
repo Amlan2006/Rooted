@@ -384,9 +384,9 @@ export default function Dashboard() {
         <div className="sidebar-head">
           <a className="brand" aria-label={"Rooted home · " + (liveSource || "Sepolia")} href="/">
             <span className="brand-mark">
-              <svg viewBox="0 0 20 20" aria-hidden="true">
-                <rect x="1" y="1" width="18" height="18" rx="5.25" />
-                <path d="M10 5.25v4.5m0 0-3.25 4M10 9.75l3.25 4M10 9.75v5" />
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M8 4h32a8 8 0 0 1 0 16H8zM8 24h36a8 8 0 0 1 0 16H8zM28 44h12l16 16H44z" />
+                <rect x="8" y="44" width="16" height="16" />
               </svg>
             </span>
             <span>{liveSource || "Sepolia"}</span>
@@ -1247,9 +1247,9 @@ export default function Dashboard() {
           <footer className="page-footer">
             <span>
               <span className="brand-mark">
-                <svg viewBox="0 0 20 20" aria-hidden="true">
-                  <rect x="1" y="1" width="18" height="18" rx="5.25" />
-                  <path d="M10 5.25v4.5m0 0-3.25 4M10 9.75l3.25 4M10 9.75v5" />
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <path d="M8 4h32a8 8 0 0 1 0 16H8zM8 24h36a8 8 0 0 1 0 16H8zM28 44h12l16 16H44z" />
+                  <rect x="8" y="44" width="16" height="16" />
                 </svg>
               </span>
               Rooted<span>Ethereum, with evidence.</span>

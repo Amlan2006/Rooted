@@ -260,16 +260,12 @@ html:has(.menu-open) {
 .brand-mark svg {
   width: 20px;
   height: 20px;
-  fill: none;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 .brand-mark rect {
-  stroke: var(--fg);
+  fill: var(--acc);
 }
 .brand-mark path {
-  stroke: var(--acc);
+  fill: var(--fg);
 }
 .menu-close {
   display: none;

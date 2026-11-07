@@ -25,9 +25,9 @@ export default async function Image() {
         ))}
         <div style={{ position: "absolute", left: 0, top: 0, width: 1200, height: 630, background: "linear-gradient(180deg, rgba(8,9,10,0) 0%, rgba(8,9,10,0.6) 45%, #08090A 80%)" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 16, fontFamily: "Geist", fontSize: 32, letterSpacing: -0.6 }}>
-          <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
-            <rect x="1.5" y="1.5" width="29" height="29" rx="8.5" stroke="#F4F5F6" strokeWidth="2.5" />
-            <path d="M16 8.5v7.5m0 0-5 6m5-6 5 6m-5-6v7.5" stroke="#4BE38F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="40" height="40" viewBox="0 0 64 64">
+            <path d="M8 4h32a8 8 0 0 1 0 16H8zM8 24h36a8 8 0 0 1 0 16H8zM28 44h12l16 16H44z" fill="#F4F5F6" />
+            <rect x="8" y="44" width="16" height="16" fill="#4BE38F" />
           </svg>
           Rooted
         </div>

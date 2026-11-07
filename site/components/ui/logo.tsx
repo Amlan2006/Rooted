@@ -1,11 +1,11 @@
 import { cx } from "@/lib/cx";
 
-/** The mark: a rounded-square outline with a root glyph in the accent. Decorative; pair it with the word "Rooted". */
+/** The mark: an R of three lanes, the stem's foot block in the accent. Decorative; pair it with the word "Rooted". */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className={cx("size-5 shrink-0", className)}>
-      <rect x="1" y="1" width="18" height="18" rx="5.25" stroke="var(--fg)" strokeWidth="1.5" />
-      <path d="M10 5.25v4.5m0 0-3.25 4M10 9.75l3.25 4M10 9.75v5" stroke="var(--acc)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 64 64" aria-hidden="true" className={cx("size-5 shrink-0", className)}>
+      <path d="M8 4h32a8 8 0 0 1 0 16H8zM8 24h36a8 8 0 0 1 0 16H8zM28 44h12l16 16H44z" fill="var(--fg)" />
+      <rect x="8" y="44" width="16" height="16" fill="var(--acc)" />
     </svg>
   );
 }
